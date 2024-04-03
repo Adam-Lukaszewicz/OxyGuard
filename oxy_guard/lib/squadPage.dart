@@ -14,13 +14,16 @@ class SquadPage extends StatefulWidget {
 }
 
 class _SquadPageState extends State<SquadPage> {
-  var oxygenValue = 90.0;
+  var oxygenValue = 320.0;
   final lastCheckStopwatch = Stopwatch(); //TODO: Wynieść stopwatch każdej roty nad stan pojedynczego widgetu (zmiana zakladki nie spowoduje zerowania stopwatcha)
   late Timer oneSec;
-  late TextEditingController checkController;
+  late FixedExtentScrollController checkController;
+  late FixedExtentScrollController exitMinuteController;
+  late FixedExtentScrollController exitSecondsController;
   var lastCheckPressure = 100.0;
   var returnPressure = 100.0;
   var plannedReturnPressure = 120.0;
+  var exitTime = 300;
   var squadTextStyle = const TextStyle(
     fontSize: 22,
   );
@@ -45,7 +48,9 @@ class _SquadPageState extends State<SquadPage> {
   void initState() {
     super.initState();
     lastCheckStopwatch.start();
-    checkController = TextEditingController();
+    checkController = FixedExtentScrollController();
+    exitMinuteController = FixedExtentScrollController();
+    exitSecondsController = FixedExtentScrollController();
     oneSec = Timer.periodic(const Duration(seconds: 1), (Timer t) {
       if (!mounted) return;
       setState(() {
@@ -204,7 +209,7 @@ class _SquadPageState extends State<SquadPage> {
                                             child: Row(
                                           children: [
                                             Text(
-                                                "${lastCheckStopwatch.elapsedMilliseconds~/1000~/60}:${(lastCheckStopwatch.elapsedMilliseconds~/1000 % 60).toInt()}",
+                                                "${lastCheckStopwatch.elapsedMilliseconds~/1000~/60}:${(lastCheckStopwatch.elapsedMilliseconds~/1000 % 60).toInt() < 10 ? "0${(lastCheckStopwatch.elapsedMilliseconds~/1000 % 60).toInt()}" : "${(lastCheckStopwatch.elapsedMilliseconds~/1000 % 60).toInt()}"}",
                                                 style: varTextStyle),
                                             Text("min", style: unitTextStyle)
                                           ],
@@ -362,6 +367,22 @@ class _SquadPageState extends State<SquadPage> {
                             clipBehavior: Clip.none,
                             children: [
                               Positioned(
+                                top: 20,
+                                left: 0,
+                                right: 0,
+                                child: Center(
+                                  child: Text("330", style: varTextStyle),
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 20,
+                                left: 0,
+                                right: 0,
+                                child: Center(
+                                  child: Text("60", style: varTextStyle),
+                                ),
+                              ),
+                              Positioned(
                                 top: 0,
                                 bottom: 0,
                                 right: 0,
@@ -375,11 +396,7 @@ class _SquadPageState extends State<SquadPage> {
                                 ),
                               ),
                               Positioned(
-                                top: constraints.maxHeight -
-                                    (oxygenValue *
-                                        constraints.maxHeight /
-                                        300.0) -
-                                    20.5,
+                                top: 20 + ((constraints.maxHeight - 40)/270) * (330 - oxygenValue),
                                 left: 1,
                                 right: 1,
                                 child: Container(
@@ -398,11 +415,7 @@ class _SquadPageState extends State<SquadPage> {
                                         ))),
                               ),
                               Positioned(
-                                  top: constraints.maxHeight -
-                                      (returnPressure *
-                                          constraints.maxHeight /
-                                          300.0) -
-                                      10,
+                                  top: 20 + ((constraints.maxHeight - 40)/270) * (330 - returnPressure),
                                   left: -3,
                                   child: ClipPath(
                                     clipper: LeftTriangle(),
@@ -413,11 +426,7 @@ class _SquadPageState extends State<SquadPage> {
                                     ),
                                   )),
                               Positioned(
-                                  top: constraints.maxHeight -
-                                      (plannedReturnPressure *
-                                          constraints.maxHeight /
-                                          300.0) -
-                                      10,
+                                  top: 20 + ((constraints.maxHeight - 40)/270) * (330 - plannedReturnPressure),
                                   right: -3,
                                   child: ClipPath(
                                     clipper: RightTriangle(),
@@ -427,22 +436,7 @@ class _SquadPageState extends State<SquadPage> {
                                       width: 20,
                                     ),
                                   )),
-                              Positioned(
-                                top: 20,
-                                left: 0,
-                                right: 0,
-                                child: Center(
-                                  child: Text("330", style: varTextStyle),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 20,
-                                left: 0,
-                                right: 0,
-                                child: Center(
-                                  child: Text("60", style: varTextStyle),
-                                ),
-                              ),
+                              
                             ],
                           );
                         },
@@ -477,9 +471,9 @@ class _SquadPageState extends State<SquadPage> {
                           vertical: 8.0, horizontal: 5.0),
                       child: ElevatedButton(
                           onPressed: () async {
-                            final parse = await checkDialog();
-                              if(parse == null || !parse.isNotEmpty) return;
-                              final valid = double.parse(parse);
+                            final parse = await checkListDialog();
+                              if(parse == null) return;
+                              final valid = parse.toDouble();
                               setState(() {
                                 if(valid < oxygenValue){
                                   lastCheckPressure = valid;
@@ -538,14 +532,20 @@ class _SquadPageState extends State<SquadPage> {
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 5.0),
                       child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            var newExitTime = await exitTimeDialog();
+                            if (newExitTime == null) return;
+                            setState(() {
+                              exitTime = newExitTime;
+                            });
+                          },
                           style: bottomButtonStyle,
                           child: Center(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  "CZAS WYJŚCIA: ${5}",
+                                  "CZAS WYJŚCIA: ${exitTime~/60}${(exitTime%60).toInt() == 0 ? "" : ":${(exitTime%60).toInt() < 10 ? "0${(exitTime%60).toInt()}" : "${(exitTime%60).toInt()}"}"}",
                                   style: varTextStyle,
                                 ),
                                 Text(
@@ -562,23 +562,106 @@ class _SquadPageState extends State<SquadPage> {
     );
   }
 
-  Future<String?> checkDialog() => showDialog<String>(
-    context: context
-  , builder: (context) => AlertDialog(
-    title: const Text("Wprowadź nowy pomiar"),
-    content: TextField(
-      controller: checkController,
-      //autofocus: true,
-    ),
-    actions: [
-      TextButton(onPressed: (){Navigator.of(context).pop(checkController.text);}, child: const Text("Wprowadź"))
-    ],
-  )
+  Future<int?> checkListDialog() => showDialog<int>(
+    context: context,
+     builder: (context) => Dialog(
+      child: SizedBox(
+        height: 500,
+        width: 600,
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Expanded(
+                flex: 2,
+                child: Text("Wprowadź nowy pomiar", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),)
+                ),
+              Expanded(
+                flex: 6,
+                child: ListWheelScrollView.useDelegate(
+                controller: checkController,
+                itemExtent: 50,
+                physics: const FixedExtentScrollPhysics(),
+                childDelegate: ListWheelChildBuilderDelegate(
+                  childCount: (oxygenValue.toInt() - 60)~/10,
+                  builder:(context, index) => Text("${oxygenValue.toInt() - 10 * index}", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold,)),
+                )
+                ),
+              ),
+              Expanded(flex: 2, child: TextButton(onPressed: (){Navigator.of(context).pop(oxygenValue.toInt() - 10 * checkController.selectedItem);}, child: const Text("Wprowadź")))
+            ],
+            ),
+        ),
+      ),
+     )
+  );
+
+    Future<int?> exitTimeDialog() => showDialog<int>(
+    context: context,
+     builder: (context) => Dialog(
+      child: SizedBox(
+        height: 500,
+        width: 600,
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Expanded(
+                flex: 2,
+                child: Text("Wprowadź czas wyjścia", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),)
+                ),
+              Expanded(
+                flex: 6,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 100,
+                      child: ListWheelScrollView.useDelegate(
+                      controller: exitMinuteController,
+                      itemExtent: 50,
+                      physics: const FixedExtentScrollPhysics(),
+                      childDelegate: ListWheelChildBuilderDelegate(
+                        childCount: 16,
+                        builder:(context, index) => Text("$index", style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                      )
+                      ),
+                    ),
+                    Container(
+                      width: 10,
+                      padding: EdgeInsets.only(bottom: 18),
+                      child: const Text(":", style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                    ),
+                    Container(
+                      width: 100,
+                      child: ListWheelScrollView.useDelegate(
+                      controller: exitSecondsController,
+                      itemExtent: 50,
+                      physics: const FixedExtentScrollPhysics(),
+                      childDelegate: ListWheelChildBuilderDelegate(
+                        childCount: 4,
+                        builder:(context, index) => Text("${index * 15}", style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                      )
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(flex: 2, child: TextButton(onPressed: (){Navigator.of(context).pop(15 * exitSecondsController.selectedItem  + 60 * exitMinuteController.selectedItem);}, child: const Text("Wprowadź")))
+            ],
+            ),
+        ),
+      ),
+     )
   );
 
   @override
   void dispose(){
     checkController.dispose();
+    exitMinuteController.dispose();
+    exitSecondsController.dispose();
     super.dispose();
   }
 }

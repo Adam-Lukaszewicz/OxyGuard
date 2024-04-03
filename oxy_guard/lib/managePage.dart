@@ -59,6 +59,9 @@ class Category extends StatefulWidget {
 class _CategoryState extends State<Category>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  var timeR1 = 150;
+  var timeR2 = 600;
+  var timeRIT = 900;
 
   @override
   void initState() {
@@ -98,7 +101,7 @@ class _CategoryState extends State<Category>
                           left: 0,
                           right: 0,
                           child: Center(
-                            child: Text('${150 ~/ 60}:${(150 % 60).toInt()}',
+                            child: Text('${timeR1 ~/ 60}:${timeR1 % 60 < 10 ? "0${timeR1 % 60}" : "${timeR1 % 60}"}',
                                 style: const TextStyle(
                                   color: Colors.red,
                                   fontSize: 30,
@@ -140,7 +143,7 @@ class _CategoryState extends State<Category>
                           left: 0,
                           right: 0,
                           child: Center(
-                            child: Text('${610 ~/ 60}:${(610 % 60).toInt()}',
+                            child: Text('${timeR2 ~/ 60}:${timeR2 % 60 < 10 ? "0${timeR2 % 60}" : "${timeR2 % 60}"}',
                                 style: const TextStyle(
                                   color: Colors.yellow,
                                   fontSize: 30,
@@ -182,7 +185,7 @@ class _CategoryState extends State<Category>
                           left: 0,
                           right: 0,
                           child: Center(
-                            child: Text('${910 ~/ 60}:${(910 % 60).toInt()}',
+                            child: Text('${timeRIT ~/ 60}:${timeRIT % 60 < 10 ? "0${timeRIT % 60}" : "${timeRIT % 60}"}',
                                 style: const TextStyle(
                                   color: Colors.green,
                                   fontSize: 30,
