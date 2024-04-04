@@ -16,10 +16,12 @@ class SquadPage extends StatefulWidget {
 class _SquadPageState extends State<SquadPage> {
   var oxygenValue = 320.0;
   final lastCheckStopwatch = Stopwatch(); //TODO: Wynieść stopwatch każdej roty nad stan pojedynczego widgetu (zmiana zakladki nie spowoduje zerowania stopwatcha)
+  var checks = <double>[]; //TODO: Wynieść te tablicę ponad, żeby nie traciła się przy zmianie zakładki
   late Timer oneSec;
   late FixedExtentScrollController checkController;
   late FixedExtentScrollController exitMinuteController;
   late FixedExtentScrollController exitSecondsController;
+  var usageRate = 10.0/60.0; //Bazowe tempo zużycia 10 litrów na minutę, konwertowane na sekundy
   var lastCheckPressure = 100.0;
   var returnPressure = 100.0;
   var plannedReturnPressure = 120.0;
@@ -153,8 +155,8 @@ class _SquadPageState extends State<SquadPage> {
                                         flex: 3,
                                         child: Container(
                                           height: 20,
-                                          decoration: const BoxDecoration(
-                                              color: Colors.red,
+                                          decoration: BoxDecoration(
+                                              color: usageRate*60 < 10 ? usageRate*60 < 5 ? Colors.blue : Colors.yellow : Colors.red,
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(5))),
                                         ),
@@ -180,7 +182,9 @@ class _SquadPageState extends State<SquadPage> {
                                             child: Row(
                                           children: [
                                             Text(
-                                              "TODO",
+                                              "${
+                                                checks.length >=2 ? "${((oxygenValue-60.0)/usageRate)~/60}:${((oxygenValue-60.0)/usageRate) % 60 < 10 ? "0${(((oxygenValue-60.0)/usageRate) % 60).toInt()}" : (((oxygenValue-60.0)/usageRate) % 60).toInt()}" : "NaN"
+                                              }",
                                               style: varTextStyle.apply(
                                                   color: Colors.yellow),
                                             ),
@@ -477,7 +481,9 @@ class _SquadPageState extends State<SquadPage> {
                               setState(() {
                                 if(valid < oxygenValue){
                                   lastCheckPressure = valid;
+                                  if (checks.isNotEmpty) usageRate = (checks.last - lastCheckPressure)/(lastCheckStopwatch.elapsedMilliseconds/1000);
                                   oxygenValue = lastCheckPressure;
+                                  checks.add(lastCheckPressure);
                                   lastCheckStopwatch.reset();
                                 }
                               });
