@@ -1,31 +1,36 @@
 import 'dart:async';
 //import 'dart:html';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
+import 'package:oxy_guard/managePage.dart';
+import 'package:provider/provider.dart';
 
 class SquadPage extends StatefulWidget {
-  SquadPage({super.key});
+  const SquadPage({super.key});
 
   @override
   State<SquadPage> createState() => _SquadPageState();
 }
 
-class _SquadPageState extends State<SquadPage> {
-  var oxygenValue = 320.0;
+class _SquadPageState extends State<SquadPage> with AutomaticKeepAliveClientMixin {
+  //Declarations
   final lastCheckStopwatch = Stopwatch(); //TODO: Wynieść stopwatch każdej roty nad stan pojedynczego widgetu (zmiana zakladki nie spowoduje zerowania stopwatcha)
+  final workStartStopwatch = Stopwatch();
   var checks = <double>[]; //TODO: Wynieść te tablicę ponad, żeby nie traciła się przy zmianie zakładki
   late Timer oneSec;
   late FixedExtentScrollController checkController;
   late FixedExtentScrollController exitMinuteController;
   late FixedExtentScrollController exitSecondsController;
-  var usageRate = 10.0/60.0; //Bazowe tempo zużycia 10 litrów na minutę, konwertowane na sekundy
+
+  //Placeholder values, consider using late inits
+  var usageRate = 10.0 / 60.0;
   var lastCheckPressure = 100.0;
   var returnPressure = 100.0;
   var plannedReturnPressure = 120.0;
-  var exitTime = 300;
+  var exitTime = 0;
+  //var oxygenValue = 320.0;
+
+  //Base TextStyles to be used for quick formatting (look into themes, maybe there's a better way of doing this)
   var squadTextStyle = const TextStyle(
     fontSize: 22,
   );
@@ -40,11 +45,17 @@ class _SquadPageState extends State<SquadPage> {
     fontWeight: FontWeight.bold,
     fontSize: 12,
   );
+
+  //Base ButtonStyles
   var bottomButtonStyle = const ButtonStyle(
     backgroundColor: MaterialStatePropertyAll(Colors.grey),
     foregroundColor: MaterialStatePropertyAll(Colors.black),
     padding: MaterialStatePropertyAll(EdgeInsets.symmetric(vertical: 1.0)),
   );
+
+  //Overrides necessary for functioning
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -53,15 +64,27 @@ class _SquadPageState extends State<SquadPage> {
     checkController = FixedExtentScrollController();
     exitMinuteController = FixedExtentScrollController();
     exitSecondsController = FixedExtentScrollController();
+    workStartStopwatch.start();
     oneSec = Timer.periodic(const Duration(seconds: 1), (Timer t) {
       if (!mounted) return;
       setState(() {
+        Provider.of<CategoryModel>(context, listen: false).advanceTime();
       });
     });
   }
 
   @override
+  void dispose() {
+    checkController.dispose();
+    exitMinuteController.dispose();
+    exitSecondsController.dispose();
+    super.dispose();
+  }
+
+  //UI
+  @override
   Widget build(BuildContext context) {
+    var oxygenValue = Provider.of<CategoryModel>(context, listen: false).oxygenValue;
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
     return Column(
@@ -97,7 +120,7 @@ class _SquadPageState extends State<SquadPage> {
                                       const EdgeInsets.symmetric(vertical: 8.0),
                                   child: Row(
                                     children: [
-                                      Icon(Icons.fire_extinguisher),
+                                      const Icon(Icons.fire_extinguisher),
                                       Text(
                                         "Jacek Jaworek",
                                         style: squadTextStyle,
@@ -110,7 +133,7 @@ class _SquadPageState extends State<SquadPage> {
                                       const EdgeInsets.symmetric(vertical: 8.0),
                                   child: Row(
                                     children: [
-                                      Icon(Icons.fire_extinguisher),
+                                      const Icon(Icons.fire_extinguisher),
                                       Text("Jakub Nalepa",
                                           style: squadTextStyle),
                                     ],
@@ -121,7 +144,7 @@ class _SquadPageState extends State<SquadPage> {
                                       const EdgeInsets.symmetric(vertical: 8.0),
                                   child: Row(
                                     children: [
-                                      Icon(Icons.fire_extinguisher),
+                                      const Icon(Icons.fire_extinguisher),
                                       Text("Janusz Kowalski",
                                           style: squadTextStyle),
                                     ],
@@ -156,8 +179,12 @@ class _SquadPageState extends State<SquadPage> {
                                         child: Container(
                                           height: 20,
                                           decoration: BoxDecoration(
-                                              color: usageRate*60 < 10 ? usageRate*60 < 5 ? Colors.blue : Colors.yellow : Colors.red,
-                                              borderRadius: BorderRadius.all(
+                                              color: usageRate * 60 < 10
+                                                  ? usageRate * 60 < 5
+                                                      ? Colors.blue
+                                                      : Colors.yellow
+                                                  : Colors.red,
+                                              borderRadius: const BorderRadius.all(
                                                   Radius.circular(5))),
                                         ),
                                       ),
@@ -181,16 +208,17 @@ class _SquadPageState extends State<SquadPage> {
                                         child: Center(
                                             child: Row(
                                           children: [
-                                            Text(
-                                              "${
-                                                checks.length >=2 ? "${((oxygenValue-60.0)/usageRate)~/60}:${((oxygenValue-60.0)/usageRate) % 60 < 10 ? "0${(((oxygenValue-60.0)/usageRate) % 60).toInt()}" : (((oxygenValue-60.0)/usageRate) % 60).toInt()}" : "NaN"
-                                              }",
-                                              style: varTextStyle.apply(
-                                                  color: Colors.yellow),
+                                            Consumer<CategoryModel>(
+                                              builder: (context, cat, child){
+                                                return Text(
+                                                "${checks.length >= 2 ? "${cat.remainingTime ~/ 60}:${cat.remainingTime % 60 < 10 ? "0${(cat.remainingTime % 60).toInt()}" : (cat.remainingTime % 60).toInt()}" : "NaN"}",
+                                                style: varTextStyle.apply(
+                                                    color: HSVColor.lerp(HSVColor.fromColor(Colors.green), HSVColor.fromColor(Colors.red), 1 - (cat.oxygenValue-60)/270)!.toColor()),
+                                              );}
                                             ),
                                             Text("min",
                                                 style: unitTextStyle.apply(
-                                                    color: Colors.yellow))
+                                                    color: HSVColor.lerp(HSVColor.fromColor(Colors.green), HSVColor.fromColor(Colors.red), 1 - (oxygenValue-60)/270)!.toColor()))
                                           ],
                                         )),
                                       ),
@@ -213,7 +241,7 @@ class _SquadPageState extends State<SquadPage> {
                                             child: Row(
                                           children: [
                                             Text(
-                                                "${lastCheckStopwatch.elapsedMilliseconds~/1000~/60}:${(lastCheckStopwatch.elapsedMilliseconds~/1000 % 60).toInt() < 10 ? "0${(lastCheckStopwatch.elapsedMilliseconds~/1000 % 60).toInt()}" : "${(lastCheckStopwatch.elapsedMilliseconds~/1000 % 60).toInt()}"}",
+                                                "${lastCheckStopwatch.elapsedMilliseconds ~/ 1000 ~/ 60}:${(lastCheckStopwatch.elapsedMilliseconds ~/ 1000 % 60).toInt() < 10 ? "0${(lastCheckStopwatch.elapsedMilliseconds ~/ 1000 % 60).toInt()}" : "${(lastCheckStopwatch.elapsedMilliseconds ~/ 1000 % 60).toInt()}"}",
                                                 style: varTextStyle),
                                             Text("min", style: unitTextStyle)
                                           ],
@@ -237,8 +265,12 @@ class _SquadPageState extends State<SquadPage> {
                                         child: Center(
                                             child: Row(
                                           children: [
-                                            Text("TODO", style: varTextStyle),
-                                            Text("min", style: unitTextStyle)
+                                            Text(
+                                                "${exitTime == 0 ? "BRAK" : "${exitTime ~/ 60}:${exitTime % 60 < 10 ? "0${(exitTime % 60).toInt()}" : (exitTime % 60).toInt()}"}",
+                                                style: varTextStyle),
+                                            Text(
+                                                "${exitTime == 0 ? "" : "min"}",
+                                                style: unitTextStyle)
                                           ],
                                         )),
                                       ),
@@ -283,7 +315,7 @@ class _SquadPageState extends State<SquadPage> {
                                         child: Center(
                                             child: Row(
                                           children: [
-                                            Text("${returnPressure.toInt()}",
+                                            Text("${exitTime * 1 ~/ 2 + 60}",
                                                 style: varTextStyle),
                                             Text("BAR", style: unitTextStyle)
                                           ],
@@ -331,7 +363,7 @@ class _SquadPageState extends State<SquadPage> {
                                             child: Row(
                                           children: [
                                             Text(
-                                                "${plannedReturnPressure.toInt()}",
+                                                "${(exitTime * usageRate).toInt() + 60}",
                                                 style: varTextStyle),
                                             Text("BAR", style: unitTextStyle)
                                           ],
@@ -400,7 +432,9 @@ class _SquadPageState extends State<SquadPage> {
                                 ),
                               ),
                               Positioned(
-                                top: 20 + ((constraints.maxHeight - 40)/270) * (330 - oxygenValue),
+                                top: 20 +
+                                    ((constraints.maxHeight - 40) / 270) *
+                                        (330 - oxygenValue),
                                 left: 1,
                                 right: 1,
                                 child: Container(
@@ -419,7 +453,9 @@ class _SquadPageState extends State<SquadPage> {
                                         ))),
                               ),
                               Positioned(
-                                  top: 20 + ((constraints.maxHeight - 40)/270) * (330 - returnPressure),
+                                  top: 20 +
+                                      ((constraints.maxHeight - 40) / 270) *
+                                          (330 - returnPressure),
                                   left: -3,
                                   child: ClipPath(
                                     clipper: LeftTriangle(),
@@ -430,7 +466,9 @@ class _SquadPageState extends State<SquadPage> {
                                     ),
                                   )),
                               Positioned(
-                                  top: 20 + ((constraints.maxHeight - 40)/270) * (330 - plannedReturnPressure),
+                                  top: 20 +
+                                      ((constraints.maxHeight - 40) / 270) *
+                                          (330 - plannedReturnPressure),
                                   right: -3,
                                   child: ClipPath(
                                     clipper: RightTriangle(),
@@ -440,7 +478,6 @@ class _SquadPageState extends State<SquadPage> {
                                       width: 20,
                                     ),
                                   )),
-                              
                             ],
                           );
                         },
@@ -460,11 +497,19 @@ class _SquadPageState extends State<SquadPage> {
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 5.0),
                       child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            setState(() {
+                              workStartStopwatch.stop();
+                              exitTime =
+                                  workStartStopwatch.elapsedMilliseconds ~/
+                                      1000;
+                              workStartStopwatch.reset();
+                            });
+                          },
                           style: bottomButtonStyle,
                           child: Center(
                             child: Text(
-                              "START PRACY",
+                              "PUNKT PRACY",
                               style: varTextStyle,
                             ),
                           )))),
@@ -475,19 +520,23 @@ class _SquadPageState extends State<SquadPage> {
                           vertical: 8.0, horizontal: 5.0),
                       child: ElevatedButton(
                           onPressed: () async {
-                            final parse = await checkListDialog();
-                              if(parse == null) return;
-                              final valid = parse.toDouble();
-                              setState(() {
-                                if(valid < oxygenValue){
-                                  lastCheckPressure = valid;
-                                  if (checks.isNotEmpty) usageRate = (checks.last - lastCheckPressure)/(lastCheckStopwatch.elapsedMilliseconds/1000);
-                                  oxygenValue = lastCheckPressure;
-                                  checks.add(lastCheckPressure);
-                                  lastCheckStopwatch.reset();
-                                }
-                              });
-                            },
+                            final parse = await checkListDialog(oxygenValue);
+                            if (parse == null) return;
+                            final valid = parse.toDouble();
+                            setState(() {
+                              if (valid < oxygenValue) {
+                                lastCheckPressure = valid;
+                                if (checks.isNotEmpty){
+                                  usageRate = (checks.last -
+                                          lastCheckPressure) /
+                                      (lastCheckStopwatch.elapsedMilliseconds /
+                                          1000);}
+                                Provider.of<CategoryModel>(context, listen: false).update(lastCheckPressure, usageRate);
+                                checks.add(lastCheckPressure);
+                                lastCheckStopwatch.reset();
+                              }
+                            });
+                          },
                           style: bottomButtonStyle,
                           child: Center(
                             child: Row(
@@ -551,7 +600,7 @@ class _SquadPageState extends State<SquadPage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  "CZAS WYJŚCIA: ${exitTime~/60}${(exitTime%60).toInt() == 0 ? "" : ":${(exitTime%60).toInt() < 10 ? "0${(exitTime%60).toInt()}" : "${(exitTime%60).toInt()}"}"}",
+                                  "CZAS WYJŚCIA: ${exitTime ~/ 60}${(exitTime % 60).toInt() == 0 ? "" : ":${(exitTime % 60).toInt() < 10 ? "0${(exitTime % 60).toInt()}" : "${(exitTime % 60).toInt()}"}"}",
                                   style: varTextStyle,
                                 ),
                                 Text(
@@ -568,108 +617,132 @@ class _SquadPageState extends State<SquadPage> {
     );
   }
 
-  Future<int?> checkListDialog() => showDialog<int>(
-    context: context,
-     builder: (context) => Dialog(
-      child: SizedBox(
-        height: 500,
-        width: 600,
-        child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Expanded(
-                flex: 2,
-                child: Text("Wprowadź nowy pomiar", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),)
-                ),
-              Expanded(
-                flex: 6,
-                child: ListWheelScrollView.useDelegate(
-                controller: checkController,
-                itemExtent: 50,
-                physics: const FixedExtentScrollPhysics(),
-                childDelegate: ListWheelChildBuilderDelegate(
-                  childCount: (oxygenValue.toInt() - 60)~/10,
-                  builder:(context, index) => Text("${oxygenValue.toInt() - 10 * index}", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold,)),
-                )
-                ),
-              ),
-              Expanded(flex: 2, child: TextButton(onPressed: (){Navigator.of(context).pop(oxygenValue.toInt() - 10 * checkController.selectedItem);}, child: const Text("Wprowadź")))
-            ],
-            ),
-        ),
-      ),
-     )
-  );
-
-    Future<int?> exitTimeDialog() => showDialog<int>(
-    context: context,
-     builder: (context) => Dialog(
-      child: SizedBox(
-        height: 500,
-        width: 600,
-        child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Expanded(
-                flex: 2,
-                child: Text("Wprowadź czas wyjścia", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),)
-                ),
-              Expanded(
-                flex: 6,
-                child: Row(
+  Future<int?> checkListDialog(double oxygenValue) => showDialog<int>(
+      context: context,
+      builder: (context) => Dialog(
+            child: SizedBox(
+              height: 500,
+              width: 600,
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      width: 100,
+                    const Expanded(
+                        flex: 2,
+                        child: Text(
+                          "Wprowadź nowy pomiar",
+                          style: TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.bold),
+                        )),
+                    Expanded(
+                      flex: 6,
                       child: ListWheelScrollView.useDelegate(
-                      controller: exitMinuteController,
-                      itemExtent: 50,
-                      physics: const FixedExtentScrollPhysics(),
-                      childDelegate: ListWheelChildBuilderDelegate(
-                        childCount: 16,
-                        builder:(context, index) => Text("$index", style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-                      )
-                      ),
+                          controller: checkController,
+                          itemExtent: 50,
+                          physics: const FixedExtentScrollPhysics(),
+                          childDelegate: ListWheelChildBuilderDelegate(
+                            childCount: (oxygenValue.toInt() - 60) ~/ 10,
+                            builder: (context, index) =>
+                                Text("${oxygenValue.toInt() - 10 * index}",
+                                    style: const TextStyle(
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold,
+                                    )),
+                          )),
                     ),
-                    Container(
-                      width: 10,
-                      padding: EdgeInsets.only(bottom: 18),
-                      child: const Text(":", style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-                    ),
-                    Container(
-                      width: 100,
-                      child: ListWheelScrollView.useDelegate(
-                      controller: exitSecondsController,
-                      itemExtent: 50,
-                      physics: const FixedExtentScrollPhysics(),
-                      childDelegate: ListWheelChildBuilderDelegate(
-                        childCount: 4,
-                        builder:(context, index) => Text("${index * 15}", style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-                      )
-                      ),
-                    ),
+                    Expanded(
+                        flex: 2,
+                        child: TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(oxygenValue.toInt() -
+                                  10 * checkController.selectedItem);
+                            },
+                            child: const Text("Wprowadź")))
                   ],
                 ),
               ),
-              Expanded(flex: 2, child: TextButton(onPressed: (){Navigator.of(context).pop(15 * exitSecondsController.selectedItem  + 60 * exitMinuteController.selectedItem);}, child: const Text("Wprowadź")))
-            ],
             ),
-        ),
-      ),
-     )
-  );
+          ));
 
-  @override
-  void dispose(){
-    checkController.dispose();
-    exitMinuteController.dispose();
-    exitSecondsController.dispose();
-    super.dispose();
-  }
+  Future<int?> exitTimeDialog() => showDialog<int>(
+      context: context,
+      builder: (context) => Dialog(
+            child: SizedBox(
+              height: 500,
+              width: 600,
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Expanded(
+                        flex: 2,
+                        child: Text(
+                          "Wprowadź czas wyjścia",
+                          style: TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.bold),
+                        )),
+                    Expanded(
+                      flex: 6,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 100,
+                            child: ListWheelScrollView.useDelegate(
+                                controller: exitMinuteController,
+                                itemExtent: 50,
+                                physics: const FixedExtentScrollPhysics(),
+                                childDelegate: ListWheelChildBuilderDelegate(
+                                  childCount: 16,
+                                  builder: (context, index) => Text("$index",
+                                      style: const TextStyle(
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.bold)),
+                                )),
+                          ),
+                          Container(
+                            width: 10,
+                            padding: const EdgeInsets.only(bottom: 18),
+                            child: const Text(":",
+                                style: TextStyle(
+                                    fontSize: 25, fontWeight: FontWeight.bold)),
+                          ),
+                          SizedBox(
+                            width: 100,
+                            child: ListWheelScrollView.useDelegate(
+                                controller: exitSecondsController,
+                                itemExtent: 50,
+                                physics: const FixedExtentScrollPhysics(),
+                                childDelegate: ListWheelChildBuilderDelegate(
+                                  childCount: 4,
+                                  builder: (context, index) => Text(
+                                      "${index * 15}",
+                                      style: const TextStyle(
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.bold)),
+                                )),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                        flex: 2,
+                        child: TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(
+                                  15 * exitSecondsController.selectedItem +
+                                      60 * exitMinuteController.selectedItem);
+                            },
+                            child: const Text("Wprowadź")))
+                  ],
+                ),
+              ),
+            ),
+          ));
+
+  
 }
 
 class LeftTriangle extends CustomClipper<Path> {

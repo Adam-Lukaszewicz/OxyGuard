@@ -8,8 +8,8 @@ class ActionList extends StatelessWidget{
       body: SafeArea(
         child: Column(
           children: [
-            Text("TODO"),
-            ElevatedButton(onPressed: () {Navigator.pop(context);}, child: Text("Wróć")),
+            const Text("TODO"),
+            ElevatedButton(onPressed: () {Navigator.pop(context);}, child: const Text("Wróć")),
           ],
         ),
       ),

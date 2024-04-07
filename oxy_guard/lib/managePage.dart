@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:oxy_guard/squadPage.dart';
+import 'package:provider/provider.dart';
 
 class ManagePage extends StatefulWidget {
   const ManagePage({super.key});
@@ -20,31 +20,43 @@ class _ManagePageState extends State<ManagePage>
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: DefaultTabController(
-        length: categories.length,
-        child: Scaffold(
-            appBar: AppBar(
-              toolbarHeight: MediaQuery.of(context).size.height * 0.05,
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+    return ChangeNotifierProvider(
+      create: (context) => CategoryModel(),
+      child: MaterialApp(
+        home: DefaultTabController(
+          length: categories.length,
+          child: Scaffold(
+              appBar: AppBar(
+                toolbarHeight: MediaQuery.of(context).size.height * 0.05,
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                title: const Text("Odcinek bojowy X"),
+                centerTitle: true,
+                bottom: const TabBar(
+                  tabs: categories,
+                ),
+                actions: [
+                  const Text("KRG 1"), //TODO: Ekran konfiguracyjny
+                  IconButton(onPressed: (){}, icon: const Icon(IconData(0xf3e1, fontFamily: CupertinoIcons.iconFont, fontPackage: CupertinoIcons.iconFontPackage)),
+                  style: const ButtonStyle(
+                    backgroundColor: MaterialStatePropertyAll(Colors.red),
+                    foregroundColor: MaterialStatePropertyAll(Colors.white),
+                    shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))))
+                  ))
+                ],
               ),
-              title: const Text("Odcinek bojowy X"),
-              centerTitle: true,
-              bottom: const TabBar(
-                tabs: categories,
-              ),
-            ),
-            body: TabBarView(
-              children: [
-                Category(),
-                Category(),
-                Category(),
-              ],
-            )),
+              body: const TabBarView(
+                children: [
+                  Category(),
+                  Category(),
+                  Category(),
+                ],
+              )),
+        ),
       ),
     );
   }
@@ -56,12 +68,33 @@ class Category extends StatefulWidget {
   State<Category> createState() => _CategoryState();
 }
 
+class CategoryModel extends ChangeNotifier{
+  var oxygenValue = 300.0;
+  var remainingTime = 900;
+
+  void update(double newOxygen, double usageRate){
+    oxygenValue = newOxygen;
+    remainingTime = (oxygenValue - 60)~/usageRate;
+    notifyListeners();
+  }
+
+  void advanceTime(){
+    remainingTime--;
+    if (remainingTime < 0) remainingTime = 0;
+    notifyListeners();
+  }
+  //TODO: Funkcja, która rusza oxygen value z czasem, jeśli tego potrzebujemy
+}
+
 class _CategoryState extends State<Category>
-    with SingleTickerProviderStateMixin {
+    with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
   late TabController _tabController;
   var timeR1 = 150;
   var timeR2 = 600;
   var timeRIT = 900;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -80,7 +113,7 @@ class _CategoryState extends State<Category>
     var screenHeight = MediaQuery.of(context).size.height;
     return Column(
       children: [
-        Container(
+        SizedBox(
           height: screenHeight * 0.15,
           child: TabBar(
             tabs: <Tab>[
@@ -89,7 +122,7 @@ class _CategoryState extends State<Category>
                 child: Container(
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.black),
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
                     //color: Colors.grey,
                   ),
                   child: Padding(
@@ -143,11 +176,14 @@ class _CategoryState extends State<Category>
                           left: 0,
                           right: 0,
                           child: Center(
-                            child: Text('${timeR2 ~/ 60}:${timeR2 % 60 < 10 ? "0${timeR2 % 60}" : "${timeR2 % 60}"}',
-                                style: const TextStyle(
-                                  color: Colors.yellow,
-                                  fontSize: 30,
-                                )),
+                            child: Consumer<CategoryModel>(
+                              builder: (context, cat, child){
+                              return Text('${cat.remainingTime ~/ 60}:${cat.remainingTime % 60 < 10 ? "0${cat.remainingTime % 60}" : "${cat.remainingTime % 60}"}',
+                                  style: TextStyle(
+                                    color: HSVColor.lerp(HSVColor.fromColor(Colors.green), HSVColor.fromColor(Colors.red), 1 - (cat.oxygenValue-60)/270)!.toColor(),
+                                    fontSize: 30,
+                                  ));}
+                            ),
                           ),
                         ),
                         const Positioned(
@@ -213,7 +249,7 @@ class _CategoryState extends State<Category>
             ],
             controller: _tabController,
             indicatorColor: Colors.black,
-            indicatorPadding: EdgeInsets.only(bottom: 10),
+            indicatorPadding: const EdgeInsets.only(bottom: 10),
             indicatorSize: TabBarIndicatorSize.label,
             indicator: const UnderlineTabIndicator(
               borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -221,12 +257,12 @@ class _CategoryState extends State<Category>
             ),
           ),
         ),
-        Container(
+        SizedBox(
           height: screenHeight * 0.70,
           child: TabBarView(controller: _tabController, children: [
-            Text("R1o"),
+            const Text("R1o"),
             SquadPage(),
-            Text("R3o"),
+            const Text("R3o"),
           ]),
         ),
       ],

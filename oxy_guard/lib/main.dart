@@ -30,7 +30,7 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Center(child: Text("OxyGuard")),
+        title: const Center(child: Text("OxyGuard")),
       ),
       body: Center(
         child: Column(
@@ -43,7 +43,7 @@ class MyHomePage extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => const ActionList()),
                 );
               },
-              child: Center(child: Text("Dołącz do akcji"))
+              child: const Center(child: Text("Dołącz do akcji"))
               ),
               ElevatedButton(
               onPressed: () {
@@ -53,7 +53,7 @@ class MyHomePage extends StatelessWidget {
                   //Ten skok nie będzie od razu do managmentu, jak na razie robię przykład UI
                 );
               },
-              child: Center(child: Text("Stwórz akcję"))
+              child: const Center(child: Text("Stwórz akcję"))
               ),
           ],
         ),
