@@ -12,11 +12,14 @@ class SquadPage extends StatefulWidget {
   State<SquadPage> createState() => _SquadPageState();
 }
 
-class _SquadPageState extends State<SquadPage> with AutomaticKeepAliveClientMixin {
+class _SquadPageState extends State<SquadPage>
+    with AutomaticKeepAliveClientMixin {
   //Declarations
-  final lastCheckStopwatch = Stopwatch(); //TODO: Wynieść stopwatch każdej roty nad stan pojedynczego widgetu (zmiana zakladki nie spowoduje zerowania stopwatcha)
+  final lastCheckStopwatch =
+      Stopwatch(); //TODO: Wynieść stopwatch każdej roty nad stan pojedynczego widgetu (zmiana zakladki nie spowoduje zerowania stopwatcha)
   final workStartStopwatch = Stopwatch();
-  var checks = <double>[]; //TODO: Wynieść te tablicę ponad, żeby nie traciła się przy zmianie zakładki
+  var checks =
+      <double>[]; //TODO: Wynieść te tablicę ponad, żeby nie traciła się przy zmianie zakładki
   late Timer oneSec;
   late FixedExtentScrollController checkController;
   late FixedExtentScrollController exitMinuteController;
@@ -84,7 +87,8 @@ class _SquadPageState extends State<SquadPage> with AutomaticKeepAliveClientMixi
   //UI
   @override
   Widget build(BuildContext context) {
-    var oxygenValue = Provider.of<CategoryModel>(context, listen: false).oxygenValue;
+    var oxygenValue =
+        Provider.of<CategoryModel>(context, listen: false).oxygenValue;
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
     return Column(
@@ -184,8 +188,9 @@ class _SquadPageState extends State<SquadPage> with AutomaticKeepAliveClientMixi
                                                       ? Colors.blue
                                                       : Colors.yellow
                                                   : Colors.red,
-                                              borderRadius: const BorderRadius.all(
-                                                  Radius.circular(5))),
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(5))),
                                         ),
                                       ),
                                     ],
@@ -209,16 +214,34 @@ class _SquadPageState extends State<SquadPage> with AutomaticKeepAliveClientMixi
                                             child: Row(
                                           children: [
                                             Consumer<CategoryModel>(
-                                              builder: (context, cat, child){
-                                                return Text(
+                                                builder: (context, cat, child) {
+                                              return Text(
                                                 "${checks.length >= 2 ? "${cat.remainingTime ~/ 60}:${cat.remainingTime % 60 < 10 ? "0${(cat.remainingTime % 60).toInt()}" : (cat.remainingTime % 60).toInt()}" : "NaN"}",
                                                 style: varTextStyle.apply(
-                                                    color: HSVColor.lerp(HSVColor.fromColor(Colors.green), HSVColor.fromColor(Colors.red), 1 - (cat.oxygenValue-60)/270)!.toColor()),
-                                              );}
-                                            ),
+                                                    color: HSVColor.lerp(
+                                                            HSVColor.fromColor(
+                                                                Colors.green),
+                                                            HSVColor.fromColor(
+                                                                Colors.red),
+                                                            1 -
+                                                                (cat.oxygenValue -
+                                                                        60) /
+                                                                    270)!
+                                                        .toColor()),
+                                              );
+                                            }),
                                             Text("min",
                                                 style: unitTextStyle.apply(
-                                                    color: HSVColor.lerp(HSVColor.fromColor(Colors.green), HSVColor.fromColor(Colors.red), 1 - (oxygenValue-60)/270)!.toColor()))
+                                                    color: HSVColor.lerp(
+                                                            HSVColor.fromColor(
+                                                                Colors.green),
+                                                            HSVColor.fromColor(
+                                                                Colors.red),
+                                                            1 -
+                                                                (oxygenValue -
+                                                                        60) /
+                                                                    270)!
+                                                        .toColor()))
                                           ],
                                         )),
                                       ),
@@ -526,12 +549,15 @@ class _SquadPageState extends State<SquadPage> with AutomaticKeepAliveClientMixi
                             setState(() {
                               if (valid < oxygenValue) {
                                 lastCheckPressure = valid;
-                                if (checks.isNotEmpty){
+                                if (checks.isNotEmpty) {
                                   usageRate = (checks.last -
                                           lastCheckPressure) /
                                       (lastCheckStopwatch.elapsedMilliseconds /
-                                          1000);}
-                                Provider.of<CategoryModel>(context, listen: false).update(lastCheckPressure, usageRate);
+                                          1000);
+                                }
+                                Provider.of<CategoryModel>(context,
+                                        listen: false)
+                                    .update(lastCheckPressure, usageRate);
                                 checks.add(lastCheckPressure);
                                 lastCheckStopwatch.reset();
                               }
@@ -741,8 +767,6 @@ class _SquadPageState extends State<SquadPage> with AutomaticKeepAliveClientMixi
               ),
             ),
           ));
-
-  
 }
 
 class LeftTriangle extends CustomClipper<Path> {

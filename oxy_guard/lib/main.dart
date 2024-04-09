@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:oxy_guard/actionList.dart';
 import 'package:oxy_guard/managePage.dart';
+import 'package:oxy_guard/setup_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -49,7 +50,7 @@ class MyHomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ManagePage()),
+                  MaterialPageRoute(builder: (context) => const SetupPage()),
                   //Ten skok nie będzie od razu do managmentu, jak na razie robię przykład UI
                 );
               },
