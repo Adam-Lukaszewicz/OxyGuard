@@ -6,7 +6,13 @@ import 'package:oxy_guard/managePage.dart';
 import 'package:provider/provider.dart';
 
 class SquadPage extends StatefulWidget {
-  const SquadPage({super.key});
+  var usageRate = 10.0 / 60.0;
+  var lastCheckPressure = 100.0;
+  var returnPressure = 100.0;
+  var plannedReturnPressure = 120.0;
+  var exitTime = 0;
+  final int interval;
+  SquadPage({super.key, required this.interval});
 
   @override
   State<SquadPage> createState() => _SquadPageState();
@@ -26,11 +32,6 @@ class _SquadPageState extends State<SquadPage>
   late FixedExtentScrollController exitSecondsController;
 
   //Placeholder values, consider using late inits
-  var usageRate = 10.0 / 60.0;
-  var lastCheckPressure = 100.0;
-  var returnPressure = 100.0;
-  var plannedReturnPressure = 120.0;
-  var exitTime = 0;
   //var oxygenValue = 320.0;
 
   //Base TextStyles to be used for quick formatting (look into themes, maybe there's a better way of doing this)
@@ -183,8 +184,8 @@ class _SquadPageState extends State<SquadPage>
                                         child: Container(
                                           height: 20,
                                           decoration: BoxDecoration(
-                                              color: usageRate * 60 < 10
-                                                  ? usageRate * 60 < 5
+                                              color: widget.usageRate * 60 < 10
+                                                  ? widget.usageRate * 60 < 5
                                                       ? Colors.blue
                                                       : Colors.yellow
                                                   : Colors.red,
@@ -289,10 +290,10 @@ class _SquadPageState extends State<SquadPage>
                                             child: Row(
                                           children: [
                                             Text(
-                                                "${exitTime == 0 ? "BRAK" : "${exitTime ~/ 60}:${exitTime % 60 < 10 ? "0${(exitTime % 60).toInt()}" : (exitTime % 60).toInt()}"}",
+                                                "${widget.exitTime == 0 ? "BRAK" : "${widget.exitTime ~/ 60}:${widget.exitTime % 60 < 10 ? "0${(widget.exitTime % 60).toInt()}" : (widget.exitTime % 60).toInt()}"}",
                                                 style: varTextStyle),
                                             Text(
-                                                "${exitTime == 0 ? "" : "min"}",
+                                                "${widget.exitTime == 0 ? "" : "min"}",
                                                 style: unitTextStyle)
                                           ],
                                         )),
@@ -338,7 +339,7 @@ class _SquadPageState extends State<SquadPage>
                                         child: Center(
                                             child: Row(
                                           children: [
-                                            Text("${exitTime * 1 ~/ 2 + 60}",
+                                            Text("${widget.exitTime * 1 ~/ 2 + 60}",
                                                 style: varTextStyle),
                                             Text("BAR", style: unitTextStyle)
                                           ],
@@ -386,7 +387,7 @@ class _SquadPageState extends State<SquadPage>
                                             child: Row(
                                           children: [
                                             Text(
-                                                "${(exitTime * usageRate).toInt() + 60}",
+                                                "${(widget.exitTime * widget.usageRate).toInt() + 60}",
                                                 style: varTextStyle),
                                             Text("BAR", style: unitTextStyle)
                                           ],
@@ -478,7 +479,7 @@ class _SquadPageState extends State<SquadPage>
                               Positioned(
                                   top: 20 +
                                       ((constraints.maxHeight - 40) / 270) *
-                                          (330 - returnPressure),
+                                          (330 - widget.returnPressure),
                                   left: -3,
                                   child: ClipPath(
                                     clipper: LeftTriangle(),
@@ -491,7 +492,7 @@ class _SquadPageState extends State<SquadPage>
                               Positioned(
                                   top: 20 +
                                       ((constraints.maxHeight - 40) / 270) *
-                                          (330 - plannedReturnPressure),
+                                          (330 - widget.plannedReturnPressure),
                                   right: -3,
                                   child: ClipPath(
                                     clipper: RightTriangle(),
@@ -523,7 +524,7 @@ class _SquadPageState extends State<SquadPage>
                           onPressed: () {
                             setState(() {
                               workStartStopwatch.stop();
-                              exitTime =
+                              widget.exitTime =
                                   workStartStopwatch.elapsedMilliseconds ~/
                                       1000;
                               workStartStopwatch.reset();
@@ -548,17 +549,17 @@ class _SquadPageState extends State<SquadPage>
                             final valid = parse.toDouble();
                             setState(() {
                               if (valid < oxygenValue) {
-                                lastCheckPressure = valid;
+                                widget.lastCheckPressure = valid;
                                 if (checks.isNotEmpty) {
-                                  usageRate = (checks.last -
-                                          lastCheckPressure) /
+                                  widget.usageRate = (checks.last -
+                                          widget.lastCheckPressure) /
                                       (lastCheckStopwatch.elapsedMilliseconds /
                                           1000);
                                 }
                                 Provider.of<CategoryModel>(context,
                                         listen: false)
-                                    .update(lastCheckPressure, usageRate);
-                                checks.add(lastCheckPressure);
+                                    .update(widget.lastCheckPressure, widget.usageRate);
+                                checks.add(widget.lastCheckPressure);
                                 lastCheckStopwatch.reset();
                               }
                             });
@@ -574,7 +575,7 @@ class _SquadPageState extends State<SquadPage>
                                   style: unitTextStyle,
                                 ),
                                 Text(
-                                  "${lastCheckPressure.toInt()}",
+                                  "${widget.lastCheckPressure.toInt()}",
                                   style: varTextStyle,
                                 ),
                                 Text(
@@ -617,7 +618,7 @@ class _SquadPageState extends State<SquadPage>
                             var newExitTime = await exitTimeDialog();
                             if (newExitTime == null) return;
                             setState(() {
-                              exitTime = newExitTime;
+                              widget.exitTime = newExitTime;
                             });
                           },
                           style: bottomButtonStyle,
@@ -626,7 +627,7 @@ class _SquadPageState extends State<SquadPage>
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  "CZAS WYJŚCIA: ${exitTime ~/ 60}${(exitTime % 60).toInt() == 0 ? "" : ":${(exitTime % 60).toInt() < 10 ? "0${(exitTime % 60).toInt()}" : "${(exitTime % 60).toInt()}"}"}",
+                                  "CZAS WYJŚCIA: ${widget.exitTime ~/ 60}${(widget.exitTime % 60).toInt() == 0 ? "" : ":${(widget.exitTime % 60).toInt() < 10 ? "0${(widget.exitTime % 60).toInt()}" : "${(widget.exitTime % 60).toInt()}"}"}",
                                   style: varTextStyle,
                                 ),
                                 Text(

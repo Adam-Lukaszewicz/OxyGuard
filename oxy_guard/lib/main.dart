@@ -50,7 +50,7 @@ class MyHomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const SetupPage()),
+                  MaterialPageRoute(builder: (context) => const ManagePage()),
                   //Ten skok nie będzie od razu do managmentu, jak na razie robię przykład UI
                 );
               },

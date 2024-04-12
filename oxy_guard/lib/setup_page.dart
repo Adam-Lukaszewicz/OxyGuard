@@ -8,6 +8,11 @@ class SetupPage extends StatefulWidget {
 }
 
 class _SetupPageState extends State<SetupPage> {
+
+  var checkInterval = 600;
+  var entryPressure = 300;
+  var exitPressure = 60;
+
   late FixedExtentScrollController pressureController;
   late FixedExtentScrollController secondsController;
   late FixedExtentScrollController minuteController;
@@ -65,7 +70,12 @@ class _SetupPageState extends State<SetupPage> {
               ),
               ElevatedButton(
                 onPressed: () async {
-                  var exitTime = await timeDialog();
+                  var newCheckInterval = await timeDialog();
+                  if(newCheckInterval != null){
+                  setState(() {
+                    checkInterval = newCheckInterval;
+                  });
+                  }
                 },
                 style: genericButtonStyle,
                 child: const Center(
@@ -74,7 +84,12 @@ class _SetupPageState extends State<SetupPage> {
               ),
               ElevatedButton(
                 onPressed: () async {
-                  var lowPressure = await pressureDialog();
+                  var newLowPressure = await pressureDialog();
+                  if(newLowPressure != null){
+                    setState(() {
+                      exitPressure = newLowPressure;
+                    });
+                  }
                 },
                 style: genericButtonStyle,
                 child: const Center(
@@ -83,7 +98,12 @@ class _SetupPageState extends State<SetupPage> {
               ),
               ElevatedButton(
                 onPressed: () async {
-                  var highPressure = await pressureDialog();
+                  var newHighPressure = await pressureDialog();
+                  if(newHighPressure != null){
+                    setState(() {
+                      entryPressure = newHighPressure;
+                    });
+                  }
                 },
                 style: genericButtonStyle,
                 child: const Center(
@@ -91,7 +111,9 @@ class _SetupPageState extends State<SetupPage> {
                 ),
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pop(context, [checkInterval, entryPressure, exitPressure]);
+                },
                 style: genericButtonStyle,
                 child: const Center(
                   child: Text("Zatwierdź"),
