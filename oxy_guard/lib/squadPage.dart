@@ -7,12 +7,21 @@ import 'package:provider/provider.dart';
 
 class SquadPage extends StatefulWidget {
   var usageRate = 10.0 / 60.0;
-  var lastCheckPressure = 100.0;
+  double entryPressure;
+  int exitPressure;
+  String text = "R";
   var returnPressure = 100.0;
   var plannedReturnPressure = 120.0;
   var exitTime = 0;
   final int interval;
-  SquadPage({super.key, required this.interval});
+  final int index;
+  SquadPage(
+      {super.key,
+      required this.interval,
+      required this.index,
+      required this.entryPressure,
+      required this.exitPressure,
+      required this.text});
 
   @override
   State<SquadPage> createState() => _SquadPageState();
@@ -21,6 +30,7 @@ class SquadPage extends StatefulWidget {
 class _SquadPageState extends State<SquadPage>
     with AutomaticKeepAliveClientMixin {
   //Declarations
+  bool working = false;
   final lastCheckStopwatch =
       Stopwatch(); //TODO: Wynieść stopwatch każdej roty nad stan pojedynczego widgetu (zmiana zakladki nie spowoduje zerowania stopwatcha)
   final workStartStopwatch = Stopwatch();
@@ -64,15 +74,16 @@ class _SquadPageState extends State<SquadPage>
   @override
   void initState() {
     super.initState();
-    lastCheckStopwatch.start();
     checkController = FixedExtentScrollController();
     exitMinuteController = FixedExtentScrollController();
     exitSecondsController = FixedExtentScrollController();
-    workStartStopwatch.start();
+    checks.add(widget.entryPressure);
     oneSec = Timer.periodic(const Duration(seconds: 1), (Timer t) {
       if (!mounted) return;
       setState(() {
-        Provider.of<CategoryModel>(context, listen: false).advanceTime();
+        if (working)
+          Provider.of<CategoryModel>(context, listen: false)
+              .advanceTime(widget.index);
       });
     });
   }
@@ -88,8 +99,8 @@ class _SquadPageState extends State<SquadPage>
   //UI
   @override
   Widget build(BuildContext context) {
-    var oxygenValue =
-        Provider.of<CategoryModel>(context, listen: false).oxygenValue;
+    var oxygenValue = Provider.of<CategoryModel>(context, listen: false)
+        .oxygenValues[widget.index];
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
     return Column(
@@ -217,7 +228,7 @@ class _SquadPageState extends State<SquadPage>
                                             Consumer<CategoryModel>(
                                                 builder: (context, cat, child) {
                                               return Text(
-                                                "${checks.length >= 2 ? "${cat.remainingTime ~/ 60}:${cat.remainingTime % 60 < 10 ? "0${(cat.remainingTime % 60).toInt()}" : (cat.remainingTime % 60).toInt()}" : "NaN"}",
+                                                "${checks.length >= 2 ? "${cat.remainingTimes[widget.index] ~/ 60}:${cat.remainingTimes[widget.index] % 60 < 10 ? "0${(cat.remainingTimes[widget.index] % 60).toInt()}" : (cat.remainingTimes[widget.index] % 60).toInt()}" : "NaN"}",
                                                 style: varTextStyle.apply(
                                                     color: HSVColor.lerp(
                                                             HSVColor.fromColor(
@@ -225,7 +236,8 @@ class _SquadPageState extends State<SquadPage>
                                                             HSVColor.fromColor(
                                                                 Colors.red),
                                                             1 -
-                                                                (cat.oxygenValue -
+                                                                (cat.oxygenValues[
+                                                                            widget.index] -
                                                                         60) /
                                                                     270)!
                                                         .toColor()),
@@ -339,7 +351,8 @@ class _SquadPageState extends State<SquadPage>
                                         child: Center(
                                             child: Row(
                                           children: [
-                                            Text("${widget.exitTime * 1 ~/ 2 + 60}",
+                                            Text(
+                                                "${widget.exitTime * 1 ~/ 2 + 60}",
                                                 style: varTextStyle),
                                             Text("BAR", style: unitTextStyle)
                                           ],
@@ -448,7 +461,7 @@ class _SquadPageState extends State<SquadPage>
                                 right: 0,
                                 left: 0,
                                 child: Center(
-                                  child: Text("R2",
+                                  child: Text(widget.text,
                                       style: TextStyle(
                                           color: Colors.black.withOpacity(0.3),
                                           fontSize: 65,
@@ -522,18 +535,33 @@ class _SquadPageState extends State<SquadPage>
                           vertical: 8.0, horizontal: 5.0),
                       child: ElevatedButton(
                           onPressed: () {
-                            setState(() {
-                              workStartStopwatch.stop();
-                              widget.exitTime =
-                                  workStartStopwatch.elapsedMilliseconds ~/
-                                      1000;
-                              workStartStopwatch.reset();
-                            });
+                            if (widget.exitTime == 0) {
+                              if (working) {
+                                setState(() {
+                                  workStartStopwatch.stop();
+                                  widget.exitTime =
+                                      workStartStopwatch.elapsedMilliseconds ~/
+                                          1000;
+                                  workStartStopwatch.reset();
+                                });
+                              } else {
+                                working = true;
+                                workStartStopwatch.start();
+                                lastCheckStopwatch.start();
+                              }
+                            } else {
+                              working =
+                                  false; //TODO: Wycofywanie roty i przesuwanie do zakończonych
+                            }
                           },
                           style: bottomButtonStyle,
                           child: Center(
                             child: Text(
-                              "PUNKT PRACY",
+                              widget.exitTime == 0
+                                  ? working
+                                      ? "PUNKT PRACY"
+                                      : "START PRACY"
+                                  : "WYCOFAJ",
                               style: varTextStyle,
                             ),
                           )))),
@@ -549,17 +577,18 @@ class _SquadPageState extends State<SquadPage>
                             final valid = parse.toDouble();
                             setState(() {
                               if (valid < oxygenValue) {
-                                widget.lastCheckPressure = valid;
+                                widget.entryPressure = valid;
                                 if (checks.isNotEmpty) {
                                   widget.usageRate = (checks.last -
-                                          widget.lastCheckPressure) /
+                                          widget.entryPressure) /
                                       (lastCheckStopwatch.elapsedMilliseconds /
                                           1000);
                                 }
                                 Provider.of<CategoryModel>(context,
                                         listen: false)
-                                    .update(widget.lastCheckPressure, widget.usageRate);
-                                checks.add(widget.lastCheckPressure);
+                                    .update(widget.entryPressure,
+                                        widget.usageRate, widget.index);
+                                checks.add(widget.entryPressure);
                                 lastCheckStopwatch.reset();
                               }
                             });
@@ -575,7 +604,7 @@ class _SquadPageState extends State<SquadPage>
                                   style: unitTextStyle,
                                 ),
                                 Text(
-                                  "${widget.lastCheckPressure.toInt()}",
+                                  "${widget.entryPressure.toInt()}",
                                   style: varTextStyle,
                                 ),
                                 Text(

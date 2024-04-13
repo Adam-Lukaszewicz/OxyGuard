@@ -5,7 +5,8 @@ import 'package:provider/provider.dart';
 
 class TabSquad extends StatelessWidget {
   var text = "R";
-  TabSquad({super.key, required this.text});
+  final int index;
+  TabSquad({super.key, required this.text, required this.index});
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     return Tab(
@@ -28,12 +29,12 @@ class TabSquad extends StatelessWidget {
                   child:
                       Consumer<CategoryModel>(builder: (context, cat, child) {
                     return Text(
-                        '${cat.remainingTime ~/ 60}:${cat.remainingTime % 60 < 10 ? "0${cat.remainingTime % 60}" : "${cat.remainingTime % 60}"}',
+                        '${cat.remainingTimes[index] ~/ 60}:${cat.remainingTimes[index] % 60 < 10 ? "0${cat.remainingTimes[index] % 60}" : "${cat.remainingTimes[index] % 60}"}',
                         style: TextStyle(
                           color: HSVColor.lerp(
                                   HSVColor.fromColor(Colors.green),
                                   HSVColor.fromColor(Colors.red),
-                                  1 - (cat.oxygenValue - 60) / 270)!
+                                  1 - (cat.oxygenValues[index] - 60) / 270)!
                               .toColor(),
                           fontSize: 30,
                         ));

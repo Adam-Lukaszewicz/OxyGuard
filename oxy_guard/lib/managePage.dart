@@ -88,27 +88,29 @@ class Category extends StatefulWidget {
 }
 
 class CategoryModel extends ChangeNotifier {
-  var oxygenValue = 300.0;
-  var remainingTime = 900;
+  var oxygenValues = <double>[];
+  var remainingTimes = <int>[];
   var waitingSquads = [];
-  var workingSquads = <SquadPage>[SquadPage(interval: 600)];
-  var tabs = <TabSquad>[TabSquad(text: "R1")];
+  var workingSquads = <SquadPage>[];
+  var tabs = <TabSquad>[];
 
-  void update(double newOxygen, double usageRate) {
-    oxygenValue = newOxygen;
-    remainingTime = (oxygenValue - 60) ~/ usageRate;
+  void update(double newOxygen, double usageRate, int index) {
+    oxygenValues[index] = newOxygen;
+    remainingTimes[index] = (oxygenValues[index] - 60) ~/ usageRate;
     notifyListeners();
   }
 
-  void advanceTime() {
-    remainingTime--;
-    if (remainingTime < 0) remainingTime = 0;
+  void advanceTime(int index) {
+    remainingTimes[index]--;
+    if (remainingTimes[index] < 0) remainingTimes[index] = 0;
     notifyListeners();
   }
 
   void startSquadWork(int entryPressure, int exitPressure, int interval) {
-    workingSquads.add(SquadPage(interval: interval));
-    tabs.add(TabSquad(text: "R${workingSquads.length}"));
+    oxygenValues.add(entryPressure.toDouble());
+    remainingTimes.add(entryPressure~/2); //TODO: Ustalić, czy i jeśli tak to jaki wpisujemy czas na start (aktualnie pesymistyczne założenie, ale możemy np. NaN czy coś)
+    workingSquads.add(SquadPage(interval: interval, index: oxygenValues.length-1, entryPressure: entryPressure.toDouble(), exitPressure: exitPressure, text: "R${workingSquads.length+1}"));
+    tabs.add(TabSquad(text: "R${workingSquads.length}", index: oxygenValues.length-1));
     notifyListeners();
   }
   //TODO: Funkcja, która rusza oxygen value z czasem, jeśli tego potrzebujemy
@@ -117,10 +119,6 @@ class CategoryModel extends ChangeNotifier {
 class _CategoryState extends State<Category>
     with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   late TabController _tabController;
-  var timeR1 = 150;
-  var timeR2 = 600;
-  var timeRIT = 900;
-
   @override
   bool get wantKeepAlive => true;
 
@@ -130,14 +128,6 @@ class _CategoryState extends State<Category>
     widget.size =
         Provider.of<CategoryModel>(context, listen: false).workingSquads.length;
     _tabController = TabController(vsync: this, length: widget.size);
-  }
-
-  @override
-  void didUpdateWidget(Category oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (Provider.of<CategoryModel>(context, listen: false).workingSquads.length != widget.size) {
-      restartTabController();
-    }
   }
 
   @override
