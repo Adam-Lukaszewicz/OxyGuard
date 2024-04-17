@@ -2,7 +2,7 @@ import 'dart:async';
 //import 'dart:html';
 
 import 'package:flutter/material.dart';
-import 'package:oxy_guard/managePage.dart';
+import 'package:oxy_guard/manage_page.dart';
 import 'package:provider/provider.dart';
 
 class SquadPage extends StatefulWidget {
@@ -81,9 +81,10 @@ class _SquadPageState extends State<SquadPage>
     oneSec = Timer.periodic(const Duration(seconds: 1), (Timer t) {
       if (!mounted) return;
       setState(() {
-        if (working)
+        if (working){
           Provider.of<CategoryModel>(context, listen: false)
               .advanceTime(widget.index);
+        }
       });
     });
   }
@@ -228,7 +229,7 @@ class _SquadPageState extends State<SquadPage>
                                             Consumer<CategoryModel>(
                                                 builder: (context, cat, child) {
                                               return Text(
-                                                "${checks.length >= 2 ? "${cat.remainingTimes[widget.index] ~/ 60}:${cat.remainingTimes[widget.index] % 60 < 10 ? "0${(cat.remainingTimes[widget.index] % 60).toInt()}" : (cat.remainingTimes[widget.index] % 60).toInt()}" : "NaN"}",
+                                                checks.length >= 2 ? "${cat.remainingTimes[widget.index] ~/ 60}:${cat.remainingTimes[widget.index] % 60 < 10 ? "0${(cat.remainingTimes[widget.index] % 60).toInt()}" : (cat.remainingTimes[widget.index] % 60).toInt()}" : "NaN",
                                                 style: varTextStyle.apply(
                                                     color: HSVColor.lerp(
                                                             HSVColor.fromColor(
@@ -302,10 +303,10 @@ class _SquadPageState extends State<SquadPage>
                                             child: Row(
                                           children: [
                                             Text(
-                                                "${widget.exitTime == 0 ? "BRAK" : "${widget.exitTime ~/ 60}:${widget.exitTime % 60 < 10 ? "0${(widget.exitTime % 60).toInt()}" : (widget.exitTime % 60).toInt()}"}",
+                                                widget.exitTime == 0 ? "BRAK" : "${widget.exitTime ~/ 60}:${widget.exitTime % 60 < 10 ? "0${(widget.exitTime % 60).toInt()}" : (widget.exitTime % 60).toInt()}",
                                                 style: varTextStyle),
                                             Text(
-                                                "${widget.exitTime == 0 ? "" : "min"}",
+                                                widget.exitTime == 0 ? "" : "min",
                                                 style: unitTextStyle)
                                           ],
                                         )),

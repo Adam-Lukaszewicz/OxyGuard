@@ -1,12 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:oxy_guard/managePage.dart';
+import 'package:oxy_guard/manage_page.dart';
 import 'package:provider/provider.dart';
 
 class TabSquad extends StatelessWidget {
   var text = "R";
   final int index;
   TabSquad({super.key, required this.text, required this.index});
+
+  @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     return Tab(

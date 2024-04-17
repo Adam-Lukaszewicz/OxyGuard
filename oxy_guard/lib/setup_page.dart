@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:oxy_guard/manage_page.dart';
+import 'package:provider/provider.dart';
 
 class SetupPage extends StatefulWidget {
   const SetupPage({super.key});
 
   @override
-  State<SetupPage> createState() => _SetupPageState();
+  State<SetupPage> createState() => _SetupPage2State();
 }
 
-class _SetupPageState extends State<SetupPage> {
-
+class _SetupPage2State extends State<SetupPage> {
+  var baseTextStyle = const TextStyle(
+    fontSize: 28,
+  );
+  var unitTextStyle = const TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 16,
+  );
   var checkInterval = 600;
   var entryPressure = 300;
   var exitPressure = 60;
@@ -19,7 +27,7 @@ class _SetupPageState extends State<SetupPage> {
   var genericButtonStyle = const ButtonStyle(
       backgroundColor: MaterialStatePropertyAll(Colors.grey),
       foregroundColor: MaterialStatePropertyAll(Colors.black),
-      padding: MaterialStatePropertyAll(EdgeInsets.symmetric(vertical: 1.0)),
+      padding: MaterialStatePropertyAll(EdgeInsets.symmetric(vertical: 6.0, horizontal: 6.0)),
       textStyle: MaterialStatePropertyAll(TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 20,
@@ -43,85 +51,166 @@ class _SetupPageState extends State<SetupPage> {
 
   @override
   Widget build(BuildContext context) {
-    var screenHeight = MediaQuery.of(context).size.height;
-    return Scaffold(
-        appBar: AppBar(
-          toolbarHeight: screenHeight * 0.05,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          title: const Text("Konfiguracja startowa"),
-          centerTitle: true,
-        ),
-        body: SizedBox(
-          height: screenHeight * 0.95,
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ElevatedButton(
-                onPressed: () {},
-                style: genericButtonStyle,
-                child: const Center(
-                  child: Text("Wybór kadry"),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    const Icon(Icons.location_pin, size: 40),
+                    Text("Lokalizacja", style: baseTextStyle),
+                  ],
                 ),
               ),
-              ElevatedButton(
-                onPressed: () async {
-                  var newCheckInterval = await timeDialog();
-                  if(newCheckInterval != null){
-                  setState(() {
-                    checkInterval = newCheckInterval;
-                  });
-                  }
-                },
-                style: genericButtonStyle,
-                child: const Center(
-                  child: Text("Okres pomiarów"),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    const Icon(Icons.fire_extinguisher, size: 40),
+                    Text(
+                      "Jacek Jaworek",
+                      style: baseTextStyle,
+                    ),
+                  ],
                 ),
               ),
-              ElevatedButton(
-                onPressed: () async {
-                  var newLowPressure = await pressureDialog();
-                  if(newLowPressure != null){
-                    setState(() {
-                      exitPressure = newLowPressure;
-                    });
-                  }
-                },
-                style: genericButtonStyle,
-                child: const Center(
-                  child: Text("Ciśnienie graniczne"),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.fire_extinguisher,
+                      size: 40,
+                    ),
+                    Text("Jakub Nalepa", style: baseTextStyle),
+                  ],
                 ),
               ),
-              ElevatedButton(
-                onPressed: () async {
-                  var newHighPressure = await pressureDialog();
-                  if(newHighPressure != null){
-                    setState(() {
-                      entryPressure = newHighPressure;
-                    });
-                  }
-                },
-                style: genericButtonStyle,
-                child: const Center(
-                  child: Text("Ciśnienie początkowe"),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context, [checkInterval, entryPressure, exitPressure]);
-                },
-                style: genericButtonStyle,
-                child: const Center(
-                  child: Text("Zatwierdź"),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    const Icon(Icons.fire_extinguisher, size: 40),
+                    Text("Janusz Kowalski", style: baseTextStyle),
+                  ],
                 ),
               ),
             ],
           ),
-        ));
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Okres pomiarów",
+                      style: baseTextStyle,
+                    ),
+                    ElevatedButton(
+                        onPressed: () async {
+                          var newCheckInterval = await timeDialog();
+                          if (newCheckInterval != null){
+                            setState(() {
+                              checkInterval = newCheckInterval;
+                            });
+                          }
+                        },
+                        style: genericButtonStyle,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                          Text(
+                              "${checkInterval ~/ 60}${checkInterval % 60 == 0 ? "" : ":${checkInterval % 60 < 10 ? "0${checkInterval % 60}" : checkInterval % 60}"}", style: baseTextStyle,),
+                          Text("MIN", style: unitTextStyle,)
+                        ]))
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Ciśnienie początkowe",
+                      style: baseTextStyle,
+                    ),
+                    ElevatedButton(
+                        onPressed: () async {
+                          var newEntryPressure = await pressureDialog();
+                          if (newEntryPressure != null){
+                            setState(() {
+                              entryPressure = newEntryPressure;
+                            });
+                          }
+                        },
+                        style: genericButtonStyle,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                          Text(
+                              entryPressure.toString(), style: baseTextStyle,),
+                          Text("BAR", style: unitTextStyle,)
+                        ]))
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Ciśnienie wyjściowe",
+                      style: baseTextStyle,
+                    ),
+                    ElevatedButton(
+                        onPressed: () async {
+                          var newExitPressure = await pressureDialog();
+                          if (newExitPressure != null){
+                            setState(() {
+                              exitPressure = newExitPressure;
+                            });
+                          }
+                        },
+                        style: genericButtonStyle,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                          Text(
+                              exitPressure.toString(), style: baseTextStyle,),
+                          Text("BAR", style: unitTextStyle,)
+                        ]))
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              //TODO: Ten system z gotowościa bo nie wiem co jest 5
+              onPressed: (){
+                Provider.of<CategoryModel>(context, listen: false).startSquadWork(entryPressure, exitPressure, checkInterval);
+              },
+              style: genericButtonStyle,
+              child: const Center(child: Text("Dodaj rotę"),)
+              )
+          ],
+        )
+      ],
+    );
   }
 
   Future<int?> pressureDialog() => showDialog<int>(
@@ -162,7 +251,8 @@ class _SetupPageState extends State<SetupPage> {
                         flex: 2,
                         child: TextButton(
                             onPressed: () {
-                              Navigator.of(context).pop(330 - 10 * pressureController.selectedItem);
+                              Navigator.of(context).pop(
+                                  330 - 10 * pressureController.selectedItem);
                             },
                             child: const Text("Wprowadź")))
                   ],
