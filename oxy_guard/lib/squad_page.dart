@@ -31,13 +31,14 @@ class _SquadPageState extends State<SquadPage>
     with AutomaticKeepAliveClientMixin {
   //Declarations
   bool working = false;
-  final lastCheckStopwatch =
-      Stopwatch(); //TODO: Wynieść stopwatch każdej roty nad stan pojedynczego widgetu (zmiana zakladki nie spowoduje zerowania stopwatcha)
+  final lastCheckStopwatch = Stopwatch();
   final workStartStopwatch = Stopwatch();
-  var checks =
-      <double>[]; //TODO: Wynieść te tablicę ponad, żeby nie traciła się przy zmianie zakładki
+  var checks = <double>[];
+  var checkIntervals = <int>[0];
   late Timer oneSec;
   late FixedExtentScrollController checkController;
+  late FixedExtentScrollController lastCheckController;
+  late FixedExtentScrollController secondLastCheckController;
   late FixedExtentScrollController exitMinuteController;
   late FixedExtentScrollController exitSecondsController;
 
@@ -77,11 +78,13 @@ class _SquadPageState extends State<SquadPage>
     checkController = FixedExtentScrollController();
     exitMinuteController = FixedExtentScrollController();
     exitSecondsController = FixedExtentScrollController();
+    lastCheckController = FixedExtentScrollController();
+    secondLastCheckController = FixedExtentScrollController();
     checks.add(widget.entryPressure);
     oneSec = Timer.periodic(const Duration(seconds: 1), (Timer t) {
       if (!mounted) return;
       setState(() {
-        if (working){
+        if (working) {
           Provider.of<CategoryModel>(context, listen: false)
               .advanceTime(widget.index);
         }
@@ -94,6 +97,8 @@ class _SquadPageState extends State<SquadPage>
     checkController.dispose();
     exitMinuteController.dispose();
     exitSecondsController.dispose();
+    lastCheckController.dispose();
+    secondLastCheckController.dispose();
     super.dispose();
   }
 
@@ -229,7 +234,9 @@ class _SquadPageState extends State<SquadPage>
                                             Consumer<CategoryModel>(
                                                 builder: (context, cat, child) {
                                               return Text(
-                                                checks.length >= 2 ? "${cat.remainingTimes[widget.index] ~/ 60}:${cat.remainingTimes[widget.index] % 60 < 10 ? "0${(cat.remainingTimes[widget.index] % 60).toInt()}" : (cat.remainingTimes[widget.index] % 60).toInt()}" : "NaN",
+                                                checks.length >= 2
+                                                    ? "${cat.remainingTimes[widget.index] ~/ 60}:${cat.remainingTimes[widget.index] % 60 < 10 ? "0${(cat.remainingTimes[widget.index] % 60).toInt()}" : (cat.remainingTimes[widget.index] % 60).toInt()}"
+                                                    : "NaN",
                                                 style: varTextStyle.apply(
                                                     color: HSVColor.lerp(
                                                             HSVColor.fromColor(
@@ -303,10 +310,14 @@ class _SquadPageState extends State<SquadPage>
                                             child: Row(
                                           children: [
                                             Text(
-                                                widget.exitTime == 0 ? "BRAK" : "${widget.exitTime ~/ 60}:${widget.exitTime % 60 < 10 ? "0${(widget.exitTime % 60).toInt()}" : (widget.exitTime % 60).toInt()}",
+                                                widget.exitTime == 0
+                                                    ? "BRAK"
+                                                    : "${widget.exitTime ~/ 60}:${widget.exitTime % 60 < 10 ? "0${(widget.exitTime % 60).toInt()}" : (widget.exitTime % 60).toInt()}",
                                                 style: varTextStyle),
                                             Text(
-                                                widget.exitTime == 0 ? "" : "min",
+                                                widget.exitTime == 0
+                                                    ? ""
+                                                    : "min",
                                                 style: unitTextStyle)
                                           ],
                                         )),
@@ -573,7 +584,7 @@ class _SquadPageState extends State<SquadPage>
                           vertical: 8.0, horizontal: 5.0),
                       child: ElevatedButton(
                           onPressed: () async {
-                            final parse = await checkListDialog(oxygenValue);
+                            final parse = await checkListDialog((oxygenValue~/10) * 10 + 10);
                             if (parse == null) return;
                             final valid = parse.toDouble();
                             setState(() {
@@ -585,6 +596,9 @@ class _SquadPageState extends State<SquadPage>
                                       (lastCheckStopwatch.elapsedMilliseconds /
                                           1000);
                                 }
+                                checkIntervals.add(
+                                    lastCheckStopwatch.elapsedMilliseconds ~/
+                                        1000);
                                 Provider.of<CategoryModel>(context,
                                         listen: false)
                                     .update(widget.entryPressure,
@@ -633,7 +647,23 @@ class _SquadPageState extends State<SquadPage>
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 5.0),
                       child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            var edits = await editChecksDialog();
+                            if (edits != null) {
+                              checks.last = edits.last;
+                              if (checks.length == 1) {
+                                Provider.of<CategoryModel>(context,
+                                        listen: false)
+                                    .changeStarting(checks.last, widget.index);
+                              } else {
+                                checks[checks.length - 2] = edits.first;
+                                recalculateTime();
+                              }
+                              setState(() {
+                                widget.entryPressure = checks.last;
+                              });
+                            }
+                          },
                           style: bottomButtonStyle,
                           child: Center(
                             child: Text("EDYTUJ", style: varTextStyle),
@@ -672,6 +702,15 @@ class _SquadPageState extends State<SquadPage>
         ),
       ],
     );
+  }
+
+  void recalculateTime() {
+    var newUsageRate =
+        (checks[checks.length - 2] - checks.last) / checkIntervals.last;
+    setState(() {
+      Provider.of<CategoryModel>(context, listen: false)
+          .update(checks.last, newUsageRate, widget.index);
+    });
   }
 
   Future<int?> checkListDialog(double oxygenValue) => showDialog<int>(
@@ -798,6 +837,157 @@ class _SquadPageState extends State<SquadPage>
               ),
             ),
           ));
+
+  Future<List<double>?> editChecksDialog() => showDialog<List<double>>(
+      context: context,
+      builder: (context) {
+        if (checks.length == 1) {
+          WidgetsBinding.instance.addPostFrameCallback((context) =>
+              lastCheckController.jumpToItem((330 - checks.last) ~/ 10));
+          return Dialog(
+            child: SizedBox(
+              height: 500,
+              width: 600,
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Expanded(
+                        flex: 2,
+                        child: Text(
+                          "Popraw początkową wartość",
+                          style: TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.bold),
+                        )),
+                    Expanded(
+                      flex: 6,
+                      child: ListWheelScrollView.useDelegate(
+                          controller: lastCheckController,
+                          itemExtent: 50,
+                          physics: const FixedExtentScrollPhysics(),
+                          childDelegate: ListWheelChildBuilderDelegate(
+                            childCount: (330 - 60) ~/ 10,
+                            builder: (context, index) =>
+                                Text("${330 - 10 * index}",
+                                    style: const TextStyle(
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold,
+                                    )),
+                          )),
+                    ),
+                    Expanded(
+                        flex: 2,
+                        child: TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop([
+                                (330 - 10 * lastCheckController.selectedItem)
+                                    .toDouble()
+                              ]);
+                            },
+                            child: const Text("Wprowadź")))
+                  ],
+                ),
+              ),
+            ),
+          );
+        } else {
+          WidgetsBinding.instance.addPostFrameCallback((context) =>
+              lastCheckController.jumpToItem((330 - checks.last) ~/ 10));
+          WidgetsBinding.instance.addPostFrameCallback((context) =>
+              secondLastCheckController
+                  .jumpToItem((330 - checks[checks.length - 2]) ~/ 10));
+          return Dialog(
+            child: SizedBox(
+              height: 500,
+              width: 600,
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Expanded(
+                      flex: 2,
+                      child: Row(
+                        children: [
+                          Expanded(
+                              flex: 5,
+                              child: Text(
+                                "Popraw przedostatni pomiar",
+                                style: TextStyle(
+                                    fontSize: 25, fontWeight: FontWeight.bold),
+                              )),
+                          Expanded(
+                              flex: 5,
+                              child: Text(
+                                "Popraw ostatni pomiar",
+                                style: TextStyle(
+                                    fontSize: 25, fontWeight: FontWeight.bold),
+                              )),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 6,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 5,
+                            child: ListWheelScrollView.useDelegate(
+                                controller: secondLastCheckController,
+                                itemExtent: 50,
+                                physics: const FixedExtentScrollPhysics(),
+                                childDelegate: ListWheelChildBuilderDelegate(
+                                  childCount: (330 - 60) ~/ 10,
+                                  builder: (context, index) =>
+                                      Text("${330 - 10 * index}",
+                                          style: const TextStyle(
+                                            fontSize: 25,
+                                            fontWeight: FontWeight.bold,
+                                          )),
+                                )),
+                          ),
+                          Expanded(
+                            flex: 5,
+                            child: ListWheelScrollView.useDelegate(
+                                controller: lastCheckController,
+                                itemExtent: 50,
+                                physics: const FixedExtentScrollPhysics(),
+                                childDelegate: ListWheelChildBuilderDelegate(
+                                  childCount: (330 - 60) ~/ 10,
+                                  builder: (context, index) =>
+                                      Text("${330 - 10 * index}",
+                                          style: const TextStyle(
+                                            fontSize: 25,
+                                            fontWeight: FontWeight.bold,
+                                          )),
+                                )),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                        flex: 2,
+                        child: TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop([
+                                (330 -
+                                        10 *
+                                            secondLastCheckController
+                                                .selectedItem)
+                                    .toDouble(),
+                                (330 - 10 * lastCheckController.selectedItem)
+                                    .toDouble()
+                              ]);
+                            },
+                            child: const Text("Wprowadź")))
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+      });
 }
 
 class LeftTriangle extends CustomClipper<Path> {

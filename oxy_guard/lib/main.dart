@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:oxy_guard/actionList.dart';
-import 'package:oxy_guard/managePage.dart';
-import 'package:oxy_guard/setup_page.dart';
+import 'package:oxy_guard/action_list.dart';
+import 'package:oxy_guard/manage_page.dart';
 
 void main() {
   runApp(const MyApp());

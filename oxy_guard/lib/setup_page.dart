@@ -27,7 +27,8 @@ class _SetupPage2State extends State<SetupPage> {
   var genericButtonStyle = const ButtonStyle(
       backgroundColor: MaterialStatePropertyAll(Colors.grey),
       foregroundColor: MaterialStatePropertyAll(Colors.black),
-      padding: MaterialStatePropertyAll(EdgeInsets.symmetric(vertical: 6.0, horizontal: 6.0)),
+      padding: MaterialStatePropertyAll(
+          EdgeInsets.symmetric(vertical: 6.0, horizontal: 6.0)),
       textStyle: MaterialStatePropertyAll(TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 20,
@@ -118,7 +119,7 @@ class _SetupPage2State extends State<SetupPage> {
                     ElevatedButton(
                         onPressed: () async {
                           var newCheckInterval = await timeDialog();
-                          if (newCheckInterval != null){
+                          if (newCheckInterval != null) {
                             setState(() {
                               checkInterval = newCheckInterval;
                             });
@@ -126,12 +127,17 @@ class _SetupPage2State extends State<SetupPage> {
                         },
                         style: genericButtonStyle,
                         child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                          Text(
-                              "${checkInterval ~/ 60}${checkInterval % 60 == 0 ? "" : ":${checkInterval % 60 < 10 ? "0${checkInterval % 60}" : checkInterval % 60}"}", style: baseTextStyle,),
-                          Text("MIN", style: unitTextStyle,)
-                        ]))
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                "${checkInterval ~/ 60}${checkInterval % 60 == 0 ? "" : ":${checkInterval % 60 < 10 ? "0${checkInterval % 60}" : checkInterval % 60}"}",
+                                style: baseTextStyle,
+                              ),
+                              Text(
+                                "MIN",
+                                style: unitTextStyle,
+                              )
+                            ]))
                   ],
                 ),
               ),
@@ -147,7 +153,7 @@ class _SetupPage2State extends State<SetupPage> {
                     ElevatedButton(
                         onPressed: () async {
                           var newEntryPressure = await pressureDialog();
-                          if (newEntryPressure != null){
+                          if (newEntryPressure != null) {
                             setState(() {
                               entryPressure = newEntryPressure;
                             });
@@ -155,12 +161,17 @@ class _SetupPage2State extends State<SetupPage> {
                         },
                         style: genericButtonStyle,
                         child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                          Text(
-                              entryPressure.toString(), style: baseTextStyle,),
-                          Text("BAR", style: unitTextStyle,)
-                        ]))
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                entryPressure.toString(),
+                                style: baseTextStyle,
+                              ),
+                              Text(
+                                "BAR",
+                                style: unitTextStyle,
+                              )
+                            ]))
                   ],
                 ),
               ),
@@ -176,7 +187,7 @@ class _SetupPage2State extends State<SetupPage> {
                     ElevatedButton(
                         onPressed: () async {
                           var newExitPressure = await pressureDialog();
-                          if (newExitPressure != null){
+                          if (newExitPressure != null) {
                             setState(() {
                               exitPressure = newExitPressure;
                             });
@@ -184,12 +195,17 @@ class _SetupPage2State extends State<SetupPage> {
                         },
                         style: genericButtonStyle,
                         child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                          Text(
-                              exitPressure.toString(), style: baseTextStyle,),
-                          Text("BAR", style: unitTextStyle,)
-                        ]))
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                exitPressure.toString(),
+                                style: baseTextStyle,
+                              ),
+                              Text(
+                                "BAR",
+                                style: unitTextStyle,
+                              )
+                            ]))
                   ],
                 ),
               )
@@ -200,13 +216,23 @@ class _SetupPage2State extends State<SetupPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              //TODO: Ten system z gotowościa bo nie wiem co jest 5
-              onPressed: (){
-                Provider.of<CategoryModel>(context, listen: false).startSquadWork(entryPressure, exitPressure, checkInterval);
-              },
-              style: genericButtonStyle,
-              child: const Center(child: Text("Dodaj rotę"),)
-              )
+                //TODO: Ten system z gotowościa bo nie wiem co jest 5
+                onPressed: () async {
+                  if (Provider.of<CategoryModel>(context, listen: false)
+                          .workingSquads
+                          .length <
+                      3) {
+                    Provider.of<CategoryModel>(context, listen: false)
+                        .startSquadWork(
+                            entryPressure, exitPressure, checkInterval);
+                  } else {
+                    await tooManySquadsDialog();
+                  }
+                },
+                style: genericButtonStyle,
+                child: const Center(
+                  child: Text("Dodaj rotę"),
+                ))
           ],
         )
       ],
@@ -337,4 +363,31 @@ class _SetupPage2State extends State<SetupPage> {
               ),
             ),
           ));
+
+  Future<void> tooManySquadsDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('OSTRZEŻENIE'),
+          content: const SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Center(child: Text('Maksymalnie 3 pracujace roty na raz')),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
