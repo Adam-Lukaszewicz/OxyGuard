@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:oxy_guard/manage_page.dart';
 import 'package:oxy_guard/setup_page.dart';
 import 'package:oxy_guard/waiting_tab.dart';
+import 'package:provider/provider.dart';
 
 class WaitingPage extends StatefulWidget {
   const WaitingPage({super.key});
@@ -37,11 +39,11 @@ class _WaitingPageState extends State<WaitingPage> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    var screenHeight = MediaQuery.of(context).size.height;
+    var screenHeight = Provider.of<CategoryModel>(context, listen: false).screenHeight;
     return Column(
       children: [
         SizedBox(
-          height: screenHeight * 0.13,
+          height: screenHeight * 0.15,
           child: TabBar(
             tabs: [WaitingSquad(text: "R1", index: 0), WaitingSquad(text: "R2", index: 0),WaitingSquad(text: "R3", index: 0),],
             controller: _tabController,
@@ -55,7 +57,7 @@ class _WaitingPageState extends State<WaitingPage> with SingleTickerProviderStat
           ),
         ),
         SizedBox(
-          height: screenHeight * 0.70,
+          height: screenHeight * 0.75,
           child: TabBarView(
               controller: _tabController,
               children: [SetupPage(), SetupPage(), SetupPage(),]),

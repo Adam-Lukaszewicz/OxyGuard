@@ -11,7 +11,7 @@ class SetupPage extends StatefulWidget {
 
 class _SetupPage2State extends State<SetupPage> {
   var baseTextStyle = const TextStyle(
-    fontSize: 28,
+    fontSize: 26,
   );
   var unitTextStyle = const TextStyle(
     fontWeight: FontWeight.bold,
@@ -141,6 +141,7 @@ class _SetupPage2State extends State<SetupPage> {
                   ],
                 ),
               ),
+              //TODO: szerokosc tych rzedow ogarnac layoutbuilderem (po prostu sciagnac szerokosc z widgetinspectora, jesli nie ma dla nich miejsca to zwijać ciśnienie w ciśn. czy coś takiego)
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(

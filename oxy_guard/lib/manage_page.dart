@@ -1,3 +1,4 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:oxy_guard/squad_page.dart';
@@ -22,43 +23,52 @@ class _ManagePageState extends State<ManagePage>
 
   @override
   Widget build(BuildContext context) {
+    var screenHeight = MediaQuery.of(context).size.height - MediaQuery.of(context).viewPadding.vertical;
     return ChangeNotifierProvider(
-      create: (context) => CategoryModel(),
+      create: (context) => CategoryModel(screenHeight: screenHeight),
       builder: (context, child) {
         return MaterialApp(
           home: DefaultTabController(
             length: categories.length,
             child: Scaffold(
-                appBar: AppBar(
-                  toolbarHeight: MediaQuery.of(context).size.height * 0.05,
-                  leading: IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+                appBar: PreferredSize(
+                  preferredSize: Size.fromHeight(screenHeight * 0.1),
+                  child: SafeArea(
+                    child: AppBar(
+                      //toolbarHeight: MediaQuery.of(context).size.height * 0.05,
+                      leading: IconButton(
+                        icon: const Icon(Icons.arrow_back),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      title: const Text("Odcinek bojowy X"),
+                      centerTitle: true,
+                      bottom: PreferredSize(
+                        preferredSize: Size.fromHeight(screenHeight * 0.05),
+                        child: const TabBar(
+                          tabs: categories,
+                        ),
+                      ),
+                      actions: [
+                        const Text("KRG 1"), //TODO: Ekran konfiguracyjny
+                        IconButton(
+                            onPressed: () {},
+                            icon: const Icon(IconData(0xf3e1,
+                                fontFamily: CupertinoIcons.iconFont,
+                                fontPackage: CupertinoIcons.iconFontPackage)),
+                            style: const ButtonStyle(
+                                backgroundColor:
+                                    MaterialStatePropertyAll(Colors.red),
+                                foregroundColor:
+                                    MaterialStatePropertyAll(Colors.white),
+                                shape: MaterialStatePropertyAll(
+                                    RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10))))))
+                      ],
+                    ),
                   ),
-                  title: const Text("Odcinek bojowy X"),
-                  centerTitle: true,
-                  bottom: const TabBar(
-                    tabs: categories,
-                  ),
-                  actions: [
-                    const Text("KRG 1"), //TODO: Ekran konfiguracyjny
-                    IconButton(
-                        onPressed: () {},
-                        icon: const Icon(IconData(0xf3e1,
-                            fontFamily: CupertinoIcons.iconFont,
-                            fontPackage: CupertinoIcons.iconFontPackage)),
-                        style: const ButtonStyle(
-                            backgroundColor:
-                                MaterialStatePropertyAll(Colors.red),
-                            foregroundColor:
-                                MaterialStatePropertyAll(Colors.white),
-                            shape: MaterialStatePropertyAll(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(10))))))
-                  ],
                 ),
                 body: TabBarView(
                   children: [
@@ -87,6 +97,9 @@ class Category extends StatefulWidget {
 }
 
 class CategoryModel extends ChangeNotifier {
+  double screenHeight;
+  CategoryModel({required this.screenHeight});
+
   var oxygenValues = <double>[];
   var remainingTimes = <int>[];
   var usageRates = <double>[];
@@ -155,7 +168,7 @@ class _CategoryState extends State<Category>
 
   @override
   Widget build(BuildContext context) {
-    var screenHeight = MediaQuery.of(context).size.height;
+    var screenHeight = Provider.of<CategoryModel>(context, listen: false).screenHeight;
     return Column(
       children: [
         SizedBox(
@@ -173,7 +186,7 @@ class _CategoryState extends State<Category>
           ),
         ),
         SizedBox(
-          height: screenHeight * 0.70,
+          height: screenHeight * 0.75,
           child: TabBarView(
               controller: _tabController,
               children: Provider.of<CategoryModel>(context, listen: false)
