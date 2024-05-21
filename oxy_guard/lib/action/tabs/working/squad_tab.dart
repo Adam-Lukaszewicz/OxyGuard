@@ -28,7 +28,7 @@ class TabSquad extends StatelessWidget {
                 right: 0,
                 child: Center(
                   child:
-                      Consumer<CategoryModel>(builder: (context, cat, child) {
+                      Consumer<ActionModel>(builder: (context, cat, child) {
                     return Text(
                         '${cat.remainingTimes[index] ~/ 60}:${cat.remainingTimes[index] % 60 < 10 ? "0${cat.remainingTimes[index] % 60}" : "${cat.remainingTimes[index] % 60}"}',
                         style: TextStyle(

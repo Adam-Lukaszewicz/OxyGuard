@@ -85,7 +85,7 @@ class _SquadPageState extends State<SquadPage>
       if (!mounted) return;
       setState(() {
         if (working) {
-          Provider.of<CategoryModel>(context, listen: false)
+          Provider.of<ActionModel>(context, listen: false)
               .advanceTime(widget.index);
         }
       });
@@ -105,7 +105,7 @@ class _SquadPageState extends State<SquadPage>
   //UI
   @override
   Widget build(BuildContext context) {
-    var oxygenValue = Provider.of<CategoryModel>(context, listen: false)
+    var oxygenValue = Provider.of<ActionModel>(context, listen: false)
         .oxygenValues[widget.index];
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
@@ -231,7 +231,7 @@ class _SquadPageState extends State<SquadPage>
                                         child: Center(
                                             child: Row(
                                           children: [
-                                            Consumer<CategoryModel>(
+                                            Consumer<ActionModel>(
                                                 builder: (context, cat, child) {
                                               return Text(
                                                 checks.length >= 2
@@ -599,7 +599,7 @@ class _SquadPageState extends State<SquadPage>
                                 checkIntervals.add(
                                     lastCheckStopwatch.elapsedMilliseconds ~/
                                         1000);
-                                Provider.of<CategoryModel>(context,
+                                Provider.of<ActionModel>(context,
                                         listen: false)
                                     .update(widget.entryPressure,
                                         widget.usageRate, widget.index);
@@ -652,7 +652,7 @@ class _SquadPageState extends State<SquadPage>
                             if (edits != null) {
                               checks.last = edits.last;
                               if (checks.length == 1) {
-                                Provider.of<CategoryModel>(context,
+                                Provider.of<ActionModel>(context,
                                         listen: false)
                                     .changeStarting(checks.last, widget.index);
                               } else {
@@ -708,7 +708,7 @@ class _SquadPageState extends State<SquadPage>
     var newUsageRate =
         (checks[checks.length - 2] - checks.last) / checkIntervals.last;
     setState(() {
-      Provider.of<CategoryModel>(context, listen: false)
+      Provider.of<ActionModel>(context, listen: false)
           .update(checks.last, newUsageRate, widget.index);
     });
   }

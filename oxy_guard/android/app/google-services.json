@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "65493231963",
+    "project_id": "oxyguard-f9e01",
+    "storage_bucket": "oxyguard-f9e01.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:65493231963:android:ca7ca2df87fc755b7dd27e",
+        "android_client_info": {
+          "package_name": "com.example.oxy_guard"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxl7baQenH7oFKaDXrzAaYFDCREni7B9Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -219,11 +219,11 @@ class _SetupPage2State extends State<SetupPage> {
             ElevatedButton(
                 //TODO: Ten system z gotowościa bo nie wiem co jest 5
                 onPressed: () async {
-                  if (Provider.of<CategoryModel>(context, listen: false)
+                  if (Provider.of<ActionModel>(context, listen: false)
                           .workingSquads
                           .length <
                       3) {
-                    Provider.of<CategoryModel>(context, listen: false)
+                    Provider.of<ActionModel>(context, listen: false)
                         .startSquadWork(
                             entryPressure, exitPressure, checkInterval);
                   } else {

@@ -25,7 +25,7 @@ class _ManagePageState extends State<ManagePage>
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height - MediaQuery.of(context).viewPadding.vertical;
     return ChangeNotifierProvider(
-      create: (context) => CategoryModel(screenHeight: screenHeight),
+      create: (context) => ActionModel(screenHeight: screenHeight),
       builder: (context, child) {
         return MaterialApp(
           home: DefaultTabController(
@@ -75,7 +75,7 @@ class _ManagePageState extends State<ManagePage>
                     WaitingPage(),
                     Category(
                       key: ValueKey(
-                          Provider.of<CategoryModel>(context, listen: true)
+                          Provider.of<ActionModel>(context, listen: true)
                               .workingSquads
                               .length),
                     ),
@@ -96,9 +96,9 @@ class Category extends StatefulWidget {
   State<Category> createState() => _CategoryState();
 }
 
-class CategoryModel extends ChangeNotifier {
+class ActionModel extends ChangeNotifier {
   double screenHeight;
-  CategoryModel({required this.screenHeight});
+  ActionModel({required this.screenHeight});
 
   var oxygenValues = <double>[];
   var remainingTimes = <int>[];
@@ -147,7 +147,7 @@ class _CategoryState extends State<Category>
   void initState() {
     super.initState();
     widget.size =
-        Provider.of<CategoryModel>(context, listen: false).workingSquads.length;
+        Provider.of<ActionModel>(context, listen: false).workingSquads.length;
     _tabController = TabController(vsync: this, length: widget.size);
   }
 
@@ -161,20 +161,20 @@ class _CategoryState extends State<Category>
     _tabController.dispose();
     _tabController = TabController(
         vsync: this,
-        length: Provider.of<CategoryModel>(context, listen: false)
+        length: Provider.of<ActionModel>(context, listen: false)
             .workingSquads
             .length);
   }
 
   @override
   Widget build(BuildContext context) {
-    var screenHeight = Provider.of<CategoryModel>(context, listen: false).screenHeight;
+    var screenHeight = Provider.of<ActionModel>(context, listen: false).screenHeight;
     return Column(
       children: [
         SizedBox(
           height: screenHeight * 0.15,
           child: TabBar(
-            tabs: Provider.of<CategoryModel>(context, listen: false).tabs,
+            tabs: Provider.of<ActionModel>(context, listen: false).tabs,
             controller: _tabController,
             indicatorColor: Colors.black,
             indicatorPadding: const EdgeInsets.only(bottom: 10),
@@ -189,7 +189,7 @@ class _CategoryState extends State<Category>
           height: screenHeight * 0.75,
           child: TabBarView(
               controller: _tabController,
-              children: Provider.of<CategoryModel>(context, listen: false)
+              children: Provider.of<ActionModel>(context, listen: false)
                   .workingSquads),
         ),
       ],

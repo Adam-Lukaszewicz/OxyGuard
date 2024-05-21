@@ -39,7 +39,7 @@ class _WaitingPageState extends State<WaitingPage> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    var screenHeight = Provider.of<CategoryModel>(context, listen: false).screenHeight;
+    var screenHeight = Provider.of<ActionModel>(context, listen: false).screenHeight;
     return Column(
       children: [
         SizedBox(
