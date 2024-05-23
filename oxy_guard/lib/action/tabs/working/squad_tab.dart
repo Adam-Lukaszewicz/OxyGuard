@@ -1,15 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:oxy_guard/manage_page.dart';
+import 'package:oxy_guard/action/manage_page.dart';
+import 'package:oxy_guard/main.dart';
 import 'package:provider/provider.dart';
+
+import '../../../models/action_model.dart';
 
 class TabSquad extends StatelessWidget {
   var text = "R";
   final int index;
   TabSquad({super.key, required this.text, required this.index});
+  TabSquad.fromJson(Map<String, Object?> json) : this(
+    text: json["Text"]! as String,
+    index: json["Index"]! as int
+  );
+
+  Map<String, Object?> toJson(){
+    return{
+      "Text": text,
+      "Index": index
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
-    var screenHeight = MediaQuery.of(context).size.height;
+    var screenHeight = MediaQuery.of(NavigationService.navigatorKey.currentContext!).size.height - MediaQuery.of(NavigationService.navigatorKey.currentContext!).viewPadding.vertical;
     return Tab(
       height: screenHeight * 0.1,
       child: Container(

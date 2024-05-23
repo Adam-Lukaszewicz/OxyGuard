@@ -1,40 +1,114 @@
 import 'dart:async';
+import 'dart:convert';
 //import 'dart:html';
 
 import 'package:flutter/material.dart';
-import 'package:oxy_guard/manage_page.dart';
+import 'package:oxy_guard/action/manage_page.dart';
+import 'package:oxy_guard/main.dart';
 import 'package:provider/provider.dart';
 
+import '../../../models/action_model.dart';
+
 class SquadPage extends StatefulWidget {
-  var usageRate = 10.0 / 60.0;
+  double usageRate;
   double entryPressure;
   int exitPressure;
   String text = "R";
-  var returnPressure = 100.0;
-  var plannedReturnPressure = 120.0;
-  var exitTime = 0;
+  double returnPressure;
+  double plannedReturnPressure;
+  int exitTime;
   final int interval;
   final int index;
-  SquadPage(
-      {super.key,
-      required this.interval,
-      required this.index,
-      required this.entryPressure,
-      required this.exitPressure,
-      required this.text});
-
+  List<double> checks;
+  List<int> checkIntervals = <int>[0];
+  bool working = false;
+  SquadPage({
+    super.key,
+    required this.interval,
+    required this.index,
+    required this.entryPressure,
+    required this.exitPressure,
+    required this.text,
+    int ?exitTime,
+    double? usageRate ,
+    double? returnPressure,
+    double? plannedReturnPressure,
+    List<double>? checks,
+    List<int>? checkIntervals
+  }):
+  exitTime = exitTime ?? 0,
+  usageRate = usageRate ?? 10.0 / 60.0,
+  returnPressure = returnPressure ?? 100.0,
+  plannedReturnPressure = plannedReturnPressure ?? 120.0,
+  checks = checks ?? <double>[],
+  checkIntervals = checkIntervals ?? <int>[];
+  SquadPage.fromJson(Map<String, Object?> json)
+      : this(
+            usageRate: json["UsageRate"]! as double,
+            entryPressure: json["EntryPressure"]! as double,
+            exitPressure: json["ExitPressure"]! as int,
+            text: json["Text"]! as String,
+            returnPressure: json["ReturnPressure"]! as double,
+            plannedReturnPressure: json["PlannedReturnPressure"]! as double,
+            exitTime: json["ExitTime"]! as int,
+            interval: json["Interval"]! as int,
+            index: json["Index"]! as int,
+            checks: jsonDecode(json["Checks"]! as String),
+            checkIntervals: jsonDecode(json["CheckIntervals"]! as String),
+            );
   @override
   State<SquadPage> createState() => _SquadPageState();
+
+  SquadPage copyWith({
+    double? usageRate,
+    double? entryPressure,
+    int? exitPressure,
+    String? text,
+    double? returnPressure,
+    double? plannedReturnPressure,
+    int? exitTime,
+    int? interval,
+    int? index,
+    List<double>? checks,
+    List<int>? checkIntervals,
+  }){
+    return SquadPage(
+      usageRate: usageRate ?? this.usageRate,
+      returnPressure: returnPressure ?? this.returnPressure,
+      plannedReturnPressure: plannedReturnPressure ?? this.plannedReturnPressure,
+      exitTime: exitTime ?? this.exitTime,
+      checks: checks ?? this.checks,
+      checkIntervals: checkIntervals ?? this.checkIntervals,
+      interval: interval ?? this.interval,
+      index: index ?? this.index,
+      entryPressure: entryPressure ?? this.entryPressure,
+      exitPressure: exitPressure ?? this.exitPressure,
+      text: text ?? this.text);
+    }
+
+  Map<String, Object?> toJson() {
+    return {
+      "UsageRate": usageRate,
+      "EntryPressure": entryPressure,
+      "ExitPressure": exitPressure,
+      "Text": text,
+      "ReturnPressure": returnPressure,
+      "PlannedReturnPressure": plannedReturnPressure,
+      "ExitTime": exitTime,
+      "Interval": interval,
+      "Index": index,
+      "Checks": jsonEncode(checks),
+      "CheckIntervals": jsonEncode(checkIntervals)
+    };
+  }
 }
 
 class _SquadPageState extends State<SquadPage>
     with AutomaticKeepAliveClientMixin {
+
   //Declarations
-  bool working = false;
   final lastCheckStopwatch = Stopwatch();
   final workStartStopwatch = Stopwatch();
-  var checks = <double>[];
-  var checkIntervals = <int>[0];
   late Timer oneSec;
   late FixedExtentScrollController checkController;
   late FixedExtentScrollController lastCheckController;
@@ -80,11 +154,11 @@ class _SquadPageState extends State<SquadPage>
     exitSecondsController = FixedExtentScrollController();
     lastCheckController = FixedExtentScrollController();
     secondLastCheckController = FixedExtentScrollController();
-    checks.add(widget.entryPressure);
+    widget.checks.add(widget.entryPressure);
     oneSec = Timer.periodic(const Duration(seconds: 1), (Timer t) {
       if (!mounted) return;
       setState(() {
-        if (working) {
+        if (widget.working) {
           Provider.of<ActionModel>(context, listen: false)
               .advanceTime(widget.index);
         }
@@ -108,7 +182,7 @@ class _SquadPageState extends State<SquadPage>
     var oxygenValue = Provider.of<ActionModel>(context, listen: false)
         .oxygenValues[widget.index];
     var screenWidth = MediaQuery.of(context).size.width;
-    var screenHeight = MediaQuery.of(context).size.height;
+    var screenHeight = MediaQuery.of(NavigationService.navigatorKey.currentContext!).size.height - MediaQuery.of(NavigationService.navigatorKey.currentContext!).viewPadding.vertical;
     return Column(
       children: [
         Expanded(
@@ -234,7 +308,7 @@ class _SquadPageState extends State<SquadPage>
                                             Consumer<ActionModel>(
                                                 builder: (context, cat, child) {
                                               return Text(
-                                                checks.length >= 2
+                                                widget.checks.length >= 2
                                                     ? "${cat.remainingTimes[widget.index] ~/ 60}:${cat.remainingTimes[widget.index] % 60 < 10 ? "0${(cat.remainingTimes[widget.index] % 60).toInt()}" : (cat.remainingTimes[widget.index] % 60).toInt()}"
                                                     : "NaN",
                                                 style: varTextStyle.apply(
@@ -243,12 +317,7 @@ class _SquadPageState extends State<SquadPage>
                                                                 Colors.green),
                                                             HSVColor.fromColor(
                                                                 Colors.red),
-                                                            1 -
-                                                                (cat.oxygenValues[
-                                                                            widget.index] -
-                                                                        60) /
-                                                                    270)!
-                                                        .toColor()),
+                                                            1 -(cat.oxygenValues[widget.index] -60)/270)!.toColor()),
                                               );
                                             }),
                                             Text("min",
@@ -548,7 +617,7 @@ class _SquadPageState extends State<SquadPage>
                       child: ElevatedButton(
                           onPressed: () {
                             if (widget.exitTime == 0) {
-                              if (working) {
+                              if (widget.working) {
                                 setState(() {
                                   workStartStopwatch.stop();
                                   widget.exitTime =
@@ -557,12 +626,12 @@ class _SquadPageState extends State<SquadPage>
                                   workStartStopwatch.reset();
                                 });
                               } else {
-                                working = true;
+                                widget.working = true;
                                 workStartStopwatch.start();
                                 lastCheckStopwatch.start();
                               }
                             } else {
-                              working =
+                              widget.working =
                                   false; //TODO: Wycofywanie roty i przesuwanie do zakończonych
                             }
                           },
@@ -570,7 +639,7 @@ class _SquadPageState extends State<SquadPage>
                           child: Center(
                             child: Text(
                               widget.exitTime == 0
-                                  ? working
+                                  ? widget.working
                                       ? "PUNKT PRACY"
                                       : "START PRACY"
                                   : "WYCOFAJ",
@@ -584,26 +653,26 @@ class _SquadPageState extends State<SquadPage>
                           vertical: 8.0, horizontal: 5.0),
                       child: ElevatedButton(
                           onPressed: () async {
-                            final parse = await checkListDialog((oxygenValue~/10) * 10 + 10);
+                            final parse = await checkListDialog(
+                                (oxygenValue ~/ 10) * 10 + 10);
                             if (parse == null) return;
                             final valid = parse.toDouble();
                             setState(() {
                               if (valid < oxygenValue) {
                                 widget.entryPressure = valid;
-                                if (checks.isNotEmpty) {
-                                  widget.usageRate = (checks.last -
+                                if (widget.checks.isNotEmpty) {
+                                  widget.usageRate = (widget.checks.last -
                                           widget.entryPressure) /
                                       (lastCheckStopwatch.elapsedMilliseconds /
                                           1000);
                                 }
-                                checkIntervals.add(
+                                widget.checkIntervals.add(
                                     lastCheckStopwatch.elapsedMilliseconds ~/
                                         1000);
-                                Provider.of<ActionModel>(context,
-                                        listen: false)
+                                Provider.of<ActionModel>(context, listen: false)
                                     .update(widget.entryPressure,
                                         widget.usageRate, widget.index);
-                                checks.add(widget.entryPressure);
+                                widget.checks.add(widget.entryPressure);
                                 lastCheckStopwatch.reset();
                               }
                             });
@@ -650,17 +719,18 @@ class _SquadPageState extends State<SquadPage>
                           onPressed: () async {
                             var edits = await editChecksDialog();
                             if (edits != null) {
-                              checks.last = edits.last;
-                              if (checks.length == 1) {
-                                Provider.of<ActionModel>(context,
-                                        listen: false)
-                                    .changeStarting(checks.last, widget.index);
+                              widget.checks.last = edits.last;
+                              if (widget.checks.length == 1) {
+                                Provider.of<ActionModel>(context, listen: false)
+                                    .changeStarting(
+                                        widget.checks.last, widget.index);
                               } else {
-                                checks[checks.length - 2] = edits.first;
+                                widget.checks[widget.checks.length - 2] =
+                                    edits.first;
                                 recalculateTime();
                               }
                               setState(() {
-                                widget.entryPressure = checks.last;
+                                widget.entryPressure = widget.checks.last;
                               });
                             }
                           },
@@ -706,10 +776,11 @@ class _SquadPageState extends State<SquadPage>
 
   void recalculateTime() {
     var newUsageRate =
-        (checks[checks.length - 2] - checks.last) / checkIntervals.last;
+        (widget.checks[widget.checks.length - 2] - widget.checks.last) /
+            widget.checkIntervals.last;
     setState(() {
       Provider.of<ActionModel>(context, listen: false)
-          .update(checks.last, newUsageRate, widget.index);
+          .update(widget.checks.last, newUsageRate, widget.index);
     });
   }
 
@@ -841,9 +912,9 @@ class _SquadPageState extends State<SquadPage>
   Future<List<double>?> editChecksDialog() => showDialog<List<double>>(
       context: context,
       builder: (context) {
-        if (checks.length == 1) {
+        if (widget.checks.length == 1) {
           WidgetsBinding.instance.addPostFrameCallback((context) =>
-              lastCheckController.jumpToItem((330 - checks.last) ~/ 10));
+              lastCheckController.jumpToItem((330 - widget.checks.last) ~/ 10));
           return Dialog(
             child: SizedBox(
               height: 500,
@@ -893,10 +964,10 @@ class _SquadPageState extends State<SquadPage>
           );
         } else {
           WidgetsBinding.instance.addPostFrameCallback((context) =>
-              lastCheckController.jumpToItem((330 - checks.last) ~/ 10));
+              lastCheckController.jumpToItem((330 - widget.checks.last) ~/ 10));
           WidgetsBinding.instance.addPostFrameCallback((context) =>
-              secondLastCheckController
-                  .jumpToItem((330 - checks[checks.length - 2]) ~/ 10));
+              secondLastCheckController.jumpToItem(
+                  (330 - widget.checks[widget.checks.length - 2]) ~/ 10));
           return Dialog(
             child: SizedBox(
               height: 500,

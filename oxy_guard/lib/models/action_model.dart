@@ -1,18 +1,29 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
-import 'package:oxy_guard/squad_page.dart';
-import 'package:oxy_guard/squad_tab.dart';
+import 'package:flutter/material.dart';
+import 'package:oxy_guard/action/tabs/working/squad_page.dart';
+import 'package:oxy_guard/action/tabs/working/squad_tab.dart';
+import 'package:oxy_guard/main.dart';
 
 class ActionModel extends ChangeNotifier {
-  double screenHeight;//TODO: Usunąć to pole, ta klasa będzie zapisywana w firestorze
-  var oxygenValues = <double>[];
-  var remainingTimes = <int>[];
-  var usageRates = <double>[];
-  var waitingSquads = [];
-  var workingSquads = <SquadPage>[];
-  var finishedSquads = [];
-  var tabs = <TabSquad>[];
-  ActionModel({required this.screenHeight});
-  ActionModel.sync({required this.screenHeight, required this.oxygenValues, required this.remainingTimes, required this.usageRates, required this.waitingSquads, required this.workingSquads, required this.finishedSquads, required this.tabs});
+  List<double> oxygenValues;
+  List<int> remainingTimes;
+  List<double> usageRates;
+  List<Object> waitingSquads;
+  List<SquadPage> workingSquads;
+  List<Object> finishedSquads;
+  List<TabSquad> tabs;
+  ActionModel({List<double>? oxygenValues, List<int>? remainingTimes, List<double>? usageRates, List<Object>? waitingSquads, List<SquadPage>? workingSquads, List<Object>? finishedSquads, List<TabSquad>? tabs}):
+  oxygenValues = oxygenValues ?? <double>[],
+  remainingTimes = remainingTimes ?? <int>[],
+  usageRates = usageRates ?? <double>[],
+  waitingSquads = waitingSquads ?? [],
+  workingSquads = workingSquads ?? <SquadPage>[],
+  finishedSquads = finishedSquads ?? [],
+  tabs = tabs ?? <TabSquad>[]{
+        NavigationService.databaseSevice.addAction(this);
+  }
 
   void update(double newOxygen, double usageRate, int index) {
     oxygenValues[index] = newOxygen;
@@ -31,6 +42,7 @@ class ActionModel extends ChangeNotifier {
     oxygenValues[index] -= usageRates[index];
     if (remainingTimes[index] < 0) remainingTimes[index] = 0;
     notifyListeners();
+    NavigationService.databaseSevice.updateAction(this);
   }
 
   void startSquadWork(int entryPressure, int exitPressure, int interval) {
@@ -43,15 +55,43 @@ class ActionModel extends ChangeNotifier {
   }
   //TODO: Funkcja, która rusza oxygen value z czasem, jeśli tego potrzebujemy
 
-  toJson(){
+  Map<String, Object?> toJson(){
     return{
-      "OxygenValues": oxygenValues,
-      "RemainingTimes": remainingTimes,
-      "UsageRates": usageRates,
-      "WaitingSquads": waitingSquads,
-      "WorkingSquads": workingSquads,
-      "FinishedSquads": finishedSquads,
-      "Tabs": tabs
+      "OxygenValues": jsonEncode(oxygenValues),
+      "RemainingTimes": jsonEncode(remainingTimes),
+      "UsageRates": jsonEncode(usageRates),
+      "WaitingSquads": jsonEncode(waitingSquads),
+      "WorkingSquads": jsonEncode(workingSquads),
+      "FinishedSquads": jsonEncode(finishedSquads),
+      "Tabs": jsonEncode(tabs)
     };
+  }
+  ActionModel.fromJson(Map<String, Object?> json):this(
+    oxygenValues: jsonDecode(json["OxygenValues"]! as String),
+    remainingTimes: jsonDecode(json["RemainingTimes"]! as String),
+    usageRates: jsonDecode(json["UsageRates"]! as String),
+    waitingSquads: jsonDecode(json["WaitingSquads"]! as String),
+    workingSquads: jsonDecode(json["WorkingSquads"]! as String),
+    finishedSquads: jsonDecode(json["FinishedSquads"]! as String),
+    tabs: jsonDecode(json["Tabs"]! as String)
+  );
+
+  ActionModel copyWith({
+    List<double>? oxygenValues,
+    List<int>? remainingTimes,
+    List<double>? usageRates,
+    List<Object>? waitingSquads,
+    List<SquadPage>? workingSquads,
+    List<Object>? finishedSquads,
+    List<TabSquad>? tabs}){
+    return ActionModel(
+      oxygenValues: oxygenValues ?? this.oxygenValues,
+      remainingTimes: remainingTimes ?? this.remainingTimes,
+      usageRates: usageRates ?? this.usageRates,
+      waitingSquads: waitingSquads ?? this.waitingSquads,
+      workingSquads: workingSquads ?? this.workingSquads,
+      finishedSquads: finishedSquads ?? this.finishedSquads,
+      tabs: tabs ?? this.tabs
+    );
   }
 }

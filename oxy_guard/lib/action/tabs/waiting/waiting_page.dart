@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:oxy_guard/manage_page.dart';
-import 'package:oxy_guard/setup_page.dart';
-import 'package:oxy_guard/waiting_tab.dart';
+import 'package:oxy_guard/action/manage_page.dart';
+import 'package:oxy_guard/action/tabs/waiting/setup_page.dart';
+import 'package:oxy_guard/action/tabs/waiting/waiting_tab.dart';
+import 'package:oxy_guard/main.dart';
 import 'package:provider/provider.dart';
+
+import '../../../models/action_model.dart';
 
 class WaitingPage extends StatefulWidget {
   const WaitingPage({super.key});
@@ -39,7 +42,7 @@ class _WaitingPageState extends State<WaitingPage> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    var screenHeight = Provider.of<ActionModel>(context, listen: false).screenHeight;
+    var screenHeight = MediaQuery.of(NavigationService.navigatorKey.currentContext!).size.height - MediaQuery.of(NavigationService.navigatorKey.currentContext!).viewPadding.vertical;
     return Column(
       children: [
         SizedBox(

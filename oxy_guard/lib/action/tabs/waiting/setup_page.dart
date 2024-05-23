@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:oxy_guard/manage_page.dart';
+import 'package:oxy_guard/action/manage_page.dart';
 import 'package:provider/provider.dart';
+
+import '../../../models/action_model.dart';
 
 class SetupPage extends StatefulWidget {
   const SetupPage({super.key});

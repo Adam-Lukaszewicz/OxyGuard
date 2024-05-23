@@ -1,8 +1,25 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:oxy_guard/action_list.dart';
-import 'package:oxy_guard/manage_page.dart';
+import 'package:oxy_guard/action/manage_page.dart';
+import 'package:oxy_guard/firebase_options.dart';
+import 'package:oxy_guard/services/database_service.dart';
 
-void main() {
+
+class NavigationService { 
+  static GlobalKey<NavigatorState> navigatorKey = 
+  GlobalKey<NavigatorState>();
+  static DatabaseSevice databaseSevice = DatabaseSevice();
+}
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform
+  );
+  FirebaseFirestore.instance.settings = const Settings(
+    persistenceEnabled: true,
+  );
   runApp(const MyApp());
 }
 
@@ -12,6 +29,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: NavigationService.navigatorKey,
       title: 'OxyGuard',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
