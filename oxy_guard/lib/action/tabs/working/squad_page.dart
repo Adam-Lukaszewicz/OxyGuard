@@ -20,42 +20,41 @@ class SquadPage extends StatefulWidget {
   final int interval;
   final int index;
   List<double> checks;
-  List<int> checkIntervals = <int>[0];
+  List<DateTime> checkTimes;
   bool working = false;
-  SquadPage({
-    super.key,
-    required this.interval,
-    required this.index,
-    required this.entryPressure,
-    required this.exitPressure,
-    required this.text,
-    int ?exitTime,
-    double? usageRate ,
-    double? returnPressure,
-    double? plannedReturnPressure,
-    List<double>? checks,
-    List<int>? checkIntervals
-  }):
-  exitTime = exitTime ?? 0,
-  usageRate = usageRate ?? 10.0 / 60.0,
-  returnPressure = returnPressure ?? 100.0,
-  plannedReturnPressure = plannedReturnPressure ?? 120.0,
-  checks = checks ?? <double>[],
-  checkIntervals = checkIntervals ?? <int>[];
+  SquadPage(
+      {super.key,
+      required this.interval,
+      required this.index,
+      required this.entryPressure,
+      required this.exitPressure,
+      required this.text,
+      int? exitTime,
+      double? usageRate,
+      double? returnPressure,
+      double? plannedReturnPressure,
+      List<double>? checks,
+      List<DateTime>? checkTimes})
+      : exitTime = exitTime ?? 0,
+        usageRate = usageRate ?? 10.0 / 60.0,
+        returnPressure = returnPressure ?? 100.0,
+        plannedReturnPressure = plannedReturnPressure ?? 120.0,
+        checks = checks ?? <double>[],
+        checkTimes = checkTimes ?? <DateTime>[];
   SquadPage.fromJson(Map<String, Object?> json)
       : this(
-            usageRate: json["UsageRate"]! as double,
-            entryPressure: json["EntryPressure"]! as double,
-            exitPressure: json["ExitPressure"]! as int,
-            text: json["Text"]! as String,
-            returnPressure: json["ReturnPressure"]! as double,
-            plannedReturnPressure: json["PlannedReturnPressure"]! as double,
-            exitTime: json["ExitTime"]! as int,
-            interval: json["Interval"]! as int,
-            index: json["Index"]! as int,
-            checks: jsonDecode(json["Checks"]! as String),
-            checkIntervals: jsonDecode(json["CheckIntervals"]! as String),
-            );
+          usageRate: json["UsageRate"]! as double,
+          entryPressure: json["EntryPressure"]! as double,
+          exitPressure: json["ExitPressure"]! as int,
+          text: json["Text"]! as String,
+          returnPressure: json["ReturnPressure"]! as double,
+          plannedReturnPressure: json["PlannedReturnPressure"]! as double,
+          exitTime: json["ExitTime"]! as int,
+          interval: json["Interval"]! as int,
+          index: json["Index"]! as int,
+          checks: jsonDecode(json["Checks"]! as String),
+          checkTimes: jsonDecode(json["CheckTimes"]! as String),
+        );
   @override
   State<SquadPage> createState() => _SquadPageState();
 
@@ -70,21 +69,22 @@ class SquadPage extends StatefulWidget {
     int? interval,
     int? index,
     List<double>? checks,
-    List<int>? checkIntervals,
-  }){
+    List<DateTime>? checkTimes,
+  }) {
     return SquadPage(
-      usageRate: usageRate ?? this.usageRate,
-      returnPressure: returnPressure ?? this.returnPressure,
-      plannedReturnPressure: plannedReturnPressure ?? this.plannedReturnPressure,
-      exitTime: exitTime ?? this.exitTime,
-      checks: checks ?? this.checks,
-      checkIntervals: checkIntervals ?? this.checkIntervals,
-      interval: interval ?? this.interval,
-      index: index ?? this.index,
-      entryPressure: entryPressure ?? this.entryPressure,
-      exitPressure: exitPressure ?? this.exitPressure,
-      text: text ?? this.text);
-    }
+        usageRate: usageRate ?? this.usageRate,
+        returnPressure: returnPressure ?? this.returnPressure,
+        plannedReturnPressure:
+            plannedReturnPressure ?? this.plannedReturnPressure,
+        exitTime: exitTime ?? this.exitTime,
+        checks: checks ?? this.checks,
+        checkTimes: checkTimes ?? this.checkTimes,
+        interval: interval ?? this.interval,
+        index: index ?? this.index,
+        entryPressure: entryPressure ?? this.entryPressure,
+        exitPressure: exitPressure ?? this.exitPressure,
+        text: text ?? this.text);
+  }
 
   Map<String, Object?> toJson() {
     return {
@@ -98,14 +98,18 @@ class SquadPage extends StatefulWidget {
       "Interval": interval,
       "Index": index,
       "Checks": jsonEncode(checks),
-      "CheckIntervals": jsonEncode(checkIntervals)
+      "CheckTimes": jsonEncode(
+        checkTimes,
+        toEncodable: (nonEncodable) => nonEncodable is DateTime
+            ? nonEncodable.toIso8601String()
+            : throw UnsupportedError('Cannot convert to JSON: $nonEncodable'),
+      )
     };
   }
 }
 
 class _SquadPageState extends State<SquadPage>
     with AutomaticKeepAliveClientMixin {
-
   //Declarations
   final lastCheckStopwatch = Stopwatch();
   final workStartStopwatch = Stopwatch();
@@ -182,7 +186,13 @@ class _SquadPageState extends State<SquadPage>
     var oxygenValue = Provider.of<ActionModel>(context, listen: false)
         .oxygenValues[widget.index];
     var screenWidth = MediaQuery.of(context).size.width;
-    var screenHeight = MediaQuery.of(NavigationService.navigatorKey.currentContext!).size.height - MediaQuery.of(NavigationService.navigatorKey.currentContext!).viewPadding.vertical;
+    var screenHeight =
+        MediaQuery.of(NavigationService.navigatorKey.currentContext!)
+                .size
+                .height -
+            MediaQuery.of(NavigationService.navigatorKey.currentContext!)
+                .viewPadding
+                .vertical;
     return Column(
       children: [
         Expanded(
@@ -301,40 +311,49 @@ class _SquadPageState extends State<SquadPage>
                                         ), //TODO: Rozszerzanie zależnie od szerokości kontenera
                                       ),
                                       Expanded(
-                                        flex: 3,
-                                        child: Center(
-                                            child: Row(
-                                          children: [
-                                            Consumer<ActionModel>(
+                                          flex: 3,
+                                          child: Center(
+                                            child: Consumer<ActionModel>(
                                                 builder: (context, cat, child) {
-                                              return Text(
-                                                widget.checks.length >= 2
-                                                    ? "${cat.remainingTimes[widget.index] ~/ 60}:${cat.remainingTimes[widget.index] % 60 < 10 ? "0${(cat.remainingTimes[widget.index] % 60).toInt()}" : (cat.remainingTimes[widget.index] % 60).toInt()}"
-                                                    : "NaN",
-                                                style: varTextStyle.apply(
-                                                    color: HSVColor.lerp(
-                                                            HSVColor.fromColor(
-                                                                Colors.green),
-                                                            HSVColor.fromColor(
-                                                                Colors.red),
-                                                            1 -(cat.oxygenValues[widget.index] -60)/270)!.toColor()),
+                                              return Row(
+                                                children: [
+                                                  Text(
+                                                    widget.checks.length >= 2
+                                                        ? "${cat.getTimeRemaining(widget.index) ~/ 60}:${cat.getTimeRemaining(widget.index) % 60 < 10 ? "0${(cat.getTimeRemaining(widget.index) % 60).toInt()}" : (cat.getTimeRemaining(widget.index) % 60).toInt()}"
+                                                        : "NaN",
+                                                    style: varTextStyle.apply(
+                                                        color: HSVColor.lerp(
+                                                                HSVColor.fromColor(
+                                                                    Colors
+                                                                        .green),
+                                                                HSVColor
+                                                                    .fromColor(
+                                                                        Colors
+                                                                            .red),
+                                                                1 -
+                                                                    (cat.getOxygenRemaining(widget.index) -
+                                                                            60) /
+                                                                        270)!
+                                                            .toColor()),
+                                                  ),
+                                                  Text("min",
+                                                      style: unitTextStyle.apply(
+                                                          color: HSVColor.lerp(
+                                                                  HSVColor.fromColor(
+                                                                      Colors
+                                                                          .green),
+                                                                  HSVColor.fromColor(
+                                                                      Colors
+                                                                          .red),
+                                                                  1 -
+                                                                      (cat.getOxygenRemaining(widget.index) -
+                                                                              60) /
+                                                                          270)!
+                                                              .toColor()))
+                                                ],
                                               );
                                             }),
-                                            Text("min",
-                                                style: unitTextStyle.apply(
-                                                    color: HSVColor.lerp(
-                                                            HSVColor.fromColor(
-                                                                Colors.green),
-                                                            HSVColor.fromColor(
-                                                                Colors.red),
-                                                            1 -
-                                                                (oxygenValue -
-                                                                        60) /
-                                                                    270)!
-                                                        .toColor()))
-                                          ],
-                                        )),
-                                      ),
+                                          )),
                                     ],
                                   ),
                                 ),
@@ -549,26 +568,30 @@ class _SquadPageState extends State<SquadPage>
                                           fontWeight: FontWeight.bold)),
                                 ),
                               ),
-                              Positioned(
-                                top: 20 +
-                                    ((constraints.maxHeight - 40) / 270) *
-                                        (330 - oxygenValue),
-                                left: 1,
-                                right: 1,
-                                child: Container(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 6),
-                                    decoration: const BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(20)),
-                                    ),
-                                    child: Align(
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          oxygenValue.toInt().toString(),
-                                          style: varTextStyle,
-                                        ))),
+                              Consumer<ActionModel>(
+                                builder: (context, cat, child) {
+                                  return Positioned(
+                                    top: 20 +
+                                        ((constraints.maxHeight - 40) / 270) *
+                                            (330 - cat.getOxygenRemaining(widget.index)),
+                                    left: 1,
+                                    right: 1,
+                                    child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 6),
+                                        decoration: const BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20)),
+                                        ),
+                                        child: Align(
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              cat.getOxygenRemaining(widget.index).toInt().toString(),
+                                              style: varTextStyle,
+                                            ))),
+                                  );
+                                },
                               ),
                               Positioned(
                                   top: 20 +
@@ -629,6 +652,7 @@ class _SquadPageState extends State<SquadPage>
                                 widget.working = true;
                                 workStartStopwatch.start();
                                 lastCheckStopwatch.start();
+                                widget.checkTimes.add(DateTime.now());
                               }
                             } else {
                               widget.working =
@@ -660,18 +684,21 @@ class _SquadPageState extends State<SquadPage>
                             setState(() {
                               if (valid < oxygenValue) {
                                 widget.entryPressure = valid;
+                                DateTime timestamp = DateTime.now();
                                 if (widget.checks.isNotEmpty) {
                                   widget.usageRate = (widget.checks.last -
                                           widget.entryPressure) /
-                                      (lastCheckStopwatch.elapsedMilliseconds /
-                                          1000);
+                                      (timestamp
+                                          .difference(widget.checkTimes.last)
+                                          .inSeconds);
                                 }
-                                widget.checkIntervals.add(
-                                    lastCheckStopwatch.elapsedMilliseconds ~/
-                                        1000);
                                 Provider.of<ActionModel>(context, listen: false)
-                                    .update(widget.entryPressure,
-                                        widget.usageRate, widget.index);
+                                    .update(
+                                        widget.entryPressure,
+                                        widget.usageRate,
+                                        timestamp,
+                                        widget.index);
+                                widget.checkTimes.add(timestamp);
                                 widget.checks.add(widget.entryPressure);
                                 lastCheckStopwatch.reset();
                               }
@@ -777,10 +804,15 @@ class _SquadPageState extends State<SquadPage>
   void recalculateTime() {
     var newUsageRate =
         (widget.checks[widget.checks.length - 2] - widget.checks.last) /
-            widget.checkIntervals.last;
+            (widget.checkTimes.last
+                .difference(widget.checkTimes[widget.checkTimes.length - 2])
+                .inSeconds);
     setState(() {
-      Provider.of<ActionModel>(context, listen: false)
-          .update(widget.checks.last, newUsageRate, widget.index);
+      Provider.of<ActionModel>(context, listen: false).update(
+          widget.checks.last,
+          newUsageRate,
+          widget.checkTimes.last,
+          widget.index);
     });
   }
 

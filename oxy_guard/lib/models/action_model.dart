@@ -5,18 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:oxy_guard/action/tabs/working/squad_page.dart';
 import 'package:oxy_guard/action/tabs/working/squad_tab.dart';
 import 'package:oxy_guard/main.dart';
+import 'package:oxy_guard/services/database_service.dart';
 
 class ActionModel extends ChangeNotifier {
   List<double> oxygenValues;
-  List<int> remainingTimes;
+  List<DateTime> newestCheckTimes;
   List<double> usageRates;
   List<Object> waitingSquads;
   List<SquadPage> workingSquads;
   List<Object> finishedSquads;
   List<TabSquad> tabs;
-  ActionModel({List<double>? oxygenValues, List<int>? remainingTimes, List<double>? usageRates, List<Object>? waitingSquads, List<SquadPage>? workingSquads, List<Object>? finishedSquads, List<TabSquad>? tabs}):
+  ActionModel({List<double>? oxygenValues, List<DateTime>? newestCheckTimes, List<double>? usageRates, List<Object>? waitingSquads, List<SquadPage>? workingSquads, List<Object>? finishedSquads, List<TabSquad>? tabs}):
   oxygenValues = oxygenValues ?? <double>[],
-  remainingTimes = remainingTimes ?? <int>[],
+  newestCheckTimes = newestCheckTimes ?? <DateTime>[],
   usageRates = usageRates ?? <double>[],
   waitingSquads = waitingSquads ?? [],
   workingSquads = workingSquads ?? <SquadPage>[],
@@ -25,40 +26,52 @@ class ActionModel extends ChangeNotifier {
         NavigationService.databaseSevice.addAction(this);
   }
 
-  void update(double newOxygen, double usageRate, int index) {
+  double getOxygenRemaining(int index){
+    return oxygenValues[index] - (usageRates[index] * DateTime.now().difference(newestCheckTimes[index]).inSeconds);
+  }
+
+  int getTimeRemaining(int index){
+    int remainingTime = (getOxygenRemaining(index) - 60.0) ~/ usageRates[index];
+    if(remainingTime > 0){
+      return remainingTime;
+    }else{
+      return 0;
+    }
+  }
+
+  void update(double newOxygen, double usageRate, DateTime newTime, int index) {
     oxygenValues[index] = newOxygen;
     usageRates[index] = usageRate;
-    remainingTimes[index] = (oxygenValues[index] - 60) ~/ usageRate;
+    newestCheckTimes[index] = newTime;
     notifyListeners();
+    NavigationService.databaseSevice.updateAction(this);
   }
 
   void changeStarting(double newOxygen, int index){
     oxygenValues[index] = newOxygen;
     notifyListeners();
+    NavigationService.databaseSevice.updateAction(this);
   }
 
   void advanceTime(int index) {
-    remainingTimes[index]--;
-    oxygenValues[index] -= usageRates[index];
-    if (remainingTimes[index] < 0) remainingTimes[index] = 0;
     notifyListeners();
-    NavigationService.databaseSevice.updateAction(this);
   }
 
   void startSquadWork(int entryPressure, int exitPressure, int interval) {
     oxygenValues.add(entryPressure.toDouble());
-    usageRates.add(0.0);
-    remainingTimes.add(entryPressure~/2); //TODO: Ustalić, czy i jeśli tak to jaki wpisujemy czas na start (aktualnie pesymistyczne założenie, ale możemy np. NaN czy coś)
+    usageRates.add(10.0/60.0);
+    newestCheckTimes.add(DateTime.now());
     workingSquads.add(SquadPage(interval: interval, index: oxygenValues.length-1, entryPressure: entryPressure.toDouble(), exitPressure: exitPressure, text: "R${workingSquads.length+1}"));
     tabs.add(TabSquad(text: "R${workingSquads.length}", index: oxygenValues.length-1));
     notifyListeners();
+    NavigationService.databaseSevice.updateAction(this);
   }
   //TODO: Funkcja, która rusza oxygen value z czasem, jeśli tego potrzebujemy
 
   Map<String, Object?> toJson(){
     return{
       "OxygenValues": jsonEncode(oxygenValues),
-      "RemainingTimes": jsonEncode(remainingTimes),
+      "NewestCheckTimes": jsonEncode(newestCheckTimes, toEncodable: (nonEncodable) => nonEncodable is DateTime ? nonEncodable.toIso8601String() : throw UnsupportedError('Cannot convert to JSON: $nonEncodable'),),
       "UsageRates": jsonEncode(usageRates),
       "WaitingSquads": jsonEncode(waitingSquads),
       "WorkingSquads": jsonEncode(workingSquads),
@@ -68,7 +81,7 @@ class ActionModel extends ChangeNotifier {
   }
   ActionModel.fromJson(Map<String, Object?> json):this(
     oxygenValues: jsonDecode(json["OxygenValues"]! as String),
-    remainingTimes: jsonDecode(json["RemainingTimes"]! as String),
+    newestCheckTimes: jsonDecode(json["NewestCheckTimes"]! as String),
     usageRates: jsonDecode(json["UsageRates"]! as String),
     waitingSquads: jsonDecode(json["WaitingSquads"]! as String),
     workingSquads: jsonDecode(json["WorkingSquads"]! as String),
@@ -78,7 +91,6 @@ class ActionModel extends ChangeNotifier {
 
   ActionModel copyWith({
     List<double>? oxygenValues,
-    List<int>? remainingTimes,
     List<double>? usageRates,
     List<Object>? waitingSquads,
     List<SquadPage>? workingSquads,
@@ -86,7 +98,6 @@ class ActionModel extends ChangeNotifier {
     List<TabSquad>? tabs}){
     return ActionModel(
       oxygenValues: oxygenValues ?? this.oxygenValues,
-      remainingTimes: remainingTimes ?? this.remainingTimes,
       usageRates: usageRates ?? this.usageRates,
       waitingSquads: waitingSquads ?? this.waitingSquads,
       workingSquads: workingSquads ?? this.workingSquads,

@@ -44,12 +44,12 @@ class TabSquad extends StatelessWidget {
                   child:
                       Consumer<ActionModel>(builder: (context, cat, child) {
                     return Text(
-                        '${cat.remainingTimes[index] ~/ 60}:${cat.remainingTimes[index] % 60 < 10 ? "0${cat.remainingTimes[index] % 60}" : "${cat.remainingTimes[index] % 60}"}',
+                        '${cat.getTimeRemaining(index) ~/ 60}:${cat.getTimeRemaining(index) % 60 < 10 ? "0${cat.getTimeRemaining(index) % 60}" : "${cat.getTimeRemaining(index) % 60}"}',
                         style: TextStyle(
                           color: HSVColor.lerp(
                                   HSVColor.fromColor(Colors.green),
                                   HSVColor.fromColor(Colors.red),
-                                  1 - (cat.oxygenValues[index] - 60) / 270)!
+                                  1 - (cat.getOxygenRemaining(index) - 60) / 270)!
                               .toColor(),
                           fontSize: 30,
                         ));
