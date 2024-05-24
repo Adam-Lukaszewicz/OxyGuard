@@ -68,7 +68,7 @@ class ActionModel extends ChangeNotifier {
   }
   //TODO: Funkcja, która rusza oxygen value z czasem, jeśli tego potrzebujemy
 
-  Map<String, Object?> toJson(){
+  Map<String, dynamic> toJson(){
     return{
       "OxygenValues": jsonEncode(oxygenValues),
       "NewestCheckTimes": jsonEncode(newestCheckTimes, toEncodable: (nonEncodable) => nonEncodable is DateTime ? nonEncodable.toIso8601String() : throw UnsupportedError('Cannot convert to JSON: $nonEncodable'),),
@@ -79,14 +79,14 @@ class ActionModel extends ChangeNotifier {
       "Tabs": jsonEncode(tabs)
     };
   }
-  ActionModel.fromJson(Map<String, Object?> json):this(
-    oxygenValues: jsonDecode(json["OxygenValues"]! as String),
-    newestCheckTimes: jsonDecode(json["NewestCheckTimes"]! as String),
-    usageRates: jsonDecode(json["UsageRates"]! as String),
-    waitingSquads: jsonDecode(json["WaitingSquads"]! as String),
-    workingSquads: jsonDecode(json["WorkingSquads"]! as String),
-    finishedSquads: jsonDecode(json["FinishedSquads"]! as String),
-    tabs: jsonDecode(json["Tabs"]! as String)
+  ActionModel.fromJson(Map<String, dynamic> json):this(
+    oxygenValues: List<double>.from(jsonDecode(json["OxygenValues"]!)),
+    newestCheckTimes: (jsonDecode(json["NewestCheckTimes"]!) as List).map((date) => DateTime.parse(date)).toList(),
+    usageRates: List<double>.from(jsonDecode(json["UsageRates"]!)),
+    waitingSquads: List<Object>.from(jsonDecode(json["WaitingSquads"]!)),
+    workingSquads: (jsonDecode(json["WorkingSquads"]!) as List).map((squad) => SquadPage.fromJson(squad)).toList(),
+    finishedSquads: List<Object>.from(jsonDecode(json["FinishedSquads"]!)),
+    tabs: (jsonDecode(json["Tabs"]!) as List).map((tab) => TabSquad.fromJson(tab)).toList()
   );
 
   ActionModel copyWith({

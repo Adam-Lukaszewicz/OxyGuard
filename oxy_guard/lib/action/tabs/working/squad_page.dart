@@ -41,7 +41,7 @@ class SquadPage extends StatefulWidget {
         plannedReturnPressure = plannedReturnPressure ?? 120.0,
         checks = checks ?? <double>[],
         checkTimes = checkTimes ?? <DateTime>[];
-  SquadPage.fromJson(Map<String, Object?> json)
+  SquadPage.fromJson(Map<String, dynamic> json)
       : this(
           usageRate: json["UsageRate"]! as double,
           entryPressure: json["EntryPressure"]! as double,
@@ -52,8 +52,8 @@ class SquadPage extends StatefulWidget {
           exitTime: json["ExitTime"]! as int,
           interval: json["Interval"]! as int,
           index: json["Index"]! as int,
-          checks: jsonDecode(json["Checks"]! as String),
-          checkTimes: jsonDecode(json["CheckTimes"]! as String),
+          checks: List<double>.from(jsonDecode(json["Checks"]!)),
+          checkTimes: (jsonDecode(json["CheckTimes"]!) as List).map((time) => DateTime.parse(time)).toList(),
         );
   @override
   State<SquadPage> createState() => _SquadPageState();
@@ -86,7 +86,7 @@ class SquadPage extends StatefulWidget {
         text: text ?? this.text);
   }
 
-  Map<String, Object?> toJson() {
+  Map<String, dynamic> toJson() {
     return {
       "UsageRate": usageRate,
       "EntryPressure": entryPressure,

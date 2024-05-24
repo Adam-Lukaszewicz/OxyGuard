@@ -12,7 +12,7 @@ class DatabaseSevice{
     _actionsRef = _firestore.collection(TODO_COLLECTION_REF).withConverter<ActionModel>(fromFirestore: (snapshots, _) => ActionModel.fromJson(snapshots.data()!), toFirestore: (actionModel, _) => actionModel.toJson());
   }
 
-  Stream<QuerySnapshot> getActions(){
+  Stream<QuerySnapshot> getActions() {
     return _actionsRef.snapshots();
   }
 
