@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:oxy_guard/action/tabs/working/squad_page.dart';
 import 'package:oxy_guard/action/tabs/working/squad_tab.dart';
 import 'package:oxy_guard/main.dart';
@@ -22,7 +23,7 @@ class ActionModel extends ChangeNotifier {
   waitingSquads = waitingSquads ?? [],
   workingSquads = workingSquads ?? <SquadPage>[],
   finishedSquads = finishedSquads ?? [],
-  tabs = tabs ?? <TabSquad>[]{
+  tabs = tabs ?? <TabSquad>[] {
         NavigationService.databaseSevice.addAction(this);
   }
 
