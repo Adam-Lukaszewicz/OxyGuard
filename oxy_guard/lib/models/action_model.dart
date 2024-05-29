@@ -33,10 +33,10 @@ class ActionModel extends ChangeNotifier {
   }
 
   double getOxygenRemaining(int index){
-    if(oxygenValues[index.toString()] != null){
+    if(workingSquads[index.toString()]!.working){
     return oxygenValues[index.toString()]! - (usageRates[index.toString()]! * DateTime.now().difference(newestCheckTimes[index.toString()]!).inSeconds);
     }else{
-      return -1;
+      return oxygenValues[index.toString()]!;
     }
   }
 
