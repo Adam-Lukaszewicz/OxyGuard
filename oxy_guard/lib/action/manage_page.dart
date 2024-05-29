@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:oxy_guard/action/tabs/working/squad_page.dart';
@@ -10,7 +9,8 @@ import 'package:provider/provider.dart';
 import '../models/action_model.dart';
 
 class ManagePage extends StatefulWidget {
-  const ManagePage({super.key});
+  dynamic chosenAction;
+  ManagePage({super.key, dynamic? chosenAction}) : chosenAction = chosenAction;
 
   @override
   State<ManagePage> createState() => _ManagePageState();
@@ -26,9 +26,19 @@ class _ManagePageState extends State<ManagePage>
 
   @override
   Widget build(BuildContext context) {
-    var screenHeight = MediaQuery.of(context).size.height - MediaQuery.of(context).viewPadding.vertical;
+    var screenHeight = MediaQuery.of(context).size.height -
+        MediaQuery.of(context).viewPadding.vertical;
     return ChangeNotifierProvider(
-      create: (context) => ActionModel(),
+      create: (context) {
+        ActionModel newActionModel;
+        if (widget.chosenAction == null) {
+          newActionModel = ActionModel();
+          NavigationService.databaseSevice.addAction(newActionModel);
+        } else {
+          newActionModel = widget.chosenAction;
+        }
+        return newActionModel;
+      },
       builder: (context, child) {
         return MaterialApp(
           home: DefaultTabController(
@@ -130,7 +140,14 @@ class _CategoryState extends State<Category>
 
   @override
   Widget build(BuildContext context) {
-    var screenHeight = MediaQuery.of(NavigationService.navigatorKey.currentContext!).size.height - MediaQuery.of(NavigationService.navigatorKey.currentContext!).viewPadding.vertical;;
+    var screenHeight =
+        MediaQuery.of(NavigationService.navigatorKey.currentContext!)
+                .size
+                .height -
+            MediaQuery.of(NavigationService.navigatorKey.currentContext!)
+                .viewPadding
+                .vertical;
+    Provider.of<ActionModel>(context, listen: false).setActionLocation();
     return Column(
       children: [
         SizedBox(

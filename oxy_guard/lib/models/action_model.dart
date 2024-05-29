@@ -16,15 +16,21 @@ class ActionModel extends ChangeNotifier {
   List<SquadPage> workingSquads;
   List<Object> finishedSquads;
   List<TabSquad> tabs;
-  ActionModel({List<double>? oxygenValues, List<DateTime>? newestCheckTimes, List<double>? usageRates, List<Object>? waitingSquads, List<SquadPage>? workingSquads, List<Object>? finishedSquads, List<TabSquad>? tabs}):
+  late Position actionLocation;
+  ActionModel({List<double>? oxygenValues, List<DateTime>? newestCheckTimes, List<double>? usageRates, List<Object>? waitingSquads, List<SquadPage>? workingSquads, List<Object>? finishedSquads, List<TabSquad>? tabs, Position? actionLocation}):
   oxygenValues = oxygenValues ?? <double>[],
   newestCheckTimes = newestCheckTimes ?? <DateTime>[],
   usageRates = usageRates ?? <double>[],
   waitingSquads = waitingSquads ?? [],
   workingSquads = workingSquads ?? <SquadPage>[],
   finishedSquads = finishedSquads ?? [],
-  tabs = tabs ?? <TabSquad>[] {
-        NavigationService.databaseSevice.addAction(this);
+  tabs = tabs ?? <TabSquad>[],
+  actionLocation = actionLocation ?? Position(longitude: 0, latitude: 0, timestamp: DateTime.now(), accuracy: 0, altitude: 0, altitudeAccuracy: 0, heading: 0, headingAccuracy: 0, speed: 0, speedAccuracy: 0) {
+  }
+
+  void setActionLocation() async {
+    actionLocation = await Geolocator.getCurrentPosition();
+    NavigationService.databaseSevice.updateAction(this);
   }
 
   double getOxygenRemaining(int index){
@@ -77,7 +83,8 @@ class ActionModel extends ChangeNotifier {
       "WaitingSquads": jsonEncode(waitingSquads),
       "WorkingSquads": jsonEncode(workingSquads),
       "FinishedSquads": jsonEncode(finishedSquads),
-      "Tabs": jsonEncode(tabs)
+      "Tabs": jsonEncode(tabs),
+      "Location": jsonEncode(actionLocation)
     };
   }
   ActionModel.fromJson(Map<String, dynamic> json):this(
@@ -87,7 +94,8 @@ class ActionModel extends ChangeNotifier {
     waitingSquads: List<Object>.from(jsonDecode(json["WaitingSquads"]!)),
     workingSquads: (jsonDecode(json["WorkingSquads"]!) as List).map((squad) => SquadPage.fromJson(squad)).toList(),
     finishedSquads: List<Object>.from(jsonDecode(json["FinishedSquads"]!)),
-    tabs: (jsonDecode(json["Tabs"]!) as List).map((tab) => TabSquad.fromJson(tab)).toList()
+    tabs: (jsonDecode(json["Tabs"]!) as List).map((tab) => TabSquad.fromJson(tab)).toList(),
+    actionLocation: Position.fromMap(jsonDecode(json["Location"])),
   );
 
   ActionModel copyWith({
@@ -96,14 +104,17 @@ class ActionModel extends ChangeNotifier {
     List<Object>? waitingSquads,
     List<SquadPage>? workingSquads,
     List<Object>? finishedSquads,
-    List<TabSquad>? tabs}){
+    List<TabSquad>? tabs,
+    Position? actionLocation,
+    }){
     return ActionModel(
       oxygenValues: oxygenValues ?? this.oxygenValues,
       usageRates: usageRates ?? this.usageRates,
       waitingSquads: waitingSquads ?? this.waitingSquads,
       workingSquads: workingSquads ?? this.workingSquads,
       finishedSquads: finishedSquads ?? this.finishedSquads,
-      tabs: tabs ?? this.tabs
+      tabs: tabs ?? this.tabs,
+      actionLocation: actionLocation ?? this.actionLocation
     );
   }
 }

@@ -16,6 +16,7 @@ class NavigationService {
   static DatabaseSevice databaseSevice = DatabaseSevice();
   static bool serviceEnabled = false;
   static LocationPermission permission = LocationPermission.denied;
+
   static void checkGPSPermission() async {
 
   // Test if location services are enabled.
@@ -49,6 +50,9 @@ class NavigationService {
   // When we reach here, permissions are granted and we can
   // continue accessing the position of the device.
 }
+
+
+
 }
 
 void main() async {
@@ -107,7 +111,7 @@ class MyHomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ManagePage()),
+                  MaterialPageRoute(builder: (context) => ManagePage()),
                   //Ten skok nie będzie od razu do managmentu, jak na razie robię przykład UI
                 );
               },
