@@ -58,6 +58,7 @@ class _ActionListState extends State<ActionList> {
                             return Card(child: InkWell(child: ListTile(title: Text(address),), onTap: () {
                               //create
                               //action.
+                              NavigationService.databaseSevice.joinAction(action.id);
                               Navigator.push(context, MaterialPageRoute(builder: (context) => ManagePage(chosenAction: action.data(),)));
                             },));
                           }

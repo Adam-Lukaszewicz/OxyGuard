@@ -25,6 +25,10 @@ class DatabaseSevice{
    id = doc.id;
   }
 
+  void joinAction(String newId){
+    id = newId;
+  }
+
   void updateAction(ActionModel actionModel){
     _actionsRef.doc(id).update(actionModel.toJson());
   }

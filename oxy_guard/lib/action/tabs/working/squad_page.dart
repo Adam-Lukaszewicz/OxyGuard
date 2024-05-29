@@ -21,7 +21,7 @@ class SquadPage extends StatefulWidget {
   final int index;
   List<double> checks;
   List<DateTime> checkTimes;
-  bool working = false;
+  bool working;
   SquadPage(
       {super.key,
       required this.interval,
@@ -34,13 +34,15 @@ class SquadPage extends StatefulWidget {
       double? returnPressure,
       double? plannedReturnPressure,
       List<double>? checks,
-      List<DateTime>? checkTimes})
+      List<DateTime>? checkTimes,
+      bool? working})
       : exitTime = exitTime ?? 0,
         usageRate = usageRate ?? 10.0 / 60.0,
         returnPressure = returnPressure ?? 100.0,
         plannedReturnPressure = plannedReturnPressure ?? 120.0,
         checks = checks ?? <double>[],
-        checkTimes = checkTimes ?? <DateTime>[];
+        checkTimes = checkTimes ?? <DateTime>[],
+        working = working ?? false;
   SquadPage.fromJson(Map<String, dynamic> json)
       : this(
           usageRate: json["UsageRate"]! as double,
@@ -54,6 +56,7 @@ class SquadPage extends StatefulWidget {
           index: json["Index"]! as int,
           checks: List<double>.from(jsonDecode(json["Checks"]!)),
           checkTimes: (jsonDecode(json["CheckTimes"]!) as List).map((time) => DateTime.parse(time)).toList(),
+          working: json["Working"] as bool,
         );
   @override
   State<SquadPage> createState() => _SquadPageState();
@@ -103,7 +106,8 @@ class SquadPage extends StatefulWidget {
         toEncodable: (nonEncodable) => nonEncodable is DateTime
             ? nonEncodable.toIso8601String()
             : throw UnsupportedError('Cannot convert to JSON: $nonEncodable'),
-      )
+      ),
+      "Working": working,
     };
   }
 }
@@ -184,7 +188,7 @@ class _SquadPageState extends State<SquadPage>
   @override
   Widget build(BuildContext context) {
     var oxygenValue = Provider.of<ActionModel>(context, listen: false)
-        .oxygenValues[widget.index];
+        .oxygenValues[widget.index.toString()];
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight =
         MediaQuery.of(NavigationService.navigatorKey.currentContext!)
@@ -318,7 +322,7 @@ class _SquadPageState extends State<SquadPage>
                                               return Row(
                                                 children: [
                                                   Text(
-                                                    widget.checks.length >= 2
+                                                    widget.checks.length >= 1
                                                         ? "${cat.getTimeRemaining(widget.index) ~/ 60}:${cat.getTimeRemaining(widget.index) % 60 < 10 ? "0${(cat.getTimeRemaining(widget.index) % 60).toInt()}" : (cat.getTimeRemaining(widget.index) % 60).toInt()}"
                                                         : "NaN",
                                                     style: varTextStyle.apply(
@@ -652,7 +656,9 @@ class _SquadPageState extends State<SquadPage>
                                 widget.working = true;
                                 workStartStopwatch.start();
                                 lastCheckStopwatch.start();
-                                widget.checkTimes.add(DateTime.now());
+                                DateTime timestamp = DateTime.now();
+                                widget.checkTimes.add(timestamp);
+                                Provider.of<ActionModel>(context, listen: false).setWorkTimestamp(widget.index, timestamp);
                               }
                             } else {
                               widget.working =
@@ -678,7 +684,7 @@ class _SquadPageState extends State<SquadPage>
                       child: ElevatedButton(
                           onPressed: () async {
                             final parse = await checkListDialog(
-                                (oxygenValue ~/ 10) * 10 + 10);
+                                (oxygenValue! ~/ 10) * 10 + 10);
                             if (parse == null) return;
                             final valid = parse.toDouble();
                             setState(() {

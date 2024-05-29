@@ -9,24 +9,23 @@ import 'package:oxy_guard/main.dart';
 import 'package:oxy_guard/services/database_service.dart';
 
 class ActionModel extends ChangeNotifier {
-  List<double> oxygenValues;
-  List<DateTime> newestCheckTimes;
-  List<double> usageRates;
-  List<Object> waitingSquads;
-  List<SquadPage> workingSquads;
-  List<Object> finishedSquads;
-  List<TabSquad> tabs;
+  Map<String, double> oxygenValues;
+  Map<String, DateTime> newestCheckTimes;
+  Map<String, double> usageRates;
+  Map<String, Object> waitingSquads;
+  Map<String, SquadPage> workingSquads;
+  Map<String, Object> finishedSquads;
+  Map<String, TabSquad> tabs;
   late Position actionLocation;
-  ActionModel({List<double>? oxygenValues, List<DateTime>? newestCheckTimes, List<double>? usageRates, List<Object>? waitingSquads, List<SquadPage>? workingSquads, List<Object>? finishedSquads, List<TabSquad>? tabs, Position? actionLocation}):
-  oxygenValues = oxygenValues ?? <double>[],
-  newestCheckTimes = newestCheckTimes ?? <DateTime>[],
-  usageRates = usageRates ?? <double>[],
-  waitingSquads = waitingSquads ?? [],
-  workingSquads = workingSquads ?? <SquadPage>[],
-  finishedSquads = finishedSquads ?? [],
-  tabs = tabs ?? <TabSquad>[],
-  actionLocation = actionLocation ?? Position(longitude: 0, latitude: 0, timestamp: DateTime.now(), accuracy: 0, altitude: 0, altitudeAccuracy: 0, heading: 0, headingAccuracy: 0, speed: 0, speedAccuracy: 0) {
-  }
+  ActionModel({Map<String, double>? oxygenValues, Map<String, DateTime>? newestCheckTimes, Map<String, double>? usageRates, Map<String, Object>? waitingSquads, Map<String, SquadPage>? workingSquads, Map<String, Object>? finishedSquads, Map<String, TabSquad>? tabs, Position? actionLocation}):
+  oxygenValues = oxygenValues ?? <String, double>{},
+  newestCheckTimes = newestCheckTimes ?? <String, DateTime>{},
+  usageRates = usageRates ?? <String, double>{},
+  waitingSquads = waitingSquads ?? <String, Object>{},
+  workingSquads = workingSquads ?? <String, SquadPage>{},
+  finishedSquads = finishedSquads ?? <String, Object>{},
+  tabs = tabs ?? <String, TabSquad>{},
+  actionLocation = actionLocation ?? Position(longitude: 0, latitude: 0, timestamp: DateTime.now(), accuracy: 0, altitude: 0, altitudeAccuracy: 0, heading: 0, headingAccuracy: 0, speed: 0, speedAccuracy: 0);
 
   void setActionLocation() async {
     actionLocation = await Geolocator.getCurrentPosition();
@@ -34,11 +33,15 @@ class ActionModel extends ChangeNotifier {
   }
 
   double getOxygenRemaining(int index){
-    return oxygenValues[index] - (usageRates[index] * DateTime.now().difference(newestCheckTimes[index]).inSeconds);
+    if(oxygenValues[index.toString()] != null){
+    return oxygenValues[index.toString()]! - (usageRates[index.toString()]! * DateTime.now().difference(newestCheckTimes[index.toString()]!).inSeconds);
+    }else{
+      return -1;
+    }
   }
 
   int getTimeRemaining(int index){
-    int remainingTime = (getOxygenRemaining(index) - 60.0) ~/ usageRates[index];
+    int remainingTime = (getOxygenRemaining(index) - 60.0) ~/ usageRates[index.toString()]!;
     if(remainingTime > 0){
       return remainingTime;
     }else{
@@ -46,16 +49,22 @@ class ActionModel extends ChangeNotifier {
     }
   }
 
+  void setWorkTimestamp(int index, DateTime newTime){
+    newestCheckTimes[index.toString()] = newTime;
+    notifyListeners();
+    NavigationService.databaseSevice.updateAction(this);
+  }
+
   void update(double newOxygen, double usageRate, DateTime newTime, int index) {
-    oxygenValues[index] = newOxygen;
-    usageRates[index] = usageRate;
-    newestCheckTimes[index] = newTime;
+    oxygenValues[index.toString()] = newOxygen;
+    usageRates[index.toString()] = usageRate;
+    newestCheckTimes[index.toString()] = newTime;
     notifyListeners();
     NavigationService.databaseSevice.updateAction(this);
   }
 
   void changeStarting(double newOxygen, int index){
-    oxygenValues[index] = newOxygen;
+    oxygenValues[index.toString()] = newOxygen;
     notifyListeners();
     NavigationService.databaseSevice.updateAction(this);
   }
@@ -65,11 +74,11 @@ class ActionModel extends ChangeNotifier {
   }
 
   void startSquadWork(int entryPressure, int exitPressure, int interval) {
-    oxygenValues.add(entryPressure.toDouble());
-    usageRates.add(10.0/60.0);
-    newestCheckTimes.add(DateTime.now());
-    workingSquads.add(SquadPage(interval: interval, index: oxygenValues.length-1, entryPressure: entryPressure.toDouble(), exitPressure: exitPressure, text: "R${workingSquads.length+1}"));
-    tabs.add(TabSquad(text: "R${workingSquads.length}", index: oxygenValues.length-1));
+    oxygenValues.addAll({(oxygenValues.length).toString(): entryPressure.toDouble()});
+    usageRates.addAll({(oxygenValues.length -1 ).toString():10.0/60.0});
+    newestCheckTimes.addAll({(oxygenValues.length-1).toString(): DateTime.now()});
+    workingSquads.addAll({(oxygenValues.length - 1).toString():SquadPage(interval: interval, index: oxygenValues.length-1, entryPressure: entryPressure.toDouble(), exitPressure: exitPressure, text: "R${workingSquads.length+1}")});
+    tabs.addAll({(oxygenValues.length - 1).toString():TabSquad(text: "R${workingSquads.length}", index: oxygenValues.length-1)});
     notifyListeners();
     NavigationService.databaseSevice.updateAction(this);
   }
@@ -78,7 +87,13 @@ class ActionModel extends ChangeNotifier {
   Map<String, dynamic> toJson(){
     return{
       "OxygenValues": jsonEncode(oxygenValues),
-      "NewestCheckTimes": jsonEncode(newestCheckTimes, toEncodable: (nonEncodable) => nonEncodable is DateTime ? nonEncodable.toIso8601String() : throw UnsupportedError('Cannot convert to JSON: $nonEncodable'),),
+      "NewestCheckTimes": jsonEncode(newestCheckTimes, toEncodable: (nonEncodable) {
+        if(nonEncodable is DateTime){
+          return nonEncodable.toIso8601String();
+        }else{
+          throw("Unsupported conversion to JSON");
+        }
+      },),
       "UsageRates": jsonEncode(usageRates),
       "WaitingSquads": jsonEncode(waitingSquads),
       "WorkingSquads": jsonEncode(workingSquads),
@@ -88,23 +103,23 @@ class ActionModel extends ChangeNotifier {
     };
   }
   ActionModel.fromJson(Map<String, dynamic> json):this(
-    oxygenValues: List<double>.from(jsonDecode(json["OxygenValues"]!)),
-    newestCheckTimes: (jsonDecode(json["NewestCheckTimes"]!) as List).map((date) => DateTime.parse(date)).toList(),
-    usageRates: List<double>.from(jsonDecode(json["UsageRates"]!)),
-    waitingSquads: List<Object>.from(jsonDecode(json["WaitingSquads"]!)),
-    workingSquads: (jsonDecode(json["WorkingSquads"]!) as List).map((squad) => SquadPage.fromJson(squad)).toList(),
-    finishedSquads: List<Object>.from(jsonDecode(json["FinishedSquads"]!)),
-    tabs: (jsonDecode(json["Tabs"]!) as List).map((tab) => TabSquad.fromJson(tab)).toList(),
+    oxygenValues: Map.castFrom(jsonDecode(json["OxygenValues"]!)),
+    newestCheckTimes: Map.castFrom(jsonDecode(json["NewestCheckTimes"]!)).map((key, value) => MapEntry(key.toString(), DateTime.parse(value))),
+    usageRates: Map.castFrom(jsonDecode(json["UsageRates"]!)),
+    waitingSquads: Map.castFrom(jsonDecode(json["WaitingSquads"]!)),
+    workingSquads: Map.castFrom(jsonDecode(json["WorkingSquads"]!)).map((key, value) => MapEntry(key.toString(), SquadPage.fromJson(value))),
+    finishedSquads: Map.castFrom(jsonDecode(json["FinishedSquads"]!)),
+    tabs: Map.castFrom(jsonDecode(json["Tabs"]!)).map((key, value) => MapEntry(key.toString(), TabSquad.fromJson(value))),
     actionLocation: Position.fromMap(jsonDecode(json["Location"])),
   );
 
   ActionModel copyWith({
-    List<double>? oxygenValues,
-    List<double>? usageRates,
-    List<Object>? waitingSquads,
-    List<SquadPage>? workingSquads,
-    List<Object>? finishedSquads,
-    List<TabSquad>? tabs,
+    Map<String, double>? oxygenValues,
+    Map<String, double>? usageRates,
+    Map<String, Object>? waitingSquads,
+    Map<String, SquadPage>? workingSquads,
+    Map<String, Object>? finishedSquads,
+    Map<String, TabSquad>? tabs,
     Position? actionLocation,
     }){
     return ActionModel(

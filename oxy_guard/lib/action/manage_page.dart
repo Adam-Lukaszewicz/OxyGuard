@@ -33,9 +33,11 @@ class _ManagePageState extends State<ManagePage>
         ActionModel newActionModel;
         if (widget.chosenAction == null) {
           newActionModel = ActionModel();
+          newActionModel.setActionLocation();
           NavigationService.databaseSevice.addAction(newActionModel);
         } else {
           newActionModel = widget.chosenAction;
+          widget.chosenAction = null;
         }
         return newActionModel;
       },
@@ -147,13 +149,12 @@ class _CategoryState extends State<Category>
             MediaQuery.of(NavigationService.navigatorKey.currentContext!)
                 .viewPadding
                 .vertical;
-    Provider.of<ActionModel>(context, listen: false).setActionLocation();
     return Column(
       children: [
         SizedBox(
           height: screenHeight * 0.15,
           child: TabBar(
-            tabs: Provider.of<ActionModel>(context, listen: false).tabs,
+            tabs: Provider.of<ActionModel>(context, listen: false).tabs.values.toList(),
             controller: _tabController,
             indicatorColor: Colors.black,
             indicatorPadding: const EdgeInsets.only(bottom: 10),
@@ -169,7 +170,7 @@ class _CategoryState extends State<Category>
           child: TabBarView(
               controller: _tabController,
               children: Provider.of<ActionModel>(context, listen: false)
-                  .workingSquads),
+                  .workingSquads.values.toList()),
         ),
       ],
     );
