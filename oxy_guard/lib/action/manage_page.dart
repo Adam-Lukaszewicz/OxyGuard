@@ -11,7 +11,6 @@ import '../models/action_model.dart';
 class ManagePage extends StatefulWidget {
   dynamic chosenAction;
   ManagePage({super.key, dynamic? chosenAction}) : chosenAction = chosenAction;
-
   @override
   State<ManagePage> createState() => _ManagePageState();
 }
@@ -37,6 +36,7 @@ class _ManagePageState extends State<ManagePage>
           NavigationService.databaseSevice.addAction(newActionModel);
         } else {
           newActionModel = widget.chosenAction;
+          newActionModel.listenToChanges();
           widget.chosenAction = null;
         }
         return newActionModel;
@@ -154,7 +154,10 @@ class _CategoryState extends State<Category>
         SizedBox(
           height: screenHeight * 0.15,
           child: TabBar(
-            tabs: Provider.of<ActionModel>(context, listen: false).tabs.values.toList(),
+            tabs: Provider.of<ActionModel>(context, listen: false)
+                .tabs
+                .values
+                .toList(),
             controller: _tabController,
             indicatorColor: Colors.black,
             indicatorPadding: const EdgeInsets.only(bottom: 10),
@@ -170,7 +173,9 @@ class _CategoryState extends State<Category>
           child: TabBarView(
               controller: _tabController,
               children: Provider.of<ActionModel>(context, listen: false)
-                  .workingSquads.values.toList()),
+                  .workingSquads
+                  .values
+                  .toList()),
         ),
       ],
     );

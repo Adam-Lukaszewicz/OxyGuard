@@ -55,7 +55,7 @@ class SquadPage extends StatefulWidget {
           interval: json["Interval"]! as int,
           index: json["Index"]! as int,
           checks: List<double>.from(jsonDecode(json["Checks"]!)),
-          checkTimes: (jsonDecode(json["CheckTimes"]!) as List).map((time) => DateTime.parse(time)).toList(),
+          checkTimes: (jsonDecode(json["CheckTimes"]!) as List).map((time) => DateTime.parse(time).toLocal()).toList(),
           working: json["Working"] as bool,
         );
   @override
@@ -73,6 +73,7 @@ class SquadPage extends StatefulWidget {
     int? index,
     List<double>? checks,
     List<DateTime>? checkTimes,
+    bool? working,
   }) {
     return SquadPage(
         usageRate: usageRate ?? this.usageRate,
@@ -86,7 +87,8 @@ class SquadPage extends StatefulWidget {
         index: index ?? this.index,
         entryPressure: entryPressure ?? this.entryPressure,
         exitPressure: exitPressure ?? this.exitPressure,
-        text: text ?? this.text);
+        text: text ?? this.text,
+        working: working ?? this.working);
   }
 
   Map<String, dynamic> toJson() {
@@ -104,7 +106,7 @@ class SquadPage extends StatefulWidget {
       "CheckTimes": jsonEncode(
         checkTimes,
         toEncodable: (nonEncodable) => nonEncodable is DateTime
-            ? nonEncodable.toIso8601String()
+            ? nonEncodable.toUtc().toIso8601String()
             : throw UnsupportedError('Cannot convert to JSON: $nonEncodable'),
       ),
       "Working": working,

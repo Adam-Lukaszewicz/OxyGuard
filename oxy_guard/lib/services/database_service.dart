@@ -32,4 +32,8 @@ class DatabaseSevice{
   void updateAction(ActionModel actionModel){
     _actionsRef.doc(id).update(actionModel.toJson());
   }
+
+  Stream<DocumentSnapshot<Object?>> getActionsRef(){
+    return _actionsRef.doc(id).snapshots();
+  }
 }
