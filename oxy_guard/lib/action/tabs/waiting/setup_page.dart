@@ -265,13 +265,18 @@ class _SetupPage2State extends State<SetupPage> {
                       child: ListWheelScrollView.useDelegate(
                           controller: pressureController,
                           itemExtent: 50,
+                          perspective: 0.005,
+                          overAndUnderCenterOpacity: 0.6,
+                          squeeze: 1,
+                          magnification: 1.1,
+                          diameterRatio: 1.5,
                           physics: const FixedExtentScrollPhysics(),
                           childDelegate: ListWheelChildBuilderDelegate(
                             childCount: 34,
                             builder: (context, index) =>
                                 Text("${330 - 10 * index}",
                                     style: const TextStyle(
-                                      fontSize: 25,
+                                      fontSize: 30,
                                       fontWeight: FontWeight.bold,
                                     )),
                           )),
@@ -303,11 +308,20 @@ class _SetupPage2State extends State<SetupPage> {
                   children: [
                     const Expanded(
                         flex: 2,
-                        child: Text(
-                          "Wprowadź czas wyjścia",
-                          style: TextStyle(
-                              fontSize: 25, fontWeight: FontWeight.bold),
-                        )),
+                        child: Row(
+                        children: const [
+                          Text(
+                            "Wprowadź czas wyjścia",
+                            style: TextStyle(
+                                fontSize: 25, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            "(min)",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.normal), 
+                          ),
+                        ],
+                      )),
                     Expanded(
                       flex: 6,
                       child: Row(
@@ -318,6 +332,11 @@ class _SetupPage2State extends State<SetupPage> {
                             child: ListWheelScrollView.useDelegate(
                                 controller: minuteController,
                                 itemExtent: 50,
+                                perspective: 0.005,
+                                overAndUnderCenterOpacity: 0.6,
+                                squeeze: 1,
+                                magnification: 1.1,
+                                diameterRatio: 1.5,
                                 physics: const FixedExtentScrollPhysics(),
                                 childDelegate: ListWheelChildBuilderDelegate(
                                   childCount: 16,
@@ -339,6 +358,11 @@ class _SetupPage2State extends State<SetupPage> {
                             child: ListWheelScrollView.useDelegate(
                                 controller: secondsController,
                                 itemExtent: 50,
+                                perspective: 0.005,
+                                overAndUnderCenterOpacity: 0.6,
+                                squeeze: 1,
+                                magnification: 1.1,
+                                diameterRatio: 1.5,
                                 physics: const FixedExtentScrollPhysics(),
                                 childDelegate: ListWheelChildBuilderDelegate(
                                   childCount: 4,

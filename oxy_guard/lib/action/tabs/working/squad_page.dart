@@ -847,13 +847,18 @@ class _SquadPageState extends State<SquadPage>
                       child: ListWheelScrollView.useDelegate(
                           controller: checkController,
                           itemExtent: 50,
+                          perspective: 0.005,
+                          overAndUnderCenterOpacity: 0.6,
+                          squeeze: 1,
+                          magnification: 1.1,
+                          diameterRatio: 1.5,
                           physics: const FixedExtentScrollPhysics(),
                           childDelegate: ListWheelChildBuilderDelegate(
                             childCount: (oxygenValue.toInt() - 60) ~/ 10,
                             builder: (context, index) =>
                                 Text("${oxygenValue.toInt() - 10 * index}",
                                     style: const TextStyle(
-                                      fontSize: 25,
+                                      fontSize: 30,
                                       fontWeight: FontWeight.bold,
                                     )),
                           )),
@@ -885,11 +890,20 @@ class _SquadPageState extends State<SquadPage>
                   children: [
                     const Expanded(
                         flex: 2,
-                        child: Text(
-                          "Wprowadź czas wyjścia",
-                          style: TextStyle(
-                              fontSize: 25, fontWeight: FontWeight.bold),
-                        )),
+                        child: Row(
+                        children: const [
+                          Text(
+                            "Wprowadź czas wyjścia",
+                            style: TextStyle(
+                                fontSize: 25, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            "(min)",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.normal), 
+                          ),
+                        ],
+                      )),
                     Expanded(
                       flex: 6,
                       child: Row(
@@ -900,6 +914,11 @@ class _SquadPageState extends State<SquadPage>
                             child: ListWheelScrollView.useDelegate(
                                 controller: exitMinuteController,
                                 itemExtent: 50,
+                                perspective: 0.005,
+                                overAndUnderCenterOpacity: 0.6,
+                                squeeze: 1,
+                                magnification: 1.1,
+                                diameterRatio: 1.5,
                                 physics: const FixedExtentScrollPhysics(),
                                 childDelegate: ListWheelChildBuilderDelegate(
                                   childCount: 16,
@@ -921,6 +940,11 @@ class _SquadPageState extends State<SquadPage>
                             child: ListWheelScrollView.useDelegate(
                                 controller: exitSecondsController,
                                 itemExtent: 50,
+                                perspective: 0.005,
+                                overAndUnderCenterOpacity: 0.6,
+                                squeeze: 1,
+                                magnification: 1.1,
+                                diameterRatio: 1.5,
                                 physics: const FixedExtentScrollPhysics(),
                                 childDelegate: ListWheelChildBuilderDelegate(
                                   childCount: 4,

@@ -11,7 +11,7 @@ const String TODO_COLLECTION_REF = "actions";
 class DatabaseSevice{
   final _firestore = FirebaseFirestore.instance;
   late final CollectionReference _actionsRef;
-  late String id;
+  late String id; //Kto wymyślił ID jako string XDDDDD
   DatabaseSevice(){
     _actionsRef = _firestore.collection(TODO_COLLECTION_REF).withConverter<ActionModel>(fromFirestore: (snapshots, _) => ActionModel.fromJson(snapshots.data()!), toFirestore: (actionModel, _) => actionModel.toJson());
   }

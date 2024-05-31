@@ -54,13 +54,9 @@ class ActionModel extends ChangeNotifier {
       final source = (event.metadata.hasPendingWrites);
       if (true) {
         ActionModel newData = event.data() as ActionModel;
-        print(newData.toJson());
         copyFrom(newData);
         notifyListeners();
-      } else {
-        print("current data: ${event.data()}");
-        print("local change");
-      }
+      } 
     });
   }
 

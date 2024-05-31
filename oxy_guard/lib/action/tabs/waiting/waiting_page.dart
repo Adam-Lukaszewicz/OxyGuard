@@ -55,7 +55,7 @@ class _WaitingPageState extends State<WaitingPage> with SingleTickerProviderStat
             indicatorSize: TabBarIndicatorSize.label,
             indicator: const UnderlineTabIndicator(
               borderRadius: BorderRadius.all(Radius.circular(5)),
-              borderSide: BorderSide(color: Colors.black, width: 5),
+              borderSide: BorderSide(color: Color.fromARGB(255, 0, 0, 0), width: 5),
             ),
           ),
         ),
