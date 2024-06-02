@@ -61,8 +61,8 @@ class MyHomePage extends StatelessWidget {
               ),
               ElevatedButton(
               onPressed: () {
-                GlobalService.currentAction.setActionLocation();
                 GlobalService.databaseSevice.addAction(GlobalService.currentAction);
+                GlobalService.currentAction.setActionLocation();
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const SquadChoice()),

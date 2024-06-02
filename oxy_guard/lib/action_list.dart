@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -16,8 +17,20 @@ class ActionList extends StatefulWidget {
 }
 
 class _ActionListState extends State<ActionList> {
-  
-  Future<List<Placemark>> getAddress(double latitude, double longitude){return placemarkFromCoordinates(latitude, longitude);}
+  Future<List<Placemark>> getAddress(double latitude, double longitude) {
+    Future<List<Placemark>> placemark;
+    try {
+      placemark = placemarkFromCoordinates(latitude, longitude);
+      return placemark;
+    } catch (err) {
+      return Future.error(err);
+    }
+  }
+
+  Future<String> addressToString(double latitude, double longitude) async {
+    List<Placemark> address = await getAddress(latitude, longitude);
+    return address.first.country.toString();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,40 +45,85 @@ class _ActionListState extends State<ActionList> {
                     if (snapshot.hasError) {
                       return const Text('Something went wrong');
                     }
-              
+
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Text("Loading");
                     }
-                    // return ListView(
-                    //   children: snapshot.data!.docs.map((action){
-                    //     Position actionLocation = Position.fromMap(jsonDecode(action["Location"]!));
-                    //     Future<List<Placemark>> address = placemarkFromCoordinates(actionLocation.latitude, actionLocation.longitude);
-                    //     address.then((address){
-                    //       return ListTile(title: Text(address.first.country.toString()),);
-                    //     });
-                    //     return ListTile(title: Text("b"),);
-                    //     }).toList()
-                    // );
-                    return ListView(
-                      children: snapshot.data!.docs.map((action){
-                        Position actionLocation = Position.fromMap(jsonDecode(action["Location"]!));
-                      return FutureBuilder(future: getAddress(actionLocation.latitude, actionLocation.longitude), builder: (context, snap){
-                        if(snap.connectionState == ConnectionState.done){
-                          if(snap.hasData){
-                            final address = snap.data!.first.country.toString();
-                            return Card(child: InkWell(child: ListTile(title: Text(address),), onTap: () {
-                              //create
-                              //action.
-                              GlobalService.databaseSevice.joinAction(action.id);
-                              GlobalService.currentAction = action.data() as ActionModel;
-                              GlobalService.currentAction.listenToChanges();
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => SquadChoice()));
-                            },));
+                    List<(Position, Card)> preSort =
+                        snapshot.data!.docs.map((action) {
+                      Position actionLocation =
+                          Position.fromMap(jsonDecode(action["Location"]!));
+                      return (
+                        actionLocation,
+                        Card(
+                            child: InkWell(
+                          child: ListTile(
+                            title: FutureBuilder(
+                              future: getAddress(actionLocation.latitude,
+                                  actionLocation.longitude),
+                              builder: (context, snap) {
+                                if (snap.connectionState ==
+                                    ConnectionState.done) {
+                                  if (snap.hasData) {
+                                    final address =
+                                        snap.data!.first.country.toString();
+                                    return Text(address);
+                                  } else if (snap.hasError) {
+                                    return const Text("Brak pasującego adresu");
+                                  }
+                                }
+                                return const Text("Loading...");
+                              },
+                            ),
+                          ),
+                          onTap: () {
+                            GlobalService.databaseSevice.joinAction(action.id);
+                            GlobalService.currentAction =
+                                action.data() as ActionModel;
+                            GlobalService.currentAction.listenToChanges();
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const SquadChoice()));
+                          },
+                        ))
+                      );
+                    }).toList();
+                    if (GlobalService.permission == LocationPermission.always ||
+                        GlobalService.permission ==
+                            LocationPermission.whileInUse) {
+                      return FutureBuilder(
+                        future: Geolocator.getCurrentPosition(),
+                        builder: (context, snap) {
+                          if (snap.connectionState == ConnectionState.done) {
+                            if (snap.hasData) {
+                              Position currentPostion = snap.data!;
+                              preSort.sort((a, b) {
+                                double distanceToA = Geolocator.distanceBetween(
+                                    currentPostion.latitude,
+                                    currentPostion.longitude,
+                                    a.$1.latitude,
+                                    a.$1.longitude);
+                                double distanceToB = Geolocator.distanceBetween(
+                                    currentPostion.latitude,
+                                    currentPostion.longitude,
+                                    b.$1.latitude,
+                                    b.$1.longitude);
+                                return distanceToA.compareTo(distanceToB);
+                              });
+                              return ListView(
+                                children: preSort.map((e) => e.$2).toList(),
+                              );
+                            }
                           }
-                        }
-                        return const Card(child: ListTile(title: Text("Loading..."),));
-                      });}).toList(),
-                    );
+                          return const Text("LOADING");
+                        },
+                      );
+                    } else {
+                      return ListView(
+                        children: preSort.map((e) => e.$2).toList(),
+                      );
+                    }
                   }),
             ),
             const Text("TODO"),

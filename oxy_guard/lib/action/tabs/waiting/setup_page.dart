@@ -189,11 +189,16 @@ class _SetupPage2State extends State<SetupPage> {
                     ElevatedButton(
                         onPressed: () async {
                           var newExitPressure = await pressureDialog();
-                          if (newExitPressure != null) {
-                            setState(() {
-                              exitPressure = newExitPressure;
-                            });
+                          if (newExitPressure == null) {
+                            return;
                           }
+                          if(newExitPressure >= entryPressure){
+                            await warningDialog("Ciśnienie wyjściowe nie może być większe nić wejściowe");
+                            return;
+                          }
+                          setState(() {
+                            exitPressure = newExitPressure;
+                          });
                         },
                         style: genericButtonStyle,
                         child: Row(
@@ -228,7 +233,7 @@ class _SetupPage2State extends State<SetupPage> {
                         .startSquadWork(
                             entryPressure, exitPressure, checkInterval);
                   } else {
-                    await tooManySquadsDialog();
+                    await warningDialog('Maksymalnie 3 pracujace roty na raz');
                   }
                 },
                 style: genericButtonStyle,
@@ -308,19 +313,19 @@ class _SetupPage2State extends State<SetupPage> {
                     const Expanded(
                         flex: 2,
                         child: Row(
-                        children: [
-                          Text(
-                            "Wprowadź czas wyjścia",
-                            style: TextStyle(
-                                fontSize: 25, fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            "(min)",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.normal), 
-                          ),
-                        ],
-                      )),
+                          children: [
+                            Text(
+                              "Wprowadź czas wyjścia",
+                              style: TextStyle(
+                                  fontSize: 25, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              "(min)",
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.normal),
+                            ),
+                          ],
+                        )),
                     Expanded(
                       flex: 6,
                       child: Row(
@@ -390,17 +395,17 @@ class _SetupPage2State extends State<SetupPage> {
             ),
           ));
 
-  Future<void> tooManySquadsDialog() async {
+  Future<void> warningDialog(String warningText) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('OSTRZEŻENIE'),
-          content: const SingleChildScrollView(
+          content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Center(child: Text('Maksymalnie 3 pracujace roty na raz')),
+                Center(child: Text(warningText)),
               ],
             ),
           ),

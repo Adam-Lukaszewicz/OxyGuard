@@ -680,6 +680,10 @@ class _SquadPageState extends State<SquadPage>
                           vertical: 8.0, horizontal: 5.0),
                       child: ElevatedButton(
                           onPressed: () async {
+                            if(!widget.working){
+                              await warningDialog("Nie można wprowadzać nowych pomiarów przed rozpoczęciem pracy");
+                              return;
+                            }
                             final parse = await checkListDialog(
                                 (oxygenValue! ~/ 10) * 10 + 10);
                             if (parse == null) return;
@@ -1117,6 +1121,33 @@ class _SquadPageState extends State<SquadPage>
           );
         }
       });
+
+  Future<void> warningDialog(String warningText) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('OSTRZEŻENIE'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Center(child: Text(warningText)),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
 
 class LeftTriangle extends CustomClipper<Path> {
