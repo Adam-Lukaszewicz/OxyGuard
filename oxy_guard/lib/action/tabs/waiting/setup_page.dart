@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:oxy_guard/action/manage_page.dart';
 import 'package:provider/provider.dart';
 
-import '../../../models/action_model.dart';
+import '../../../models/squad_model.dart';
 
 class SetupPage extends StatefulWidget {
   const SetupPage({super.key});
@@ -221,11 +220,11 @@ class _SetupPage2State extends State<SetupPage> {
             ElevatedButton(
                 //TODO: Ten system z gotowościa bo nie wiem co jest 5
                 onPressed: () async {
-                  if (Provider.of<ActionModel>(context, listen: false)
+                  if (Provider.of<SquadModel>(context, listen: false)
                           .workingSquads
                           .length <
                       3) {
-                    Provider.of<ActionModel>(context, listen: false)
+                    Provider.of<SquadModel>(context, listen: false)
                         .startSquadWork(
                             entryPressure, exitPressure, checkInterval);
                   } else {
@@ -309,7 +308,7 @@ class _SetupPage2State extends State<SetupPage> {
                     const Expanded(
                         flex: 2,
                         child: Row(
-                        children: const [
+                        children: [
                           Text(
                             "Wprowadź czas wyjścia",
                             style: TextStyle(

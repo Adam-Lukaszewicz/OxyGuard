@@ -1,14 +1,12 @@
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:oxy_guard/action/manage_page.dart';
-import 'package:oxy_guard/main.dart';
+import 'package:oxy_guard/action/squad_choice.dart';
 import 'package:oxy_guard/models/action_model.dart';
-import 'package:provider/provider.dart';
+
+import 'global_service.dart';
 
 class ActionList extends StatefulWidget {
   const ActionList({super.key});
@@ -29,14 +27,14 @@ class _ActionListState extends State<ActionList> {
           children: [
             Expanded(
               child: StreamBuilder(
-                  stream: NavigationService.databaseSevice.getActions(),
+                  stream: GlobalService.databaseSevice.getActions(),
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
-                      return Text('Something went wrong');
+                      return const Text('Something went wrong');
                     }
               
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Text("Loading");
+                      return const Text("Loading");
                     }
                     // return ListView(
                     //   children: snapshot.data!.docs.map((action){
@@ -58,12 +56,14 @@ class _ActionListState extends State<ActionList> {
                             return Card(child: InkWell(child: ListTile(title: Text(address),), onTap: () {
                               //create
                               //action.
-                              NavigationService.databaseSevice.joinAction(action.id);
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => ManagePage(chosenAction: action.data(),)));
+                              GlobalService.databaseSevice.joinAction(action.id);
+                              GlobalService.currentAction = action.data() as ActionModel;
+                              GlobalService.currentAction.listenToChanges();
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => SquadChoice()));
                             },));
                           }
                         }
-                        return Card(child: ListTile(title: Text("Loading..."),));
+                        return const Card(child: ListTile(title: Text("Loading..."),));
                       });}).toList(),
                     );
                   }),

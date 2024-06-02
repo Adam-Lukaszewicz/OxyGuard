@@ -1,16 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:oxy_guard/action/tabs/working/squad_page.dart';
-import 'package:oxy_guard/action/tabs/working/squad_tab.dart';
 import 'package:oxy_guard/action/tabs/waiting/waiting_page.dart';
-import 'package:oxy_guard/main.dart';
 import 'package:provider/provider.dart';
 
-import '../models/action_model.dart';
+import '../models/squad_model.dart';
+import '../global_service.dart';
 
 class ManagePage extends StatefulWidget {
-  dynamic chosenAction;
-  ManagePage({super.key, dynamic? chosenAction}) : chosenAction = chosenAction;
+  SquadModel? chosenAction;
+  ManagePage({super.key, this.chosenAction});
   @override
   State<ManagePage> createState() => _ManagePageState();
 }
@@ -29,14 +27,12 @@ class _ManagePageState extends State<ManagePage>
         MediaQuery.of(context).viewPadding.vertical;
     return ChangeNotifierProvider(
       create: (context) {
-        ActionModel newActionModel;
+        SquadModel newActionModel;
         if (widget.chosenAction == null) {
-          newActionModel = ActionModel();
-          newActionModel.setActionLocation();
-          NavigationService.databaseSevice.addAction(newActionModel);
+          newActionModel = SquadModel();
+          GlobalService.currentAction.addSquad(newActionModel);
         } else {
-          newActionModel = widget.chosenAction;
-          newActionModel.listenToChanges();
+          newActionModel = widget.chosenAction!;
           widget.chosenAction = null;
         }
         return newActionModel;
@@ -87,14 +83,14 @@ class _ManagePageState extends State<ManagePage>
                 ),
                 body: TabBarView(
                   children: [
-                    WaitingPage(),
+                    const WaitingPage(),
                     Category(
                       key: ValueKey(
-                          Provider.of<ActionModel>(context, listen: true)
+                          Provider.of<SquadModel>(context, listen: true)
                               .workingSquads
                               .length),
                     ),
-                    Category(key: ValueKey(99)),
+                    Category(key: const ValueKey(99)),
                   ],
                 )),
           ),
@@ -121,7 +117,7 @@ class _CategoryState extends State<Category>
   void initState() {
     super.initState();
     widget.size =
-        Provider.of<ActionModel>(context, listen: false).workingSquads.length;
+        Provider.of<SquadModel>(context, listen: false).workingSquads.length;
     _tabController = TabController(vsync: this, length: widget.size);
   }
 
@@ -135,7 +131,7 @@ class _CategoryState extends State<Category>
     _tabController.dispose();
     _tabController = TabController(
         vsync: this,
-        length: Provider.of<ActionModel>(context, listen: false)
+        length: Provider.of<SquadModel>(context, listen: false)
             .workingSquads
             .length);
   }
@@ -143,10 +139,10 @@ class _CategoryState extends State<Category>
   @override
   Widget build(BuildContext context) {
     var screenHeight =
-        MediaQuery.of(NavigationService.navigatorKey.currentContext!)
+        MediaQuery.of(GlobalService.navigatorKey.currentContext!)
                 .size
                 .height -
-            MediaQuery.of(NavigationService.navigatorKey.currentContext!)
+            MediaQuery.of(GlobalService.navigatorKey.currentContext!)
                 .viewPadding
                 .vertical;
     return Column(
@@ -154,7 +150,7 @@ class _CategoryState extends State<Category>
         SizedBox(
           height: screenHeight * 0.15,
           child: TabBar(
-            tabs: Provider.of<ActionModel>(context, listen: false)
+            tabs: Provider.of<SquadModel>(context, listen: false)
                 .tabs
                 .values
                 .toList(),
@@ -172,7 +168,7 @@ class _CategoryState extends State<Category>
           height: screenHeight * 0.75,
           child: TabBarView(
               controller: _tabController,
-              children: Provider.of<ActionModel>(context, listen: false)
+              children: Provider.of<SquadModel>(context, listen: false)
                   .workingSquads
                   .values
                   .toList()),

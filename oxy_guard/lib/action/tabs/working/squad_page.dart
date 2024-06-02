@@ -3,11 +3,10 @@ import 'dart:convert';
 //import 'dart:html';
 
 import 'package:flutter/material.dart';
-import 'package:oxy_guard/action/manage_page.dart';
-import 'package:oxy_guard/main.dart';
 import 'package:provider/provider.dart';
 
-import '../../../models/action_model.dart';
+import '../../../models/squad_model.dart';
+import '../../../global_service.dart';
 
 class SquadPage extends StatefulWidget {
   double usageRate;
@@ -119,7 +118,7 @@ class _SquadPageState extends State<SquadPage>
   //Declarations
   final lastCheckStopwatch = Stopwatch();
   final workStartStopwatch = Stopwatch();
-  late Timer oneSec;
+  late Timer halfSec;
   late FixedExtentScrollController checkController;
   late FixedExtentScrollController lastCheckController;
   late FixedExtentScrollController secondLastCheckController;
@@ -165,13 +164,9 @@ class _SquadPageState extends State<SquadPage>
     lastCheckController = FixedExtentScrollController();
     secondLastCheckController = FixedExtentScrollController();
     widget.checks.add(widget.entryPressure);
-    oneSec = Timer.periodic(const Duration(seconds: 1), (Timer t) {
+    halfSec = Timer.periodic(const Duration(milliseconds: 500), (Timer t) {
       if (!mounted) return;
       setState(() {
-        if (widget.working) {
-          Provider.of<ActionModel>(context, listen: false)
-              .advanceTime(widget.index);
-        }
       });
     });
   }
@@ -189,14 +184,14 @@ class _SquadPageState extends State<SquadPage>
   //UI
   @override
   Widget build(BuildContext context) {
-    var oxygenValue = Provider.of<ActionModel>(context, listen: false)
+    var oxygenValue = Provider.of<SquadModel>(context, listen: false)
         .oxygenValues[widget.index.toString()];
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight =
-        MediaQuery.of(NavigationService.navigatorKey.currentContext!)
+        MediaQuery.of(GlobalService.navigatorKey.currentContext!)
                 .size
                 .height -
-            MediaQuery.of(NavigationService.navigatorKey.currentContext!)
+            MediaQuery.of(GlobalService.navigatorKey.currentContext!)
                 .viewPadding
                 .vertical;
     return Column(
@@ -319,12 +314,12 @@ class _SquadPageState extends State<SquadPage>
                                       Expanded(
                                           flex: 3,
                                           child: Center(
-                                            child: Consumer<ActionModel>(
+                                            child: Consumer<SquadModel>(
                                                 builder: (context, cat, child) {
                                               return Row(
                                                 children: [
                                                   Text(
-                                                    widget.checks.length >= 1
+                                                    widget.checks.isNotEmpty
                                                         ? "${cat.getTimeRemaining(widget.index) ~/ 60}:${cat.getTimeRemaining(widget.index) % 60 < 10 ? "0${(cat.getTimeRemaining(widget.index) % 60).toInt()}" : (cat.getTimeRemaining(widget.index) % 60).toInt()}"
                                                         : "NaN",
                                                     style: varTextStyle.apply(
@@ -574,7 +569,7 @@ class _SquadPageState extends State<SquadPage>
                                           fontWeight: FontWeight.bold)),
                                 ),
                               ),
-                              Consumer<ActionModel>(
+                              Consumer<SquadModel>(
                                 builder: (context, cat, child) {
                                   return Positioned(
                                     top: 20 +
@@ -660,7 +655,7 @@ class _SquadPageState extends State<SquadPage>
                                 lastCheckStopwatch.start();
                                 DateTime timestamp = DateTime.now();
                                 widget.checkTimes.add(timestamp);
-                                Provider.of<ActionModel>(context, listen: false).setWorkTimestamp(widget.index, timestamp);
+                                Provider.of<SquadModel>(context, listen: false).setWorkTimestamp(widget.index, timestamp);
                               }
                             } else {
                               widget.working =
@@ -700,7 +695,7 @@ class _SquadPageState extends State<SquadPage>
                                           .difference(widget.checkTimes.last)
                                           .inSeconds);
                                 }
-                                Provider.of<ActionModel>(context, listen: false)
+                                Provider.of<SquadModel>(context, listen: false)
                                     .update(
                                         widget.entryPressure,
                                         widget.usageRate,
@@ -734,7 +729,6 @@ class _SquadPageState extends State<SquadPage>
                                   ")",
                                   style: varTextStyle,
                                 ),
-                                //TODO: musi być lepszy sposób niż takie chainowanie Textów, musi.
                               ],
                             ),
                           )))),
@@ -756,7 +750,7 @@ class _SquadPageState extends State<SquadPage>
                             if (edits != null) {
                               widget.checks.last = edits.last;
                               if (widget.checks.length == 1) {
-                                Provider.of<ActionModel>(context, listen: false)
+                                Provider.of<SquadModel>(context, listen: false)
                                     .changeStarting(
                                         widget.checks.last, widget.index);
                               } else {
@@ -816,7 +810,7 @@ class _SquadPageState extends State<SquadPage>
                 .difference(widget.checkTimes[widget.checkTimes.length - 2])
                 .inSeconds);
     setState(() {
-      Provider.of<ActionModel>(context, listen: false).update(
+      Provider.of<SquadModel>(context, listen: false).update(
           widget.checks.last,
           newUsageRate,
           widget.checkTimes.last,
@@ -891,7 +885,7 @@ class _SquadPageState extends State<SquadPage>
                     const Expanded(
                         flex: 2,
                         child: Row(
-                        children: const [
+                        children:[
                           Text(
                             "Wprowadź czas wyjścia",
                             style: TextStyle(
