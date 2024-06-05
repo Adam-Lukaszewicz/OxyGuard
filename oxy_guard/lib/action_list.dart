@@ -7,6 +7,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:oxy_guard/action/squad_choice.dart';
 import 'package:oxy_guard/models/action_model.dart';
 
+
 import 'global_service.dart';
 
 class ActionList extends StatefulWidget {

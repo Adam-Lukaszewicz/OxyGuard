@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:oxy_guard/context_windows.dart';
 
 import '../../../models/squad_model.dart';
 import '../../../global_service.dart';
@@ -681,11 +682,12 @@ class _SquadPageState extends State<SquadPage>
                       child: ElevatedButton(
                           onPressed: () async {
                             if(!widget.working){
-                              await warningDialog("Nie można wprowadzać nowych pomiarów przed rozpoczęciem pracy");
+                              await warningDialog(context, "Nie można wprowadzać nowych pomiarów przed rozpoczęciem pracy");
                               return;
                             }
-                            final parse = await checkListDialog(
-                                (oxygenValue! ~/ 10) * 10 + 10);
+                            final parse = await checkListDialog(context, checkController,
+                                (oxygenValue! ~/ 10) * 10 + 10, 
+                                "Wprowadź nowy pomiar");
                             if (parse == null) return;
                             final valid = parse.toDouble();
                             setState(() {
@@ -778,7 +780,7 @@ class _SquadPageState extends State<SquadPage>
                           vertical: 8.0, horizontal: 5.0),
                       child: ElevatedButton(
                           onPressed: () async {
-                            var newExitTime = await exitTimeDialog();
+                            var newExitTime = await timeDialog(context, exitSecondsController, exitMinuteController, "Wprowadź czas wyjścia");
                             if (newExitTime == null) return;
                             setState(() {
                               widget.exitTime = newExitTime;
@@ -822,154 +824,154 @@ class _SquadPageState extends State<SquadPage>
     });
   }
 
-  Future<int?> checkListDialog(double oxygenValue) => showDialog<int>(
-      context: context,
-      builder: (context) => Dialog(
-            child: SizedBox(
-              height: 500,
-              width: 600,
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Expanded(
-                        flex: 2,
-                        child: Text(
-                          "Wprowadź nowy pomiar",
-                          style: TextStyle(
-                              fontSize: 25, fontWeight: FontWeight.bold),
-                        )),
-                    Expanded(
-                      flex: 6,
-                      child: ListWheelScrollView.useDelegate(
-                          controller: checkController,
-                          itemExtent: 50,
-                          perspective: 0.005,
-                          overAndUnderCenterOpacity: 0.6,
-                          squeeze: 1,
-                          magnification: 1.1,
-                          diameterRatio: 1.5,
-                          physics: const FixedExtentScrollPhysics(),
-                          childDelegate: ListWheelChildBuilderDelegate(
-                            childCount: (oxygenValue.toInt() - 60) ~/ 10,
-                            builder: (context, index) =>
-                                Text("${oxygenValue.toInt() - 10 * index}",
-                                    style: const TextStyle(
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.bold,
-                                    )),
-                          )),
-                    ),
-                    Expanded(
-                        flex: 2,
-                        child: TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop(oxygenValue.toInt() -
-                                  10 * checkController.selectedItem);
-                            },
-                            child: const Text("Wprowadź")))
-                  ],
-                ),
-              ),
-            ),
-          ));
+  // Future<int?> checkListDialog(double oxygenValue) => showDialog<int>(
+  //     context: context,
+  //     builder: (context) => Dialog(
+  //           child: SizedBox(
+  //             height: 500,
+  //             width: 600,
+  //             child: Padding(
+  //               padding: const EdgeInsets.all(15.0),
+  //               child: Column(
+  //                 mainAxisAlignment: MainAxisAlignment.center,
+  //                 children: [
+  //                   const Expanded(
+  //                       flex: 2,
+  //                       child: Text(
+  //                         "Wprowadź nowy pomiar",
+  //                         style: TextStyle(
+  //                             fontSize: 25, fontWeight: FontWeight.bold),
+  //                       )),
+  //                   Expanded(
+  //                     flex: 6,
+  //                     child: ListWheelScrollView.useDelegate(
+  //                         controller: checkController,
+  //                         itemExtent: 50,
+  //                         perspective: 0.005,
+  //                         overAndUnderCenterOpacity: 0.6,
+  //                         squeeze: 1,
+  //                         magnification: 1.1,
+  //                         diameterRatio: 1.5,
+  //                         physics: const FixedExtentScrollPhysics(),
+  //                         childDelegate: ListWheelChildBuilderDelegate(
+  //                           childCount: (oxygenValue.toInt() - 60) ~/ 10,
+  //                           builder: (context, index) =>
+  //                               Text("${oxygenValue.toInt() - 10 * index}",
+  //                                   style: const TextStyle(
+  //                                     fontSize: 30,
+  //                                     fontWeight: FontWeight.bold,
+  //                                   )),
+  //                         )),
+  //                   ),
+  //                   Expanded(
+  //                       flex: 2,
+  //                       child: TextButton(
+  //                           onPressed: () {
+  //                             Navigator.of(context).pop(oxygenValue.toInt() -
+  //                                 10 * checkController.selectedItem);
+  //                           },
+  //                           child: const Text("Wprowadź")))
+  //                 ],
+  //               ),
+  //             ),
+  //           ),
+  //         ));
 
-  Future<int?> exitTimeDialog() => showDialog<int>(
-      context: context,
-      builder: (context) => Dialog(
-            child: SizedBox(
-              height: 500,
-              width: 600,
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Expanded(
-                        flex: 2,
-                        child: Row(
-                        children:[
-                          Text(
-                            "Wprowadź czas wyjścia",
-                            style: TextStyle(
-                                fontSize: 25, fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            "(min)",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.normal), 
-                          ),
-                        ],
-                      )),
-                    Expanded(
-                      flex: 6,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: 100,
-                            child: ListWheelScrollView.useDelegate(
-                                controller: exitMinuteController,
-                                itemExtent: 50,
-                                perspective: 0.005,
-                                overAndUnderCenterOpacity: 0.6,
-                                squeeze: 1,
-                                magnification: 1.1,
-                                diameterRatio: 1.5,
-                                physics: const FixedExtentScrollPhysics(),
-                                childDelegate: ListWheelChildBuilderDelegate(
-                                  childCount: 16,
-                                  builder: (context, index) => Text("$index",
-                                      style: const TextStyle(
-                                          fontSize: 25,
-                                          fontWeight: FontWeight.bold)),
-                                )),
-                          ),
-                          Container(
-                            width: 10,
-                            padding: const EdgeInsets.only(bottom: 18),
-                            child: const Text(":",
-                                style: TextStyle(
-                                    fontSize: 25, fontWeight: FontWeight.bold)),
-                          ),
-                          SizedBox(
-                            width: 100,
-                            child: ListWheelScrollView.useDelegate(
-                                controller: exitSecondsController,
-                                itemExtent: 50,
-                                perspective: 0.005,
-                                overAndUnderCenterOpacity: 0.6,
-                                squeeze: 1,
-                                magnification: 1.1,
-                                diameterRatio: 1.5,
-                                physics: const FixedExtentScrollPhysics(),
-                                childDelegate: ListWheelChildBuilderDelegate(
-                                  childCount: 4,
-                                  builder: (context, index) => Text(
-                                      "${index * 15}",
-                                      style: const TextStyle(
-                                          fontSize: 25,
-                                          fontWeight: FontWeight.bold)),
-                                )),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                        flex: 2,
-                        child: TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop(
-                                  15 * exitSecondsController.selectedItem +
-                                      60 * exitMinuteController.selectedItem);
-                            },
-                            child: const Text("Wprowadź")))
-                  ],
-                ),
-              ),
-            ),
-          ));
+  // Future<int?> exitTimeDialog() => showDialog<int>(
+  //     context: context,
+  //     builder: (context) => Dialog(
+  //           child: SizedBox(
+  //             height: 500,
+  //             width: 600,
+  //             child: Padding(
+  //               padding: const EdgeInsets.all(15.0),
+  //               child: Column(
+  //                 mainAxisAlignment: MainAxisAlignment.center,
+  //                 children: [
+  //                   const Expanded(
+  //                       flex: 2,
+  //                       child: Row(
+  //                       children:[
+  //                         Text(
+  //                           "Wprowadź czas wyjścia",
+  //                           style: TextStyle(
+  //                               fontSize: 25, fontWeight: FontWeight.bold),
+  //                         ),
+  //                         Text(
+  //                           "(min)",
+  //                           style: TextStyle(
+  //                               fontSize: 16, fontWeight: FontWeight.normal), 
+  //                         ),
+  //                       ],
+  //                     )),
+  //                   Expanded(
+  //                     flex: 6,
+  //                     child: Row(
+  //                       mainAxisAlignment: MainAxisAlignment.center,
+  //                       children: [
+  //                         SizedBox(
+  //                           width: 100,
+  //                           child: ListWheelScrollView.useDelegate(
+  //                               controller: exitMinuteController,
+  //                               itemExtent: 50,
+  //                               perspective: 0.005,
+  //                               overAndUnderCenterOpacity: 0.6,
+  //                               squeeze: 1,
+  //                               magnification: 1.1,
+  //                               diameterRatio: 1.5,
+  //                               physics: const FixedExtentScrollPhysics(),
+  //                               childDelegate: ListWheelChildBuilderDelegate(
+  //                                 childCount: 16,
+  //                                 builder: (context, index) => Text("$index",
+  //                                     style: const TextStyle(
+  //                                         fontSize: 25,
+  //                                         fontWeight: FontWeight.bold)),
+  //                               )),
+  //                         ),
+  //                         Container(
+  //                           width: 10,
+  //                           padding: const EdgeInsets.only(bottom: 18),
+  //                           child: const Text(":",
+  //                               style: TextStyle(
+  //                                   fontSize: 25, fontWeight: FontWeight.bold)),
+  //                         ),
+  //                         SizedBox(
+  //                           width: 100,
+  //                           child: ListWheelScrollView.useDelegate(
+  //                               controller: exitSecondsController,
+  //                               itemExtent: 50,
+  //                               perspective: 0.005,
+  //                               overAndUnderCenterOpacity: 0.6,
+  //                               squeeze: 1,
+  //                               magnification: 1.1,
+  //                               diameterRatio: 1.5,
+  //                               physics: const FixedExtentScrollPhysics(),
+  //                               childDelegate: ListWheelChildBuilderDelegate(
+  //                                 childCount: 4,
+  //                                 builder: (context, index) => Text(
+  //                                     "${index * 15}",
+  //                                     style: const TextStyle(
+  //                                         fontSize: 25,
+  //                                         fontWeight: FontWeight.bold)),
+  //                               )),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                   Expanded(
+  //                       flex: 2,
+  //                       child: TextButton(
+  //                           onPressed: () {
+  //                             Navigator.of(context).pop(
+  //                                 15 * exitSecondsController.selectedItem +
+  //                                     60 * exitMinuteController.selectedItem);
+  //                           },
+  //                           child: const Text("Wprowadź")))
+  //                 ],
+  //               ),
+  //             ),
+  //           ),
+  //         ));
 
   Future<List<double>?> editChecksDialog() => showDialog<List<double>>(
       context: context,
@@ -1122,32 +1124,32 @@ class _SquadPageState extends State<SquadPage>
         }
       });
 
-  Future<void> warningDialog(String warningText) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('OSTRZEŻENIE'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Center(child: Text(warningText)),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+  // Future<void> warningDialog(warningText) async {
+  //   return showDialog<void>(
+  //     context: context,
+  //     barrierDismissible: false, // user must tap button!
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: const Text('OSTRZEŻENIE'),
+  //         content: SingleChildScrollView(
+  //           child: ListBody(
+  //             children: <Widget>[
+  //               Center(child: Text(warningText)),
+  //             ],
+  //           ),
+  //         ),
+  //         actions: <Widget>[
+  //           TextButton(
+  //             child: const Text('OK'),
+  //             onPressed: () {
+  //               Navigator.of(context).pop();
+  //             },
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 }
 
 class LeftTriangle extends CustomClipper<Path> {

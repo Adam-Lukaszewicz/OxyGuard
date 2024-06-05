@@ -6,6 +6,7 @@ import 'package:oxy_guard/action/squad_choice.dart';
 import 'package:oxy_guard/action_list.dart';
 import 'package:oxy_guard/firebase_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:oxy_guard/context_windows.dart';
 
 import 'global_service.dart';
 
@@ -48,51 +49,67 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   late FixedExtentScrollController secondsController;
   late FixedExtentScrollController minuteController;
-int _counter = 0;
-int _time = 0;
+int _extremePressure = 0;
+int _startingPressure = 0;
+int _timePeriod = 0;
 
   @override
   void initState() {
     super.initState();
-    _loadCounter();
-    _loadTime();
+    _loadExtremePresssure();
+    _loadStartingPresssure();
+    _loadTimePeriod();
     secondsController = FixedExtentScrollController();
     minuteController = FixedExtentScrollController();
   }
 
-  Future<void> _loadCounter() async {
+  Future<void> _loadExtremePresssure() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _counter = (prefs.getInt('licznik') ?? 0);
+      _extremePressure = (prefs.getInt('extremePressure') ?? 0);
     });
   }
-  Future<void> _loadTime() async {
+  Future<void> _loadTimePeriod() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _counter = (prefs.getInt('time') ?? 0);
+      _timePeriod = (prefs.getInt('timePeriod') ?? 0);
     });
   }
-  Future<void> _incrementCounter() async {
+  Future<void> _loadStartingPresssure() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _counter = (prefs.getInt('licznik') ?? 0) + 1;
-      prefs.setInt('licznik', _counter);
+      _startingPressure = (prefs.getInt('startingPressure') ?? 0);
     });
   }
-  Future<void> _setTime(int value) async {
+  Future<void> _setExtremePresssure(int value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _time = value;
-      prefs.setInt('time', _time);
+      _extremePressure=value;
+      prefs.setInt('extremePressure', value);
     });
   }
+  Future<void> _setTimePeriod(int value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _timePeriod=value;
+      prefs.setInt('timePeriod', value );
+    });
+  }
+    Future<void> _setStartingPresssure(int value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _startingPressure=value;
+      prefs.setInt('startingPressure', value);
+    });
+  }
+
 
 @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("OxyGuard"),
+        toolbarHeight: MediaQuery.of(context).size.height*0.18,
+        title: Image.asset('media_files/logo.png', fit: BoxFit.scaleDown, width: 250,),
         centerTitle: true,
       ),
       drawer: Drawer(
@@ -100,32 +117,196 @@ int _time = 0;
           children: [
                     DrawerHeader(
                       child: Center(
-                      child: Text(
-                        "Ustawienia",
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.inverseSurface,
-                          fontSize: 40,
+                      child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          'media_files/logo.png',
+                          fit: BoxFit.scaleDown,
+                          width: 120,
                         ),
-                      ),
+                        Text(
+                          "Ustawienia",
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurface, // corrected color property
+                            fontSize: 20,
+                          ),
+                        )
+                      ],
+                    ),
                     ),
                     ),
                     ElevatedButton(
-                      onPressed: _incrementCounter,
-                      child: const Center(
-                        child: Text("dodaj")
-                      ),
-                    ),
-                    Center(child: Text('Licznik: $_counter')),
-                    ElevatedButton(
-                      onPressed: () async{
-                      var value = await timeDialog();
-                      _setTime(value!);
+                      onPressed: () async {                  
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Placeholder(
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height/2-50), // Dodaj padding od góry
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Center(
+                                        child: Text(
+                                          "powrót",
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            height: 5,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
                       },
                       child: const Center(
-                        child: Text("dodaj")
+                        child: Text("Wybór zmiany")
                       ),
                     ),
-                    Center(child: Text('czas: $_time')),
+                    ElevatedButton(
+                      onPressed: () async {                 
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Placeholder(
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height/2-50), // Dodaj padding od góry
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Center(
+                                        child: Text(
+                                          "powrót",
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            height: 5,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      child: const Center(
+                        child: Text("Wybór kadry")
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: ()async {      
+                        var value = await timeDialog(context, secondsController, minuteController, "wprowadz nowy pomiar");
+                        _setTimePeriod(value ?? 0);
+                      },
+                      child: Center(
+                        child: Text("Okres pomiarów (${_timePeriod~/60}min, ${_timePeriod%60}s)")
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: ()async {      
+                        var value = await checkListDialog(context, secondsController, 330, "wprowadz nowy pomiar");
+                        _setStartingPresssure(value ?? 0);
+                      },
+                      child: Center(
+                        child: Text("Ciśnienie początkowe ($_startingPressure)")
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: ()async {      
+                        var value = await checkListDialog(context, secondsController, _startingPressure-10>0?_startingPressure - 10 : 0, "wprowadz nowy pomiar");
+                        _setExtremePresssure(value ?? 0);
+                      },
+                      child: Center(
+                        child: Text("Ciśnienie graniczne ($_extremePressure)")
+                      ),
+                    ),
+                    //Center(child: Text('Licznik: $_counter')),
+                    //Center(child: Text('czas: $_time')),
+                    ElevatedButton(
+                      onPressed: () async {      
+                        //var value = await timeDialog(context, secondsController, minuteController, "wprowadz nowy pomiar");
+                        //_setTime(value!);            
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Placeholder(
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height/2-50), // Dodaj padding od góry
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Center(
+                                        child: Text(
+                                          "powrót",
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            height: 5,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      child: const Center(
+                        child: Text("Archiwum")
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {               
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Placeholder(
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height/2-50), // Dodaj padding od góry
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Center(
+                                        child: Text(
+                                          "powrót",
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            height: 5,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      child: const Center(
+                        child: Text("Wyloguj")
+                      ),
+                    ),
                   ],
         ),
         backgroundColor: Theme.of(context).primaryColorLight,
@@ -133,8 +314,52 @@ int _time = 0;
       ),
       body: Center(
         child: Column(
+
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Placeholder(
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height/2-50), // Dodaj padding od góry
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Center(
+                                child: Text(
+                                  "powrót",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    height: 5,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+              style: ButtonStyle(
+                maximumSize: MaterialStateProperty.all(Size(MediaQuery.of(context).size.width*0.7, double.infinity)),
+              ),
+              child: const Center(child: Text(
+                "Szybki start",
+                style: TextStyle(
+                  fontSize: 27,
+                  height: 4,
+                ),
+                ))
+              ),
+              SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -142,8 +367,17 @@ int _time = 0;
                   MaterialPageRoute(builder: (context) => const ActionList()),
                 );
               },
-              child: const Center(child: Text("Dołącz do akcji"))
+              style: ButtonStyle(
+                maximumSize: MaterialStateProperty.all(Size(MediaQuery.of(context).size.width*0.7, double.infinity)),
               ),
+              child: const Center(child: Text(
+                "Dołącz do akcji",
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ))
+              ),
+              SizedBox(height: 20),
               ElevatedButton(
               onPressed: () {
                 GlobalService.databaseSevice.addAction(GlobalService.currentAction);
@@ -151,10 +385,17 @@ int _time = 0;
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const SquadChoice()),
-                  //Ten skok nie będzie od razu do managmentu, jak na razie robię przykład UI
                 );
               },
-              child: const Center(child: Text("Stwórz akcję"))
+              style: ButtonStyle(
+                maximumSize: MaterialStateProperty.all(Size(MediaQuery.of(context).size.width*0.7, double.infinity)),
+              ),
+              child: const Center(child: Text(
+                "Stwórz akcję",
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ))
               ),
           ],
         ),
@@ -162,101 +403,7 @@ int _time = 0;
     );
   }
 
-  Future<int?> timeDialog() => showDialog<int>(
-      context: context,
-      builder: (context) => Dialog(
-            child: SizedBox(
-              height: 500,
-              width: 600,
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Expanded(
-                        flex: 2,
-                        child: Row(
-                          children: [
-                            Text(
-                              "Wprowadź czas wyjś",
-                              style: TextStyle(
-                                  fontSize: 25, fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              "(min)",
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.normal),
-                            ),
-                          ],
-                        )),
-                    Expanded(
-                      flex: 6,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: 100,
-                            child: ListWheelScrollView.useDelegate(
-                                controller: minuteController,
-                                itemExtent: 50,
-                                perspective: 0.005,
-                                overAndUnderCenterOpacity: 0.6,
-                                squeeze: 1,
-                                magnification: 1.1,
-                                diameterRatio: 1.5,
-                                physics: const FixedExtentScrollPhysics(),
-                                childDelegate: ListWheelChildBuilderDelegate(
-                                  childCount: 16,
-                                  builder: (context, index) => Text("$index",
-                                      style: const TextStyle(
-                                          fontSize: 25,
-                                          fontWeight: FontWeight.bold)),
-                                )),
-                          ),
-                          Container(
-                            width: 10,
-                            padding: const EdgeInsets.only(bottom: 18),
-                            child: const Text(":",
-                                style: TextStyle(
-                                    fontSize: 25, fontWeight: FontWeight.bold)),
-                          ),
-                          SizedBox(
-                            width: 100,
-                            child: ListWheelScrollView.useDelegate(
-                                controller: secondsController,
-                                itemExtent: 50,
-                                perspective: 0.005,
-                                overAndUnderCenterOpacity: 0.6,
-                                squeeze: 1,
-                                magnification: 1.1,
-                                diameterRatio: 1.5,
-                                physics: const FixedExtentScrollPhysics(),
-                                childDelegate: ListWheelChildBuilderDelegate(
-                                  childCount: 4,
-                                  builder: (context, index) => Text(
-                                      "${index * 15}",
-                                      style: const TextStyle(
-                                          fontSize: 25,
-                                          fontWeight: FontWeight.bold)),
-                                )),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                        flex: 2,
-                        child: TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop(
-                                  15 * secondsController.selectedItem +
-                                      60 * minuteController.selectedItem);
-                            },
-                            child: const Text("Wprowadź")))
-                  ],
-                ),
-              ),
-            ),
-          ));
+  
 
 
 }
