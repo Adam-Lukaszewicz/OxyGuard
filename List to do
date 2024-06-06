@@ -1,1 +1,10 @@
-przypadek jeżeli użytkownik nie zezwoli na udostępnianie lokalizacji - jaki tytuł akcji stworzyć
+:Auth
+	Wstępnie będę eksplorował rozwiązanie z firebasea
+:Kadry i zmiany
+	Rozumiem, że kadra to całość załogi jaka jest w danym ośrodku. To znaczy, że będziemy przy authie ściągać sobie listę, ergo trzeba będzie rozbudować bazę danych.
+	Zmiana to będzie wybór paru z listy kadry?
+:Ekran zakończonych
+	Co na nim w ogóle ma być (jeśli jest potrzebny), bo aktualnie cykl życia nie jest ukończony, akcje nigdy się nie kończą
+:Podłączenie ustawień z burger menu z ekranu głównego do startu na waiting pageu
+:Ustawianie składu zmiany na ekranie oczekujących i modyfikacja zmiany na ekranie pracujących
+:Przypadek jeżeli użytkownik nie zezwoli na udostępnianie lokalizacji - jaki tytuł akcji stworzyć
