@@ -1,10 +1,12 @@
-:Auth
-	Wstępnie będę eksplorował rozwiązanie z firebasea
 :Kadry i zmiany
-	Rozumiem, że kadra to całość załogi jaka jest w danym ośrodku. To znaczy, że będziemy przy authie ściągać sobie listę, ergo trzeba będzie rozbudować bazę danych.
+	Kadra to całość załogi jaka jest w danym ośrodku?
 	Zmiana to będzie wybór paru z listy kadry?
+	Teraz działa auth. Zakładając, że myśl o kadrach jest poprawna, trzeba zrobić w bazie kolekcję kadr z podziałami na zmiany którą apka sobie będzie czytać.
 :Ekran zakończonych
 	Co na nim w ogóle ma być (jeśli jest potrzebny), bo aktualnie cykl życia nie jest ukończony, akcje nigdy się nie kończą
 :Podłączenie ustawień z burger menu z ekranu głównego do startu na waiting pageu
 :Ustawianie składu zmiany na ekranie oczekujących i modyfikacja zmiany na ekranie pracujących
 :Przypadek jeżeli użytkownik nie zezwoli na udostępnianie lokalizacji - jaki tytuł akcji stworzyć
+:Funkcjonalność przycisku alarmowego na stronie akcji
+
+:UI - Zmusić Skrabę do rozpoczęcia jakiegoś designu
