@@ -45,7 +45,7 @@ class _WaitingPageState extends State<WaitingPage> with SingleTickerProviderStat
         SizedBox(
           height: screenHeight * 0.15,
           child: TabBar(
-            tabs: [WaitingSquad(text: "R1", index: 0), WaitingSquad(text: "R2", index: 0),WaitingSquad(text: "R3", index: 0),],
+            tabs: [WaitingTab(text: "R1", index: 0), WaitingTab(text: "R2", index: 0),WaitingTab(text: "R3", index: 0),],
             controller: _tabController,
             indicatorColor: Colors.black,
             indicatorPadding: const EdgeInsets.only(bottom: 10),

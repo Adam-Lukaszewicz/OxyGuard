@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../models/squad_model.dart';
 import '../global_service.dart';
+import 'tabs/working/working_page.dart';
 
 class ManagePage extends StatefulWidget {
   SquadModel? chosenAction;
@@ -84,96 +85,18 @@ class _ManagePageState extends State<ManagePage>
                 body: TabBarView(
                   children: [
                     const WaitingPage(),
-                    Category(
+                    WorkingPage(
                       key: ValueKey(
                           Provider.of<SquadModel>(context, listen: true)
                               .workingSquads
                               .length),
                     ),
-                    Category(key: const ValueKey(99)),
+                    WorkingPage(key: const ValueKey(99)),
                   ],
                 )),
           ),
         );
       },
-    );
-  }
-}
-
-class Category extends StatefulWidget {
-  Category({required Key key}) : super(key: key);
-  var size = 0;
-  @override
-  State<Category> createState() => _CategoryState();
-}
-
-class _CategoryState extends State<Category>
-    with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
-  late TabController _tabController;
-  @override
-  bool get wantKeepAlive => true;
-
-  @override
-  void initState() {
-    super.initState();
-    widget.size =
-        Provider.of<SquadModel>(context, listen: false).workingSquads.length;
-    _tabController = TabController(vsync: this, length: widget.size);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  void restartTabController() {
-    _tabController.dispose();
-    _tabController = TabController(
-        vsync: this,
-        length: Provider.of<SquadModel>(context, listen: false)
-            .workingSquads
-            .length);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var screenHeight =
-        MediaQuery.of(GlobalService.navigatorKey.currentContext!)
-                .size
-                .height -
-            MediaQuery.of(GlobalService.navigatorKey.currentContext!)
-                .viewPadding
-                .vertical;
-    return Column(
-      children: [
-        SizedBox(
-          height: screenHeight * 0.15,
-          child: TabBar(
-            tabs: Provider.of<SquadModel>(context, listen: false)
-                .tabs
-                .values
-                .toList(),
-            controller: _tabController,
-            indicatorColor: Colors.black,
-            indicatorPadding: const EdgeInsets.only(bottom: 10),
-            indicatorSize: TabBarIndicatorSize.label,
-            indicator: const UnderlineTabIndicator(
-              borderRadius: BorderRadius.all(Radius.circular(5)),
-              borderSide: BorderSide(color: Colors.black, width: 5),
-            ),
-          ),
-        ),
-        SizedBox(
-          height: screenHeight * 0.75,
-          child: TabBarView(
-              controller: _tabController,
-              children: Provider.of<SquadModel>(context, listen: false)
-                  .workingSquads
-                  .values
-                  .toList()),
-        ),
-      ],
     );
   }
 }

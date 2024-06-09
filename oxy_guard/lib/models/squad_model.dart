@@ -15,7 +15,7 @@ class SquadModel extends ChangeNotifier {
   Map<String, Object> waitingSquads;
   Map<String, SquadPage> workingSquads;
   Map<String, Object> finishedSquads;
-  Map<String, TabSquad> tabs;
+  Map<String, SquadTab> tabs;
   SquadModel(
       {Map<String, double>? oxygenValues,
       Map<String, DateTime>? newestCheckTimes,
@@ -23,7 +23,7 @@ class SquadModel extends ChangeNotifier {
       Map<String, Object>? waitingSquads,
       Map<String, SquadPage>? workingSquads,
       Map<String, Object>? finishedSquads,
-      Map<String, TabSquad>? tabs,
+      Map<String, SquadTab>? tabs,
       Position? actionLocation})
       : oxygenValues = oxygenValues ?? <String, double>{},
         newestCheckTimes = newestCheckTimes ?? <String, DateTime>{},
@@ -31,7 +31,7 @@ class SquadModel extends ChangeNotifier {
         waitingSquads = waitingSquads ?? <String, Object>{},
         workingSquads = workingSquads ?? <String, SquadPage>{},
         finishedSquads = finishedSquads ?? <String, Object>{},
-        tabs = tabs ?? <String, TabSquad>{};
+        tabs = tabs ?? <String, SquadTab>{};
 
 
   double getOxygenRemaining(int index) {
@@ -91,7 +91,7 @@ class SquadModel extends ChangeNotifier {
           text: "R${workingSquads.length + 1}")
     });
     tabs.addAll({
-      (oxygenValues.length - 1).toString(): TabSquad(
+      (oxygenValues.length - 1).toString(): SquadTab(
           text: "R${workingSquads.length}", index: oxygenValues.length - 1)
     });
     notifyListeners();
@@ -132,7 +132,7 @@ class SquadModel extends ChangeNotifier {
                   MapEntry(key.toString(), SquadPage.fromJson(value))),
           finishedSquads: Map.castFrom(jsonDecode(json["FinishedSquads"]!)),
           tabs: Map.castFrom(jsonDecode(json["Tabs"]!)).map((key, value) =>
-              MapEntry(key.toString(), TabSquad.fromJson(value))),
+              MapEntry(key.toString(), SquadTab.fromJson(value))),
         );
 
   SquadModel copyWith({
@@ -142,7 +142,7 @@ class SquadModel extends ChangeNotifier {
     Map<String, Object>? waitingSquads,
     Map<String, SquadPage>? workingSquads,
     Map<String, Object>? finishedSquads,
-    Map<String, TabSquad>? tabs,
+    Map<String, SquadTab>? tabs,
     Position? actionLocation,
   }) {
     return SquadModel(

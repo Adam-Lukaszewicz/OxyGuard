@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class WaitingSquad extends StatelessWidget {
+class WaitingTab extends StatelessWidget {
   var text = "R";
   final int index;
-  WaitingSquad({super.key, required this.text, required this.index});
+  WaitingTab({super.key, required this.text, required this.index});
   
   @override
   Widget build(BuildContext context) {

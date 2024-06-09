@@ -6,11 +6,11 @@ import 'package:provider/provider.dart';
 import '../../../models/squad_model.dart';
 import '../../../global_service.dart';
 
-class TabSquad extends StatefulWidget {
+class SquadTab extends StatefulWidget {
   var text = "R";
   final int index;
-  TabSquad({super.key, required this.text, required this.index});
-  TabSquad.fromJson(Map<String, Object?> json)
+  SquadTab({super.key, required this.text, required this.index});
+  SquadTab.fromJson(Map<String, Object?> json)
       : this(text: json["Text"]! as String, index: json["Index"]! as int);
 
   Map<String, Object?> toJson() {
@@ -18,10 +18,10 @@ class TabSquad extends StatefulWidget {
   }
 
   @override
-  State<TabSquad> createState() => _TabSquadState();
+  State<SquadTab> createState() => _SquadTabState();
 }
 
-class _TabSquadState extends State<TabSquad> {
+class _SquadTabState extends State<SquadTab> {
   late Timer halfSec;
 
   @override
