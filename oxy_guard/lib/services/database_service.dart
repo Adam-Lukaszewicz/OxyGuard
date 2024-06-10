@@ -13,7 +13,7 @@ class DatabaseSevice{
     return _actionsRef.snapshots();
   }
 
-  void addAction(ActionModel actionModel) async {
+  Future<void> addAction(ActionModel actionModel) async {
    DocumentReference doc = await _actionsRef.add(actionModel);
    id = doc.id;
   }

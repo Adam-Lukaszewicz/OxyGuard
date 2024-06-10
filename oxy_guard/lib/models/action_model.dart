@@ -66,8 +66,7 @@ class ActionModel{
 
   void setActionLocation() async {
     actionLocation = await Geolocator.getCurrentPosition();
-    GlobalService.databaseSevice.updateAction(this);
-    listenToChanges();
+    GlobalService.databaseSevice.addAction(this).then((value) => listenToChanges());
   }
 
   ActionModel.fromJson(Map<String, dynamic> json) : this(

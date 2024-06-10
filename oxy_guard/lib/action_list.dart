@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:oxy_guard/action/squad_choice.dart';
@@ -23,14 +24,12 @@ class _ActionListState extends State<ActionList> {
     try {
       placemark = placemarkFromCoordinates(latitude, longitude);
       return placemark;
-    } catch (err) {
+    }on PlatformException catch(err){
+      print("Caught the odd one");
+      return Future.error(err);
+    }catch (err) {
       return Future.error(err);
     }
-  }
-
-  Future<String> addressToString(double latitude, double longitude) async {
-    List<Placemark> address = await getAddress(latitude, longitude);
-    return address.first.country.toString();
   }
 
   @override
@@ -60,14 +59,14 @@ class _ActionListState extends State<ActionList> {
                             child: InkWell(
                           child: ListTile(
                             title: FutureBuilder(
-                              future: getAddress(actionLocation.latitude,
+                              future: placemarkFromCoordinates(actionLocation.latitude,
                                   actionLocation.longitude),
                               builder: (context, snap) {
                                 if (snap.connectionState ==
                                     ConnectionState.done) {
                                   if (snap.hasData) {
                                     final address =
-                                        snap.data!.first.country.toString();
+                                        "${snap.data!.first.street}, ${snap.data!.first.locality}";
                                     return Text(address);
                                   } else if (snap.hasError) {
                                     return const Text("Brak pasującego adresu");

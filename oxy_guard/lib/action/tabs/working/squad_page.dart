@@ -661,6 +661,7 @@ class _SquadPageState extends State<SquadPage>
                             } else {
                               widget.working =
                                   false; //TODO: Wycofywanie roty i przesuwanie do zakończonych
+                                Provider.of<SquadModel>(context, listen: false).endSquadWork(widget.index);
                             }
                           },
                           style: bottomButtonStyle,

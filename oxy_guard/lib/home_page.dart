@@ -327,7 +327,6 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 20),
               ElevatedButton(
               onPressed: () {
-                GlobalService.databaseSevice.addAction(GlobalService.currentAction);
                 GlobalService.currentAction.setActionLocation();
                 Navigator.push(
                   context,

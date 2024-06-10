@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:oxy_guard/action/tabs/finished/finished_squad.dart';
 import 'package:oxy_guard/action/tabs/working/squad_page.dart';
 import 'package:oxy_guard/action/tabs/working/squad_tab.dart';
 
@@ -14,7 +15,7 @@ class SquadModel extends ChangeNotifier {
   Map<String, double> usageRates;
   Map<String, Object> waitingSquads;
   Map<String, SquadPage> workingSquads;
-  Map<String, Object> finishedSquads;
+  Map<String, FinishedSquad> finishedSquads;
   Map<String, SquadTab> tabs;
   SquadModel(
       {Map<String, double>? oxygenValues,
@@ -22,7 +23,7 @@ class SquadModel extends ChangeNotifier {
       Map<String, double>? usageRates,
       Map<String, Object>? waitingSquads,
       Map<String, SquadPage>? workingSquads,
-      Map<String, Object>? finishedSquads,
+      Map<String, FinishedSquad>? finishedSquads,
       Map<String, SquadTab>? tabs,
       Position? actionLocation})
       : oxygenValues = oxygenValues ?? <String, double>{},
@@ -30,7 +31,7 @@ class SquadModel extends ChangeNotifier {
         usageRates = usageRates ?? <String, double>{},
         waitingSquads = waitingSquads ?? <String, Object>{},
         workingSquads = workingSquads ?? <String, SquadPage>{},
-        finishedSquads = finishedSquads ?? <String, Object>{},
+        finishedSquads = finishedSquads ?? <String, FinishedSquad>{},
         tabs = tabs ?? <String, SquadTab>{};
 
 
@@ -98,6 +99,17 @@ class SquadModel extends ChangeNotifier {
     GlobalService.currentAction.update();
   }
 
+  void endSquadWork(int index){
+    SquadPage? ending = workingSquads[index.toString()];
+    if(ending == null) return;
+    double averageUse = ending.checks.first - getOxygenRemaining(index)/(DateTime.now().difference(ending.checkTimes.first)).inSeconds;
+    finishedSquads.addAll({index.toString():FinishedSquad(name: ending.text, index: index, averageUse: averageUse)});
+    workingSquads.remove(index.toString());
+    tabs.remove(index.toString());
+    notifyListeners();
+    GlobalService.currentAction.update();
+  }
+
   Map<String, dynamic> toJson() {
     return {
       "OxygenValues": jsonEncode(oxygenValues),
@@ -130,7 +142,7 @@ class SquadModel extends ChangeNotifier {
           workingSquads: Map.castFrom(jsonDecode(json["WorkingSquads"]!)).map(
               (key, value) =>
                   MapEntry(key.toString(), SquadPage.fromJson(value))),
-          finishedSquads: Map.castFrom(jsonDecode(json["FinishedSquads"]!)),
+          finishedSquads: Map.castFrom(jsonDecode(json["FinishedSquads"]!)).map((key, value) => MapEntry(key.toString(), FinishedSquad.fromJson(value))),
           tabs: Map.castFrom(jsonDecode(json["Tabs"]!)).map((key, value) =>
               MapEntry(key.toString(), SquadTab.fromJson(value))),
         );
@@ -141,7 +153,7 @@ class SquadModel extends ChangeNotifier {
     Map<String, DateTime>? newestCheckTimes,
     Map<String, Object>? waitingSquads,
     Map<String, SquadPage>? workingSquads,
-    Map<String, Object>? finishedSquads,
+    Map<String, FinishedSquad>? finishedSquads,
     Map<String, SquadTab>? tabs,
     Position? actionLocation,
   }) {

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:oxy_guard/action/tabs/finished/finished_page.dart';
 import 'package:oxy_guard/action/tabs/waiting/waiting_page.dart';
 import 'package:provider/provider.dart';
 
@@ -91,7 +92,7 @@ class _ManagePageState extends State<ManagePage>
                               .workingSquads
                               .length),
                     ),
-                    WorkingPage(key: const ValueKey(99)),
+                    FinishedPage(),
                   ],
                 )),
           ),
