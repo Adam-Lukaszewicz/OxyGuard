@@ -5,6 +5,7 @@ import 'package:oxy_guard/action_list.dart';
 import 'package:oxy_guard/context_windows.dart';
 import 'package:oxy_guard/global_service.dart';
 import 'package:oxy_guard/login_page.dart';
+import 'package:oxy_guard/models/personnel/worker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
@@ -142,7 +143,10 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () async {                 
+                      onPressed: () async {
+                        //EXTREMELY TEMPORARY JUST TO TEST DATABASE
+                        GlobalService.currentPersonnel.addWorker(Worker(name: "Jan", surname: "Kowalski"));
+                        //END EXTREMELY TEMPORARY JUST TO TEST DATABASE                 
                         Navigator.push(
                           context,
                           MaterialPageRoute(

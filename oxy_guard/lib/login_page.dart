@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:oxy_guard/context_windows.dart';
+import 'package:oxy_guard/global_service.dart';
 import 'package:oxy_guard/main.dart';
 import 'package:oxy_guard/register_page.dart';
 
@@ -86,6 +87,7 @@ class _LoginPageState extends State<LoginPage> {
                           if(!credential.user!.emailVerified){
                             throw Exception("Adres e-mail musi być zweryfikowany, aby się zalogować");
                           }
+                          GlobalService.databaseSevice.assignTeam(GlobalService.currentPersonnel);
                           Navigator.push(
                           context,
                           MaterialPageRoute(
