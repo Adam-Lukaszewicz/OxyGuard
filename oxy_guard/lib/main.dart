@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:oxy_guard/firebase_options.dart';
+import 'package:oxy_guard/home_page.dart';
 import 'package:oxy_guard/login_page.dart';
 
 import 'global_service.dart';
@@ -31,7 +33,26 @@ class OxyGuard extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const LoginPage(),
+      home: _getLandingPage()
     );
   }
+
+  Widget _getLandingPage() {
+  return StreamBuilder<User?>(
+    stream: FirebaseAuth.instance.authStateChanges(),
+    builder: (BuildContext context, snapshot) {
+      if (snapshot.hasData) {
+        if (snapshot.data!.providerData.length == 1) { // logged in using email and password
+          return snapshot.data!.emailVerified
+              ? const HomePage()
+              : const HomePage();//Here we can check if the already logged in user is valid, skipped for now
+        } else { // logged in using other providers
+          return const HomePage();
+        }
+      } else {
+        return const LoginPage();
+      }
+    },
+  );
+}
 }
