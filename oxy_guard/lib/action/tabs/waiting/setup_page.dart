@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:oxy_guard/context_windows.dart';
 
 import '../../../models/squad_model.dart';
 
@@ -21,6 +23,7 @@ class _SetupPage2State extends State<SetupPage> {
   var checkInterval = 600;
   var entryPressure = 300;
   var exitPressure = 60;
+  String localization = "Wprowadź lokalizację";
 
   late FixedExtentScrollController pressureController;
   late FixedExtentScrollController secondsController;
@@ -34,6 +37,33 @@ class _SetupPage2State extends State<SetupPage> {
         fontWeight: FontWeight.bold,
         fontSize: 20,
       )));
+  TextEditingController location = TextEditingController();
+  TextEditingController firstPerson = TextEditingController();
+  TextEditingController secondPerson = TextEditingController();
+  TextEditingController thirdPerson = TextEditingController();
+  
+
+Future<void> _loadExtremePresssure() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      exitPressure = (prefs.getInt('extremePressure') ?? 60);
+    });
+  }
+
+  Future<void> _loadTimePeriod() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      checkInterval = (prefs.getInt('timePeriod') ?? 600);
+    });
+  }
+
+  Future<void> _loadStartingPresssure() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      entryPressure = (prefs.getInt('startingPressure') ?? 300);
+    });
+  }
+
 
   @override
   void initState() {
@@ -45,6 +75,10 @@ class _SetupPage2State extends State<SetupPage> {
 
   @override
   void dispose() {
+    location.dispose();
+    firstPerson.dispose();
+    secondPerson.dispose();
+    thirdPerson.dispose();
     pressureController.dispose();
     secondsController.dispose();
     minuteController.dispose();
@@ -59,48 +93,94 @@ class _SetupPage2State extends State<SetupPage> {
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
           child: Column(
             children: [
-              Padding(
+              Container(
                 padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    const Icon(Icons.location_pin, size: 40),
-                    Text("Lokalizacja", style: baseTextStyle),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    const Icon(Icons.fire_extinguisher, size: 40),
-                    Text(
-                      "Jacek Jaworek",
-                      style: baseTextStyle,
+            child: Row(
+              children: [
+                Icon(Icons.location_pin, size: 40),
+                SizedBox(width: 16),
+                ElevatedButton(
+                  onPressed: ()async {
+                    var selectedLocation = await selectFromList(context, ['piwnica', 'parter', 'pierwsze piętro', 'drugie piętro', 'poddasze', 'garaż', 'inne']);
+                    setState(() {
+                      localization = selectedLocation ?? "Wprowadź lokalizację";
+                    });
+                  },
+                  style: ButtonStyle(
+                    minimumSize: MaterialStateProperty.all(Size(
+                      MediaQuery.of(context).size.width * 0.58, // Szerokość przycisku wynosi 50% szerokości ekranu
+                      55, // Wysokość przycisku - domyślna wartość
+                    ),),
+                    shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15), // Zaokrąglenie narożników na 15
+                      ),
                     ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.fire_extinguisher,
-                      size: 40,
+                  ),
+                  
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          localization,
+                          style: TextStyle(
+                            //fontSize: 24,
+                          ),
+                        ),
+                        Icon(Icons.keyboard_arrow_down), // Ikona strzałki w dół
+                        
+                      ],
                     ),
-                    Text("Jakub Nalepa", style: baseTextStyle),
-                  ],
+                  ),
                 ),
+              ],
+            ),),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: 
+                Container(
+                  padding: const EdgeInsets.all(8.0),
+                  width: MediaQuery.of(context).size.width * 0.75, // Szerokość pola tekstowego to 80% szerokości ekranu
+                  child: TextField(
+                    controller: firstPerson,
+                    decoration: InputDecoration(
+                      icon: Icon(Icons.fire_extinguisher, size: 40),
+                      iconColor: Colors.black,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15.0), 
+                        borderSide: BorderSide(
+                          width: 2.0, 
+                        ),
+                      ),
+                      hintText: 'Wprowadź Imię pierwszej osoby',
+                    ),
+                  ),
+                )
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    const Icon(Icons.fire_extinguisher, size: 40),
-                    Text("Janusz Kowalski", style: baseTextStyle),
-                  ],
-                ),
-              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: 
+                Container(
+                  padding: const EdgeInsets.all(8.0),
+                  width: MediaQuery.of(context).size.width * 0.75, // Szerokość pola tekstowego to 80% szerokości ekranu
+                  child: TextField(
+                    controller: secondPerson,
+                    decoration: InputDecoration(
+                      icon: Icon(Icons.fire_extinguisher, size: 40),
+                      iconColor: Colors.black,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15.0), 
+                        borderSide: BorderSide(
+                          width: 2.0, 
+                        ),
+                      ),
+                      hintText: 'Wprowadź Imię drugiej osoby',
+                    ),
+                  ),
+                )
+              )
+
             ],
           ),
         ),

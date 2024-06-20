@@ -216,3 +216,55 @@ Future<int?> timeDialog(BuildContext context, FixedExtentScrollController second
       },
     );
   }
+
+Future<String?> selectFromList(BuildContext context, List<String> items) async {
+
+  return showDialog<String?>(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Wybierz pole'),
+        content: Container(
+          constraints: BoxConstraints(maxHeight: 300.0),
+          width: double.maxFinite,
+          child: ListView(
+            shrinkWrap: true,
+            children: [
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Wprowadź',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0), 
+                  ),
+                ),
+                onSubmitted: (text){Navigator.of(context).pop(text);},
+              ),
+              SizedBox(height: 10.0),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: List.generate(items.length, (index) {
+                  return ListTile(
+                    title: Text(items[index]),
+                    onTap: () {
+                      String selectedItem = items[index];
+                      Navigator.of(context).pop(selectedItem);
+                    },
+                  );
+                }),
+              ),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text('Anuluj'),
+            onPressed: () {
+              Navigator.of(context).pop(); 
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
