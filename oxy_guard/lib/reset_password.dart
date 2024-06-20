@@ -7,25 +7,22 @@ import 'package:oxy_guard/main.dart';
 
 import 'home_page.dart';
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+class ResetPasswordPage extends StatefulWidget {
+  const ResetPasswordPage({super.key});
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<ResetPasswordPage> createState() => _ResetPasswordPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
-  bool passwordShowing = false;
-  bool verifyShowing = false;
+class _ResetPasswordPageState extends State<ResetPasswordPage> {
+
   TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController verifyController = TextEditingController();
+
 
   @override
   void dispose() {
     emailController.dispose();
-    passwordController.dispose();
-    verifyController.dispose();
+
     super.dispose();
   }
 
@@ -57,68 +54,25 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
               const SizedBox(height: 50),
-              TextField(
-                controller: passwordController,
-                decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    hintText: 'Wprowadź hasło',
-                    suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            passwordShowing = !passwordShowing;
-                          });
-                        },
-                        icon: passwordShowing
-                            ? const Icon(Icons.remove_red_eye_outlined)
-                            : const Icon(Icons.remove_red_eye))),
-                obscureText: !passwordShowing,
-              ),
-              const SizedBox(height: 50),
-              TextField(
-                controller: verifyController,
-                decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    hintText: 'Wprowadź hasło ponownie',
-                    suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            verifyShowing = !verifyShowing;
-                          });
-                        },
-                        icon: verifyShowing
-                            ? const Icon(Icons.remove_red_eye_outlined)
-                            : const Icon(Icons.remove_red_eye))),
-                obscureText: !verifyShowing,
-              ),
-              const SizedBox(height: 50),
               ElevatedButton(
                   onPressed: () async {
-                    if(passwordController.text == verifyController.text){
+                    
                       try {
                         final credential = await FirebaseAuth.instance
-                            .createUserWithEmailAndPassword(
+                            .sendPasswordResetEmail(
                           email: emailController.text,
-                          password: passwordController.text,
                         );
-                        await credential.user?.sendEmailVerification();
                         Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const LoginPage()),
                       );
                       
-                            succesDialog(context, "Na twój adres email został wysłany link aktywujący konto. Otwórz go w celu aktywacji konta.");
-                            
+                            succesDialog(context, "Na twój adres email został wysłany link resetujący hasło. Otwórz go w celu zmiany hasła.");
                       } on FirebaseAuthException catch (e) {
                         print(e.code);
                         print(e.message);
                         switch (e.code) {
-                          case 'email-already-in-use':
-                            warningDialog(context, "Istnieje już konto związane z podanym adresem email. Podaj inny adres.");
-                            break;
-                          case 'weak-password':
-                            warningDialog(context, "Hasło jest za krótkie. Hasło powinno składać się z min. sześciu znaków");
-                            break;
                           case 'invalid-email':
                             warningDialog(context, "Błędny format adresu email.");
                             break;
@@ -126,14 +80,11 @@ class _RegisterPageState extends State<RegisterPage> {
                             warningDialog(context, "Brak połączenia sieciowego.");
                             break;
                           case 'channel-error':
-                            warningDialog(context, "Wprowadź dane logowania.");
+                            warningDialog(context, "Wprowadź adres email.");
                             break;
                           default:
                             warningDialog(context, "Wystąpił nieznany błąd: ${e.code} ${e.message} Spróbuj ponownie później.");
                         } 
-                    }
-                    }else{
-                      warningDialog(context, "Hasła muszą być takie same");
                     }
                   },
                   style: ButtonStyle(
@@ -143,7 +94,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   child: const Center(
                       child: Text(
-                    "Zarejestruj się",
+                    "Zresetuj hasło",
                     style: TextStyle(
                       fontSize: 20,
                     ),

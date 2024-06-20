@@ -163,7 +163,44 @@ Future<int?> timeDialog(BuildContext context, FixedExtentScrollController second
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Center(child: Text(warningText)),
+                Center(
+                child: Text(
+                  warningText,
+                  style: TextStyle(fontSize: 17), // Zmieniony rozmiar czcionki treści
+                ),
+              ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+    Future<void> succesDialog(BuildContext context, warningText) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('SUKCES'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Center(
+                child: Text(
+                  warningText,
+                  style: TextStyle(fontSize: 17), // Zmieniony rozmiar czcionki treści
+                ),
+              ),
               ],
             ),
           ),
