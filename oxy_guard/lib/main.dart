@@ -42,13 +42,8 @@ class OxyGuard extends StatelessWidget {
     stream: FirebaseAuth.instance.authStateChanges(),
     builder: (BuildContext context, snapshot) {
       if (snapshot.hasData) {
-        if (snapshot.data!.providerData.length == 1) { // logged in using email and password
-          return snapshot.data!.emailVerified
-              ? const HomePage()
-              : const HomePage();//Here we can check if the already logged in user is valid, skipped for now
-        } else { // logged in using other providers
-          return const HomePage();
-        }
+        GlobalService.databaseSevice.assignTeam(GlobalService.currentPersonnel);
+        return const HomePage();
       } else {
         return const LoginPage();
       }

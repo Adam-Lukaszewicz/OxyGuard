@@ -93,6 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                           throw Exception(
                               "Adres e-mail musi być zweryfikowany, aby się zalogować");
                         }
+                        GlobalService.databaseSevice.assignTeam(GlobalService.currentPersonnel);
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
