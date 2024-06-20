@@ -1,10 +1,15 @@
-:Kadry i zmiany
-	Kadra to całość załogi jaka jest w danym ośrodku?
-	Zmiana to będzie wybór paru z listy kadry?
-	Teraz działa auth. Zakładając, że myśl o kadrach jest poprawna, trzeba zrobić w bazie kolekcję kadr z podziałami na zmiany którą apka sobie będzie czytać.
-:Ekran zakończonych
-	Co na nim w ogóle ma być (jeśli jest potrzebny), bo aktualnie cykl życia nie jest ukończony, akcje nigdy się nie kończą
+:Kadry
+	Rozbudować ekran kadry (PersonnelPage) - wyświetlanie całej kadry, dodawanie nowych zmian
+	(wybór z całej listy kadry za pomocą jakiejś check listy, czasy zaczęcia i skończenia zmiany),
+	Modyfikacja i kadry i zmian
+:Zmiany
+	Popup z drawera do wyboru istniejących zmian
+:Archiwum
+	Ekran z listą akcji zakończonych przez to konto
+	(można przemyśleć, co chcemy o akcji zapisać do archiwum, na ten moment zapisuje się "snapshot" akcji w momencie kiedy została zakończona)
 :Podłączenie ustawień z burger menu z ekranu głównego do startu na waiting pageu
+	Propozycja - do global service dodać też statyczna klasę Settings, w której będziemy chować te wartości ustawiane w burger menu, wtedy łatwo będzie inicjalizować
+	je w odcinkach
 :Ustawianie składu zmiany na ekranie oczekujących i modyfikacja zmiany na ekranie pracujących
 :Przypadek jeżeli użytkownik nie zezwoli na udostępnianie lokalizacji - jaki tytuł akcji stworzyć
 :Funkcjonalność przycisku alarmowego na stronie akcji
