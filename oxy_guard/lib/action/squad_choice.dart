@@ -38,7 +38,7 @@ class _SquadChoiceState extends State<SquadChoice> {
                     );
                   }
                 },
-                child: const Center(child: Text("Wybierz odcinek TODO"))),
+                child: const Center(child: Text("Wybierz odcinek"))),
             ElevatedButton(
                 onPressed: () {
                   Navigator.push(

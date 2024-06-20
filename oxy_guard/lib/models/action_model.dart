@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:oxy_guard/models/squad_model.dart';
 
@@ -29,6 +31,8 @@ class ActionModel{
                 speed: 0,
                 speedAccuracy: 0
                 );
+  
+  late StreamSubscription<DocumentSnapshot<Object?>> _listener;
 
   void addSquad(SquadModel newSquad){
     squads.addAll({internalIndex.toString():newSquad});
@@ -48,7 +52,7 @@ class ActionModel{
   }
 
   void listenToChanges() {
-    GlobalService.databaseSevice.getActionsRef().listen((event) {
+    _listener = GlobalService.databaseSevice.getActionsRef().listen((event) {
       ActionModel newData = event.data() as ActionModel;
       squads.forEach((key, value) { 
         newData.squads.forEach((nkey, nvalue) {
@@ -64,7 +68,11 @@ class ActionModel{
     });
   }
 
-  void setActionLocation() async {
+  void finishListening(){
+    _listener.cancel();
+  }
+
+  Future<void> setActionLocation() async {
     actionLocation = await Geolocator.getCurrentPosition();
     GlobalService.databaseSevice.addAction(this).then((value) => listenToChanges());
   }

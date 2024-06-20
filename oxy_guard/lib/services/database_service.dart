@@ -10,6 +10,7 @@ import 'package:oxy_guard/models/personnel/personnel_model.dart';
 class DatabaseSevice{
   final _firestore = FirebaseFirestore.instance;
   late final CollectionReference _actionsRef;
+  late final CollectionReference _endedRef;
   late DocumentReference _personnelRef;
   late String actionId;
   DatabaseSevice(){
@@ -18,7 +19,8 @@ class DatabaseSevice{
 
   void assignTeam(PersonnelModel personnelModel) async {
     if(FirebaseAuth.instance.currentUser != null){
-      _personnelRef = _firestore.collection("teams").doc(FirebaseAuth.instance.currentUser!.uid).withConverter<PersonnelModel>(fromFirestore: (snapshots, _) => PersonnelModel.fromJson(snapshots.data()!), toFirestore: (personnelModel, _) => personnelModel.toJson());  
+      _personnelRef = _firestore.collection("user_data").doc(FirebaseAuth.instance.currentUser!.uid).withConverter<PersonnelModel>(fromFirestore: (snapshots, _) => PersonnelModel.fromJson(snapshots.data()!), toFirestore: (personnelModel, _) => personnelModel.toJson());  
+      _endedRef = _firestore.collection("user_data").doc(FirebaseAuth.instance.currentUser!.uid).collection("archive").withConverter<ActionModel>(fromFirestore: (snapshots, _) => ActionModel.fromJson(snapshots.data()!), toFirestore: (actionModel, _) => actionModel.toJson());
     }
     DocumentSnapshot personnel = await getPersonnel();
     if(personnel.exists){
@@ -51,6 +53,12 @@ class DatabaseSevice{
 
   void updatePersonnel(PersonnelModel personnelModel){
     _personnelRef.update(personnelModel.toJson());
+  }
+
+  void endAction(ActionModel actionModel){
+    actionModel.finishListening();
+    _endedRef.add(actionModel);
+    _actionsRef.doc(actionId).delete();
   }
 
   Stream<DocumentSnapshot<Object?>> getActionsRef(){
