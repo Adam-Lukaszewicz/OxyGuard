@@ -24,6 +24,9 @@ class _SetupPage2State extends State<SetupPage> {
   var entryPressure = 300;
   var exitPressure = 60;
   String localization = "Wprowadź lokalizację";
+  String firstPerson = "Wprowadź imię";
+  String secondPerson = "Wprowadź imię";
+  List<String> squadList = ['Kamil', 'Kacper', 'Marek', 'Krystian', 'Damian'];
 
   late FixedExtentScrollController pressureController;
   late FixedExtentScrollController secondsController;
@@ -37,10 +40,7 @@ class _SetupPage2State extends State<SetupPage> {
         fontWeight: FontWeight.bold,
         fontSize: 20,
       )));
-  TextEditingController location = TextEditingController();
-  TextEditingController firstPerson = TextEditingController();
-  TextEditingController secondPerson = TextEditingController();
-  TextEditingController thirdPerson = TextEditingController();
+
   
 
 Future<void> _loadExtremePresssure() async {
@@ -67,18 +67,17 @@ Future<void> _loadExtremePresssure() async {
 
   @override
   void initState() {
+    super.initState();
+    _loadStartingPresssure();
+    _loadTimePeriod();
+    _loadExtremePresssure();
     pressureController = FixedExtentScrollController();
     secondsController = FixedExtentScrollController();
     minuteController = FixedExtentScrollController();
-    super.initState();
   }
 
   @override
   void dispose() {
-    location.dispose();
-    firstPerson.dispose();
-    secondPerson.dispose();
-    thirdPerson.dispose();
     pressureController.dispose();
     secondsController.dispose();
     minuteController.dispose();
@@ -95,91 +94,124 @@ Future<void> _loadExtremePresssure() async {
             children: [
               Container(
                 padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Icon(Icons.location_pin, size: 40),
-                SizedBox(width: 16),
-                ElevatedButton(
-                  onPressed: ()async {
-                    var selectedLocation = await selectFromList(context, ['piwnica', 'parter', 'pierwsze piętro', 'drugie piętro', 'poddasze', 'garaż', 'inne']);
-                    setState(() {
-                      localization = selectedLocation ?? "Wprowadź lokalizację";
-                    });
-                  },
-                  style: ButtonStyle(
-                    minimumSize: MaterialStateProperty.all(Size(
-                      MediaQuery.of(context).size.width * 0.58, // Szerokość przycisku wynosi 50% szerokości ekranu
-                      55, // Wysokość przycisku - domyślna wartość
-                    ),),
-                    shape: MaterialStateProperty.all(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15), // Zaokrąglenie narożników na 15
-                      ),
-                    ),
-                  ),
-                  
-                  child: Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          localization,
-                          style: TextStyle(
-                            //fontSize: 24,
+                child: Row(
+                  children: [
+                    Icon(Icons.location_pin, size: 40),
+                    SizedBox(width: 16),
+                    ElevatedButton(
+                      onPressed: ()async {
+                        var selectedItem = await selectFromList(context, ['piwnica', 'parter', 'pierwsze piętro', 'drugie piętro', 'poddasze', 'garaż', 'inne']);
+                        setState(() {
+                          localization = selectedItem ?? localization;
+                        });
+                      },
+                      style: ButtonStyle(
+                        minimumSize: MaterialStateProperty.all(Size(
+                          MediaQuery.of(context).size.width * 0.58,
+                          55,
+                        ),),
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
                           ),
                         ),
-                        Icon(Icons.keyboard_arrow_down), // Ikona strzałki w dół
-                        
-                      ],
+                      ),
+                      
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              localization,
+                            ),
+                            Icon(Icons.keyboard_arrow_down),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: 
-                Container(
-                  padding: const EdgeInsets.all(8.0),
-                  width: MediaQuery.of(context).size.width * 0.75, // Szerokość pola tekstowego to 80% szerokości ekranu
-                  child: TextField(
-                    controller: firstPerson,
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.fire_extinguisher, size: 40),
-                      iconColor: Colors.black,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15.0), 
-                        borderSide: BorderSide(
-                          width: 2.0, 
-                        ),
-                      ),
-                      hintText: 'Wprowadź Imię pierwszej osoby',
-                    ),
-                  ),
-                )
               ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: 
-                Container(
-                  padding: const EdgeInsets.all(8.0),
-                  width: MediaQuery.of(context).size.width * 0.75, // Szerokość pola tekstowego to 80% szerokości ekranu
-                  child: TextField(
-                    controller: secondPerson,
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.fire_extinguisher, size: 40),
-                      iconColor: Colors.black,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15.0), 
-                        borderSide: BorderSide(
-                          width: 2.0, 
+              Container(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Icon(Icons.fire_extinguisher, size: 40),
+                    SizedBox(width: 16),
+                    ElevatedButton(
+                      onPressed: ()async {
+                        var selectedItem = await selectFromList(context, squadList);
+                        setState(() {
+                          firstPerson = selectedItem ?? firstPerson;
+                        });
+                      },
+                      style: ButtonStyle(
+                        minimumSize: MaterialStateProperty.all(Size(
+                          MediaQuery.of(context).size.width * 0.58,
+                          55,
+                        ),),
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
                         ),
                       ),
-                      hintText: 'Wprowadź Imię drugiej osoby',
+                      
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              firstPerson,
+                            ),
+                            Icon(Icons.keyboard_arrow_down),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
-                )
-              )
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Icon(Icons.fire_extinguisher, size: 40),
+                    SizedBox(width: 16),
+                    ElevatedButton(
+                      onPressed: ()async {
+                        var selectedItem = await selectFromList(context, squadList);
+                        setState(() {
+                          secondPerson = selectedItem ?? secondPerson;
+                        });
+                      },
+                      style: ButtonStyle(
+                        minimumSize: MaterialStateProperty.all(Size(
+                          MediaQuery.of(context).size.width * 0.58,
+                          55,
+                        ),),
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                      ),
+                      
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              secondPerson,
+                            ),
+                            Icon(Icons.keyboard_arrow_down),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
 
             ],
           ),
@@ -347,32 +379,32 @@ Future<void> _loadExtremePresssure() async {
                     Expanded(
                       flex: 6,
                       child: ListWheelScrollView.useDelegate(
-                          controller: pressureController,
-                          itemExtent: 50,
-                          perspective: 0.005,
-                          overAndUnderCenterOpacity: 0.6,
-                          squeeze: 1,
-                          magnification: 1.1,
-                          diameterRatio: 1.5,
-                          physics: const FixedExtentScrollPhysics(),
-                          childDelegate: ListWheelChildBuilderDelegate(
-                            childCount: 34,
-                            builder: (context, index) =>
-                                Text("${330 - 10 * index}",
-                                    style: const TextStyle(
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.bold,
-                                    )),
-                          )),
+                        controller: pressureController,
+                        itemExtent: 50,
+                        perspective: 0.005,
+                        overAndUnderCenterOpacity: 0.6,
+                        squeeze: 1,
+                        magnification: 1.1,
+                        diameterRatio: 1.5,
+                        physics: const FixedExtentScrollPhysics(),
+                        childDelegate: ListWheelChildBuilderDelegate(
+                          childCount: 34,
+                          builder: (context, index) =>
+                              Text("${330 - 10 * index}",
+                                  style: const TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
+                                  )),
+                        )),
                     ),
                     Expanded(
-                        flex: 2,
-                        child: TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop(
-                                  330 - 10 * pressureController.selectedItem);
-                            },
-                            child: const Text("Wprowadź")))
+                      flex: 2,
+                      child: TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(
+                                330 - 10 * pressureController.selectedItem);
+                          },
+                          child: const Text("Wprowadź")))
                   ],
                 ),
               ),

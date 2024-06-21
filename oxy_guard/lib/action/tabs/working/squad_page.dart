@@ -116,6 +116,11 @@ class SquadPage extends StatefulWidget {
 
 class _SquadPageState extends State<SquadPage>
     with AutomaticKeepAliveClientMixin {
+    String localization = "";
+    String firstPerson = "";
+    String secondPerson = "";
+    String thirdPerson = "";
+    List<String> squadList = ['Kamil', 'Kacper', 'Marek', 'Krystian', 'Damian'];
   //Declarations
   final lastCheckStopwatch = Stopwatch();
   final workStartStopwatch = Stopwatch();
@@ -213,51 +218,158 @@ class _SquadPageState extends State<SquadPage>
                             child: Column(
                               children: [
                                 Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8.0),
-                                  child: Row(
-                                    children: [
-                                      const Icon(Icons.location_pin),
-                                      Text("Lokalizacja",
-                                          style: squadTextStyle),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                  padding: const EdgeInsets.symmetric(vertical: 8.0),
                                   child: Row(
                                     children: [
                                       const Icon(Icons.fire_extinguisher),
-                                      Text(
-                                        "Jacek Jaworek",
-                                        style: squadTextStyle,
-                                      ),
+                                      localization.isEmpty
+                                          ? Expanded(
+                                                    child: ElevatedButton(
+                                                      onPressed: ()async {
+                                                        var selectedItem = await selectFromList(context, ['piwnica', 'parter', 'pierwsze piętro', 'drugie piętro', 'poddasze', 'garaż', 'inne']);
+                                                        setState(() {
+                                                          localization = selectedItem ?? "";
+                                                        });
+                                                      },
+                                                      style: ButtonStyle(
+                                                        minimumSize: MaterialStateProperty.all(Size(
+                                                          MediaQuery.of(context).size.width * 0.58,
+                                                          45,
+                                                        ),),
+                                                        shape: MaterialStateProperty.all(
+                                                          RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(15),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      
+                                                      child: Center(
+                                                        child: Row(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: [
+                                                            Text(
+                                                              "Wprowadź lokalizację",
+                                                            ),
+                                                            Icon(Icons.keyboard_arrow_down),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                            )
+                                          : Text(
+                                              localization,
+                                              style: squadTextStyle,
+                                            ),
                                     ],
-                                  ),
-                                ),
+                                ),),
                                 Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                  padding: const EdgeInsets.symmetric(vertical: 8.0),
                                   child: Row(
                                     children: [
                                       const Icon(Icons.fire_extinguisher),
-                                      Text("Jakub Nalepa",
-                                          style: squadTextStyle),
+                                      firstPerson.isEmpty
+                                          ? Expanded(
+                                                    child: ElevatedButton(
+                                                      onPressed: ()async {
+                                                        var selectedItem = await selectFromList(context, squadList);
+                                                        setState(() {
+                                                          firstPerson = selectedItem ?? "";
+                                                        });
+                                                      },
+                                                      style: ButtonStyle(
+                                                        minimumSize: MaterialStateProperty.all(Size(
+                                                          MediaQuery.of(context).size.width * 0.58,
+                                                          45,
+                                                        ),),
+                                                        shape: MaterialStateProperty.all(
+                                                          RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(15),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      
+                                                      child: Center(
+                                                        child: Row(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: [
+                                                            Text(
+                                                              "Wprowadź imię",
+                                                            ),
+                                                            Icon(Icons.keyboard_arrow_down),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                            )
+                                          : Text(
+                                              firstPerson,
+                                              style: squadTextStyle,
+                                            ),
                                     ],
-                                  ),
-                                ),
+                                ),),
                                 Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                  padding: const EdgeInsets.symmetric(vertical: 8.0),
                                   child: Row(
                                     children: [
                                       const Icon(Icons.fire_extinguisher),
-                                      Text("Janusz Kowalski",
-                                          style: squadTextStyle),
+                                      secondPerson.isEmpty
+                                          ? Expanded(
+                                                    child: ElevatedButton(
+                                                      onPressed: ()async {
+                                                        var selectedItem = await selectFromList(context, squadList);
+                                                        setState(() {
+                                                          secondPerson = selectedItem ?? "";
+                                                        });
+                                                      },
+                                                      style: ButtonStyle(
+                                                        minimumSize: MaterialStateProperty.all(Size(
+                                                          MediaQuery.of(context).size.width * 0.58,
+                                                          45,
+                                                        ),),
+                                                        shape: MaterialStateProperty.all(
+                                                          RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(15),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      
+                                                      child: Center(
+                                                        child: Row(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: [
+                                                            Text(
+                                                              "Wprowadź imię",
+                                                            ),
+                                                            Icon(Icons.keyboard_arrow_down),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                            )
+                                          : Text(
+                                              secondPerson,
+                                              style: squadTextStyle,
+                                            ),
                                     ],
-                                  ),
-                                ),
+                                ),),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: Row(
+                                    children: [
+                                      thirdPerson.isNotEmpty
+                                        ? Expanded(
+                                          child: Row(
+                                            children: [
+                                              const Icon(Icons.fire_extinguisher),
+                                                Text(
+                                                    thirdPerson,
+                                                    style: squadTextStyle,
+                                                )
+                                            ],
+                                          ),)
+                                        : Container()
+                                    ],
+                                ),),
                               ],
                             ),
                           )),
