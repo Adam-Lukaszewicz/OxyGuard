@@ -11,7 +11,9 @@ class WaitingPage extends StatefulWidget {
   State<WaitingPage> createState() => _WaitingPageState();
 }
 
-class _WaitingPageState extends State<WaitingPage> with SingleTickerProviderStateMixin{
+class _WaitingPageState extends State<WaitingPage> with AutomaticKeepAliveClientMixin, TickerProviderStateMixin{
+    @override
+  bool get wantKeepAlive => true;
 
   var genericButtonStyle = const ButtonStyle(
       backgroundColor: MaterialStatePropertyAll(Colors.grey),

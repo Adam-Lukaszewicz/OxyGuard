@@ -7,6 +7,7 @@ import 'package:oxy_guard/global_service.dart';
 import 'package:oxy_guard/login_page.dart';
 import 'package:oxy_guard/models/personnel/worker.dart';
 import 'package:oxy_guard/personnel/personnel_page.dart';
+import 'package:oxy_guard/shift_squad_choice.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
@@ -125,47 +126,22 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => Placeholder(
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  top: MediaQuery.of(context).size.height / 2 -
-                                      50), // Dodaj padding od góry
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Center(
-                                  child: Text(
-                                    "powrót",
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      height: 5,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
+                      builder: (context) => ShiftSquadChoicePage()
+                    ));
                 },
                 child: const Center(child: Text("Wybór zmiany")),
               ),
-              ElevatedButton(
-                onPressed: () async {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PersonnelPage()
-                    ),
-                  );
-                },
-                child: const Center(child: Text("Ekran kadry")),
-              ),
+              // ElevatedButton(
+              //   onPressed: () async {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //         builder: (context) => PersonnelPage()
+              //       ),
+              //     );
+              //   },
+              //   child: const Center(child: Text("Ekran kadry")),
+              // ),
               ElevatedButton(
                 onPressed: () async {
                   var value = await timeDialog(context, secondsController,

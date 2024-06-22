@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:oxy_guard/global_service.dart';
+import 'package:oxy_guard/models/personnel/worker.dart';
 
 
 
@@ -218,7 +220,7 @@ Future<int?> timeDialog(BuildContext context, FixedExtentScrollController second
   }
 
 Future<String?> selectFromList(BuildContext context, List<String> items) async {
-
+final TextEditingController _locationController = TextEditingController();
   return showDialog<String?>(
     context: context,
     builder: (BuildContext context) {
@@ -230,14 +232,32 @@ Future<String?> selectFromList(BuildContext context, List<String> items) async {
           child: ListView(
             shrinkWrap: true,
             children: [
-              TextField(
-                decoration: InputDecoration(
-                  labelText: 'Wprowadź',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0), 
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _locationController,
+                      decoration: InputDecoration(labelText: 'Wprowadź'),
+                    ),
                   ),
-                ),
-                onSubmitted: (text){Navigator.of(context).pop(text);},
+
+                  Container(
+                    alignment: Alignment.center,
+                    child: ElevatedButton(
+                      onPressed: (){
+                        if (_locationController.text.trim().isNotEmpty ) {
+                          Navigator.of(context).pop(_locationController.text.trim());
+                        } else {
+                          warningDialog(context, "Wprowadź dane");
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: CircleBorder(),
+                      ),
+                      child: Icon(Icons.add),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 10.0),
               Column(
@@ -260,6 +280,83 @@ Future<String?> selectFromList(BuildContext context, List<String> items) async {
             child: Text('Anuluj'),
             onPressed: () {
               Navigator.of(context).pop(); 
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+Future<Worker?> selectWorkerFromList(BuildContext context) async {
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+
+  return showDialog<Worker?>(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Wybierz pole'),
+        content: Container(
+          constraints: BoxConstraints(maxHeight: 300.0),
+          width: double.maxFinite,
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _firstNameController,
+                      decoration: InputDecoration(labelText: 'Imię'),
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: TextField(
+                      controller: _lastNameController,
+                      decoration: InputDecoration(labelText: 'Nazwisko'),
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    child: ElevatedButton(
+                      onPressed: (){
+                        if (_firstNameController.text.trim().isNotEmpty && _lastNameController.text.trim().isNotEmpty) {
+                          Navigator.of(context).pop(Worker(name: _firstNameController.text.trim(), surname: _lastNameController.text.trim()));
+                        } else {
+                          warningDialog(context, "Wprowadź imię oraz nazwisko");
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: CircleBorder(),
+                      ),
+                      child: Icon(Icons.add),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10.0),
+              Expanded(
+                child: ListView(
+                  shrinkWrap: true,
+                  children: GlobalService.currentPersonnel.team
+                      .map((worker) => ListTile(
+                            title: Text('${worker.name} ${worker.surname}'),
+                            onTap: () {
+                              Navigator.of(context).pop(worker);
+                            },
+                          ))
+                      .toList(),
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text('Anuluj'),
+            onPressed: () {
+              Navigator.of(context).pop();
             },
           ),
         ],

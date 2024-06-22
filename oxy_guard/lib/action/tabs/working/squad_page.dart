@@ -3,6 +3,7 @@ import 'dart:convert';
 //import 'dart:html';
 
 import 'package:flutter/material.dart';
+import 'package:oxy_guard/models/personnel/worker.dart';
 import 'package:provider/provider.dart';
 import 'package:oxy_guard/context_windows.dart';
 
@@ -116,11 +117,12 @@ class SquadPage extends StatefulWidget {
 
 class _SquadPageState extends State<SquadPage>
     with AutomaticKeepAliveClientMixin {
+
+
     String localization = "";
-    String firstPerson = "";
-    String secondPerson = "";
-    String thirdPerson = "";
-    List<String> squadList = ['Kamil', 'Kacper', 'Marek', 'Krystian', 'Damian'];
+    Worker? firstPerson;
+    Worker? secondPerson;
+    Worker? thirdPerson;
   //Declarations
   final lastCheckStopwatch = Stopwatch();
   final workStartStopwatch = Stopwatch();
@@ -221,7 +223,7 @@ class _SquadPageState extends State<SquadPage>
                                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                                   child: Row(
                                     children: [
-                                      const Icon(Icons.fire_extinguisher),
+                                      const Icon(Icons.location_pin),
                                       localization.isEmpty
                                           ? Expanded(
                                                     child: ElevatedButton(
@@ -267,13 +269,13 @@ class _SquadPageState extends State<SquadPage>
                                   child: Row(
                                     children: [
                                       const Icon(Icons.fire_extinguisher),
-                                      firstPerson.isEmpty
+                                      firstPerson==null
                                           ? Expanded(
                                                     child: ElevatedButton(
                                                       onPressed: ()async {
-                                                        var selectedItem = await selectFromList(context, squadList);
+                                                        var selectedItem = await selectWorkerFromList(context);
                                                         setState(() {
-                                                          firstPerson = selectedItem ?? "";
+                                                          firstPerson = selectedItem;
                                                         });
                                                       },
                                                       style: ButtonStyle(
@@ -302,7 +304,7 @@ class _SquadPageState extends State<SquadPage>
                                                     ),
                                             )
                                           : Text(
-                                              firstPerson,
+                                              firstPerson != null ? '${firstPerson!.name} ${firstPerson!.surname}' : 'Wprowadź imię',
                                               style: squadTextStyle,
                                             ),
                                     ],
@@ -312,13 +314,13 @@ class _SquadPageState extends State<SquadPage>
                                   child: Row(
                                     children: [
                                       const Icon(Icons.fire_extinguisher),
-                                      secondPerson.isEmpty
+                                      secondPerson==null
                                           ? Expanded(
                                                     child: ElevatedButton(
                                                       onPressed: ()async {
-                                                        var selectedItem = await selectFromList(context, squadList);
+                                                        var selectedItem = await selectWorkerFromList(context);
                                                         setState(() {
-                                                          secondPerson = selectedItem ?? "";
+                                                          secondPerson = selectedItem;
                                                         });
                                                       },
                                                       style: ButtonStyle(
@@ -347,7 +349,7 @@ class _SquadPageState extends State<SquadPage>
                                                     ),
                                             )
                                           : Text(
-                                              secondPerson,
+                                              secondPerson != null ? '${secondPerson!.name} ${secondPerson!.surname}' : 'Wprowadź imię',
                                               style: squadTextStyle,
                                             ),
                                     ],
@@ -356,13 +358,13 @@ class _SquadPageState extends State<SquadPage>
                                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                                   child: Row(
                                     children: [
-                                      thirdPerson.isNotEmpty
+                                      thirdPerson!=null
                                         ? Expanded(
                                           child: Row(
                                             children: [
                                               const Icon(Icons.fire_extinguisher),
                                                 Text(
-                                                    thirdPerson,
+                                                    '${firstPerson!.name} ${firstPerson!.surname}',
                                                     style: squadTextStyle,
                                                 )
                                             ],

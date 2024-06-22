@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:oxy_guard/global_service.dart';
+import 'package:oxy_guard/models/personnel/personnel_model.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:oxy_guard/context_windows.dart';
+import 'package:oxy_guard/models/personnel/worker.dart';
 
 import '../../../models/squad_model.dart';
 
@@ -12,7 +15,10 @@ class SetupPage extends StatefulWidget {
   State<SetupPage> createState() => _SetupPage2State();
 }
 
-class _SetupPage2State extends State<SetupPage> {
+class _SetupPage2State extends State<SetupPage> with AutomaticKeepAliveClientMixin{
+
+    @override
+  bool get wantKeepAlive => true;  
   var baseTextStyle = const TextStyle(
     fontSize: 26,
   );
@@ -24,9 +30,11 @@ class _SetupPage2State extends State<SetupPage> {
   var entryPressure = 300;
   var exitPressure = 60;
   String localization = "Wprowadź lokalizację";
-  String firstPerson = "Wprowadź imię";
-  String secondPerson = "Wprowadź imię";
-  List<String> squadList = ['Kamil', 'Kacper', 'Marek', 'Krystian', 'Damian'];
+  Worker? firstPerson;
+  Worker? secondPerson;
+  Worker? thirdPerson;
+  List<Worker> workerList = []; 
+  bool _tripleSqaud = false;
 
   late FixedExtentScrollController pressureController;
   late FixedExtentScrollController secondsController;
@@ -68,6 +76,9 @@ Future<void> _loadExtremePresssure() async {
   @override
   void initState() {
     super.initState();
+
+    workerList.addAll( GlobalService.currentPersonnel.team);
+    
     _loadStartingPresssure();
     _loadTimePeriod();
     _loadExtremePresssure();
@@ -140,7 +151,7 @@ Future<void> _loadExtremePresssure() async {
                     SizedBox(width: 16),
                     ElevatedButton(
                       onPressed: ()async {
-                        var selectedItem = await selectFromList(context, squadList);
+                        var selectedItem = await selectWorkerFromList(context);
                         setState(() {
                           firstPerson = selectedItem ?? firstPerson;
                         });
@@ -162,7 +173,7 @@ Future<void> _loadExtremePresssure() async {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              firstPerson,
+                              firstPerson != null ? '${firstPerson!.name} ${firstPerson!.surname}' : 'Wprowadź imię',
                             ),
                             Icon(Icons.keyboard_arrow_down),
                           ],
@@ -180,7 +191,11 @@ Future<void> _loadExtremePresssure() async {
                     SizedBox(width: 16),
                     ElevatedButton(
                       onPressed: ()async {
-                        var selectedItem = await selectFromList(context, squadList);
+                        List<String> workierString = [];
+                        for (Worker worker in workerList) {
+  workierString.add("${worker.name}+ ${worker.surname}"); // Przykładowo wypisanie imion pracowników
+}
+                        var selectedItem = await selectWorkerFromList(context);
                         setState(() {
                           secondPerson = selectedItem ?? secondPerson;
                         });
@@ -202,7 +217,7 @@ Future<void> _loadExtremePresssure() async {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              secondPerson,
+                              secondPerson != null ? '${secondPerson!.name} ${secondPerson!.surname}' : 'Wprowadź imię',
                             ),
                             Icon(Icons.keyboard_arrow_down),
                           ],
@@ -212,6 +227,62 @@ Future<void> _loadExtremePresssure() async {
                   ],
                 ),
               ),
+              _tripleSqaud 
+                ? Container(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Icon(Icons.fire_extinguisher, size: 40),
+                    SizedBox(width: 16),
+                    ElevatedButton(
+                      onPressed: ()async {
+                        var selectedItem = await selectWorkerFromList(context);
+                        setState(() {
+                          thirdPerson = selectedItem ?? thirdPerson;
+                        });
+                      },
+                      style: ButtonStyle(
+                        minimumSize: MaterialStateProperty.all(Size(
+                          MediaQuery.of(context).size.width * 0.58,
+                          55,
+                        ),),
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                      ),
+                      
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              thirdPerson != null ? '${thirdPerson!.name} ${thirdPerson!.surname}' : 'Wprowadź imię',
+                            ),
+                            Icon(Icons.keyboard_arrow_down),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : Container(
+                alignment: Alignment.centerLeft,
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _tripleSqaud = true;
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: CircleBorder(),
+                  ),
+                child: Icon(Icons.add),
+                      
+                ),
+              )
 
             ],
           ),
@@ -344,6 +415,7 @@ Future<void> _loadExtremePresssure() async {
                     Provider.of<SquadModel>(context, listen: false)
                         .startSquadWork(
                             entryPressure, exitPressure, checkInterval);
+                    await succesDialog(context, 'Pomyślnie dodano rotę do pracujących');
                   } else {
                     await warningDialog('Maksymalnie 3 pracujace roty na raz');
                   }
