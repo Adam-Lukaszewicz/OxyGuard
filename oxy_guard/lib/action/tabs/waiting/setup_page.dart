@@ -29,7 +29,7 @@ class _SetupPage2State extends State<SetupPage> with AutomaticKeepAliveClientMix
   var checkInterval = 600;
   var entryPressure = 300;
   var exitPressure = 60;
-  String localization = "Wprowadź lokalizację";
+  String localization = "";
   Worker? firstPerson;
   Worker? secondPerson;
   Worker? thirdPerson;
@@ -132,6 +132,7 @@ Future<void> _loadExtremePresssure() async {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            localization.isEmpty ? const Text("Wprowadź lokalizację") : 
                             Text(
                               localization,
                             ),

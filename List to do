@@ -1,17 +1,9 @@
-:Kadry - zrobione
-	Rozbudować ekran kadry (PersonnelPage) - wyświetlanie całej kadry, dodawanie nowych zmian
-	(wybór z całej listy kadry za pomocą jakiejś check listy, czasy zaczęcia i skończenia zmiany),
-	Modyfikacja i kadry i zmian
-:Zmiany - w obecnej formie nie ma sensu
-	Popup z drawera do wyboru istniejących zmian
 :Archiwum
 	Ekran z listą akcji zakończonych przez to konto
 	(można przemyśleć, co chcemy o akcji zapisać do archiwum, na ten moment zapisuje się "snapshot" akcji w momencie kiedy została zakończona)
 :Podłączenie ustawień z burger menu z ekranu głównego do startu na waiting pageu
 	Propozycja - do global service dodać też statyczna klasę Settings, w której będziemy chować te wartości ustawiane w burger menu, wtedy łatwo będzie inicjalizować
 	je w odcinkach
-:Wybór składu roty - zrobione
-	Ustawianie składu zmiany na ekranie oczekujących i modyfikacja zmiany na ekranie pracujących
 :Dostęp do lokalizacji
 	Przypadek jeżeli użytkownik nie zezwoli na udostępnianie lokalizacji - jaki tytuł akcji stworzyć
 :Przycisk alarmowy
@@ -21,8 +13,6 @@
 	Kolory dobierać za pomocą Theme.of(context).... Pozwoli to ujednolicić kolorystykę aplikacji oraz wprowadzić motyw ciemny
 :Alarmy
 	Alarm dźwiękowy + wizualny przypominający o konieczności wykonania pomiaru
-:Pomiar czasu
-	Pomiar trwanai akcji jest tracony przy jej opuszczeniu
 :Kończenie akcji 
 	co jeżeli osoba A jest w Akcji a osoba B zakończy ją
 :Wskaźniki ciśnienia (trójkąty)

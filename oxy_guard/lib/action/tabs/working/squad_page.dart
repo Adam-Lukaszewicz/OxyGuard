@@ -143,7 +143,6 @@ class SquadPage extends StatefulWidget {
 class _SquadPageState extends State<SquadPage>
     with AutomaticKeepAliveClientMixin {
   //Declarations
-  final lastCheckStopwatch = Stopwatch();
   final workStartStopwatch = Stopwatch();
   late Timer halfSec;
   late FixedExtentScrollController checkController;
@@ -151,6 +150,8 @@ class _SquadPageState extends State<SquadPage>
   late FixedExtentScrollController secondLastCheckController;
   late FixedExtentScrollController exitMinuteController;
   late FixedExtentScrollController exitSecondsController;
+  DateTime? lastCheck;
+
 
   //Placeholder values, consider using late inits
   //var oxygenValue = 320.0;
@@ -185,6 +186,7 @@ class _SquadPageState extends State<SquadPage>
   @override
   void initState() {
     super.initState();
+    lastCheck = widget.checkTimes.isEmpty ? null : widget.checkTimes.last;
     checkController = FixedExtentScrollController();
     exitMinuteController = FixedExtentScrollController();
     exitSecondsController = FixedExtentScrollController();
@@ -341,6 +343,7 @@ class _SquadPageState extends State<SquadPage>
                                                         var selectedItem = await selectWorkerFromList(context);
                                                         setState(() {
                                                           widget.secondPerson = selectedItem;
+                                                          Provider.of<SquadModel>(context, listen: false).update();
                                                         });
                                                       },
                                                       style: ButtonStyle(
@@ -508,8 +511,8 @@ class _SquadPageState extends State<SquadPage>
                                         child: Center(
                                             child: Row(
                                           children: [
-                                            Text(
-                                                "${lastCheckStopwatch.elapsedMilliseconds ~/ 1000 ~/ 60}:${(lastCheckStopwatch.elapsedMilliseconds ~/ 1000 % 60).toInt() < 10 ? "0${(lastCheckStopwatch.elapsedMilliseconds ~/ 1000 % 60).toInt()}" : "${(lastCheckStopwatch.elapsedMilliseconds ~/ 1000 % 60).toInt()}"}",
+                                            lastCheck == null ? Text("0:00", style: varTextStyle,) : Text(
+                                                "${DateTime.now().difference(lastCheck!).inMinutes}:${DateTime.now().difference(lastCheck!).inSeconds % 60 < 10 ? "0${DateTime.now().difference(lastCheck!).inSeconds % 60}" : "${DateTime.now().difference(lastCheck!).inSeconds % 60}"}",
                                                 style: varTextStyle),
                                             Text("min", style: unitTextStyle)
                                           ],
@@ -785,17 +788,20 @@ class _SquadPageState extends State<SquadPage>
                                   workStartStopwatch.reset();
                                 });
                               } else {
+                                setState(() {
                                 widget.working = true;
                                 workStartStopwatch.start();
-                                lastCheckStopwatch.start();
                                 DateTime timestamp = DateTime.now();
                                 widget.checkTimes.add(timestamp);
                                 Provider.of<SquadModel>(context, listen: false).setWorkTimestamp(widget.index, timestamp);
+                                lastCheck = timestamp;
+                                });
                               }
                             } else {
-                              widget.working =
-                                  false;
+                              setState(() {
+                                widget.working = false;
                                 Provider.of<SquadModel>(context, listen: false).endSquadWork(widget.index);
+                              });
                             }
                           },
                           style: bottomButtonStyle,
@@ -844,7 +850,7 @@ class _SquadPageState extends State<SquadPage>
                                         widget.index);
                                 widget.checkTimes.add(timestamp);
                                 widget.checks.add(widget.entryPressure);
-                                lastCheckStopwatch.reset();
+                                lastCheck = timestamp;
                               }
                             });
                           },
