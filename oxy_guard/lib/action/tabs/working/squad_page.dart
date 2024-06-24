@@ -23,7 +23,7 @@ class SquadPage extends StatefulWidget {
   List<double> checks;
   List<DateTime> checkTimes;
   bool working;
-  String localization = "";
+  String localization;
   Worker? firstPerson, secondPerson, thirdPerson;
   SquadPage(
       {super.key,
@@ -39,21 +39,17 @@ class SquadPage extends StatefulWidget {
       List<double>? checks,
       List<DateTime>? checkTimes,
       bool? working,
-      String localization = "",
-      Worker? firstPerson,
-      Worker? secondPerson,
-      Worker? thirdPerson})
+      required this.localization,
+      this.firstPerson,
+      this.secondPerson,
+      this.thirdPerson})
       : exitTime = exitTime ?? 0,
         usageRate = usageRate ?? 10.0 / 60.0,
         returnPressure = returnPressure ?? 100.0,
         plannedReturnPressure = plannedReturnPressure ?? 120.0,
         checks = checks ?? <double>[],
         checkTimes = checkTimes ?? <DateTime>[],
-        working = working ?? false,
-        localization = localization ?? "",
-        firstPerson = firstPerson ?? null,
-        secondPerson = secondPerson ?? null,
-        thirdPerson = thirdPerson ?? null;
+        working = working ?? false;
 
   SquadPage.fromJson(Map<String, dynamic> json)
       : this(
@@ -69,16 +65,10 @@ class SquadPage extends StatefulWidget {
           checks: List<double>.from(jsonDecode(json["Checks"]!)),
           checkTimes: (jsonDecode(json["CheckTimes"]!) as List).map((time) => DateTime.parse(time).toLocal()).toList(),
           working: json["Working"] as bool,
-          localization: json["Localization"] as String? ?? "",
-          firstPerson: json["firstPerson"] != null
-            ? Worker.fromJson(json["firstPerson"] as Map<String, dynamic>)
-            : null,
-          secondPerson: json["secondPerson"] != null
-            ? Worker.fromJson(json["secondPerson"] as Map<String, dynamic>)
-            : null,
-          thirdPerson: json["thirdPerson"] != null
-            ? Worker.fromJson(json["thirdPerson"] as Map<String, dynamic>)
-            : null,
+          localization: json["Localization"]! as String,
+          firstPerson: jsonDecode(json["FirstPerson"]) != null ? Worker.fromJson(jsonDecode(json["FirstPerson"])) : null,
+          secondPerson: jsonDecode(json["SecondPerson"]) != null ? Worker.fromJson(jsonDecode(json["SecondPerson"])) : null,
+          thirdPerson: jsonDecode(json["ThirdPerson"]) != null ? Worker.fromJson(jsonDecode(json["ThirdPerson"])) : null,
 
 
         );
@@ -142,28 +132,16 @@ class SquadPage extends StatefulWidget {
             : throw UnsupportedError('Cannot convert to JSON: $nonEncodable'),
       ),
       "Working": working,
-      "localization": localization,
-      "FirstPerson": firstPerson?.toJson(),
-      "SecondPerson": secondPerson?.toJson(),
-      "ThirdPerson": thirdPerson?.toJson(),
+      "Localization": localization,
+      "FirstPerson": jsonEncode(firstPerson),
+      "SecondPerson": jsonEncode(secondPerson),
+      "ThirdPerson": jsonEncode(thirdPerson),
     };
-  }
-
-  void setPerson (Worker? person)
-  {
-    firstPerson = person;
-    GlobalService.currentAction.update();
   }
 }
 
 class _SquadPageState extends State<SquadPage>
     with AutomaticKeepAliveClientMixin {
-
-
-    String localization = "";
-    Worker? firstPerson;
-    Worker? secondPerson;
-    Worker? thirdPerson;
   //Declarations
   final lastCheckStopwatch = Stopwatch();
   final workStartStopwatch = Stopwatch();
@@ -265,13 +243,13 @@ class _SquadPageState extends State<SquadPage>
                                   child: Row(
                                     children: [
                                       const Icon(Icons.location_pin),
-                                      localization.isEmpty
+                                      widget.localization.isEmpty
                                           ? Expanded(
                                                     child: ElevatedButton(
                                                       onPressed: ()async {
                                                         var selectedItem = await selectFromList(context, ['piwnica', 'parter', 'pierwsze piętro', 'drugie piętro', 'poddasze', 'garaż', 'inne']);
                                                         setState(() {
-                                                          localization = selectedItem ?? "";
+                                                          widget.localization = selectedItem ?? "";
                                                         });
                                                       },
                                                       style: ButtonStyle(
@@ -300,7 +278,7 @@ class _SquadPageState extends State<SquadPage>
                                                     ),
                                             )
                                           : Text(
-                                              localization,
+                                              widget.localization,
                                               style: squadTextStyle,
                                             ),
                                     ],
@@ -317,7 +295,7 @@ class _SquadPageState extends State<SquadPage>
                                                         var selectedItem = await selectWorkerFromList(context);
                                                         setState(() {
                                                           widget.firstPerson = selectedItem;
-                                                                Provider.of<SquadPage>(context, listen: false).setPerson(selectedItem);
+                                                          Provider.of<SquadModel>(context, listen: false).update();
                                                         });
                                                       },
                                                       style: ButtonStyle(
@@ -356,13 +334,13 @@ class _SquadPageState extends State<SquadPage>
                                   child: Row(
                                     children: [
                                       const Icon(Icons.fire_extinguisher),
-                                      secondPerson==null
+                                      widget.secondPerson==null
                                           ? Expanded(
                                                     child: ElevatedButton(
                                                       onPressed: ()async {
                                                         var selectedItem = await selectWorkerFromList(context);
                                                         setState(() {
-                                                          secondPerson = selectedItem;
+                                                          widget.secondPerson = selectedItem;
                                                         });
                                                       },
                                                       style: ButtonStyle(
@@ -391,7 +369,7 @@ class _SquadPageState extends State<SquadPage>
                                                     ),
                                             )
                                           : Text(
-                                              secondPerson != null ? '${secondPerson!.name} ${secondPerson!.surname}' : 'Wprowadź imię',
+                                              widget.secondPerson != null ? '${widget.secondPerson!.name} ${widget.secondPerson!.surname}' : 'Wprowadź imię',
                                               style: squadTextStyle,
                                             ),
                                     ],
@@ -400,7 +378,7 @@ class _SquadPageState extends State<SquadPage>
                                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                                   child: Row(
                                     children: [
-                                      thirdPerson!=null
+                                      widget.thirdPerson!=null
                                         ? Expanded(
                                           child: Row(
                                             children: [
@@ -816,7 +794,7 @@ class _SquadPageState extends State<SquadPage>
                               }
                             } else {
                               widget.working =
-                                  false; //TODO: Wycofywanie roty i przesuwanie do zakończonych
+                                  false;
                                 Provider.of<SquadModel>(context, listen: false).endSquadWork(widget.index);
                             }
                           },
@@ -859,7 +837,7 @@ class _SquadPageState extends State<SquadPage>
                                           .inSeconds);
                                 }
                                 Provider.of<SquadModel>(context, listen: false)
-                                    .update(
+                                    .addCheck(
                                         widget.entryPressure,
                                         widget.usageRate,
                                         timestamp,
@@ -973,7 +951,7 @@ class _SquadPageState extends State<SquadPage>
                 .difference(widget.checkTimes[widget.checkTimes.length - 2])
                 .inSeconds);
     setState(() {
-      Provider.of<SquadModel>(context, listen: false).update(
+      Provider.of<SquadModel>(context, listen: false).addCheck(
           widget.checks.last,
           newUsageRate,
           widget.checkTimes.last,

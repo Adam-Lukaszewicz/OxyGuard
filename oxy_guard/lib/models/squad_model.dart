@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:oxy_guard/action/tabs/finished/finished_squad.dart';
 import 'package:oxy_guard/action/tabs/working/squad_page.dart';
 import 'package:oxy_guard/action/tabs/working/squad_tab.dart';
+import 'package:oxy_guard/models/personnel/worker.dart';
 
 import '../global_service.dart';
 
@@ -57,13 +58,17 @@ class SquadModel extends ChangeNotifier {
     }
   }
 
+  void update(){
+    GlobalService.currentAction.update();
+  }
+
   void setWorkTimestamp(int index, DateTime newTime) {
     newestCheckTimes[index.toString()] = newTime;
     notifyListeners();
     GlobalService.currentAction.update();
   }
 
-  void update(double newOxygen, double usageRate, DateTime newTime, int index) {
+  void addCheck(double newOxygen, double usageRate, DateTime newTime, int index) {
     oxygenValues[index.toString()] = newOxygen;
     usageRates[index.toString()] = usageRate;
     newestCheckTimes[index.toString()] = newTime;
@@ -77,7 +82,7 @@ class SquadModel extends ChangeNotifier {
     GlobalService.currentAction.update();
   }
 
-  void startSquadWork(int entryPressure, int exitPressure, int interval) {
+  void startSquadWork(int entryPressure, int exitPressure, int interval, String localization, Worker? firstPerson, Worker? secondPerson, Worker? thirdPerson) {
     oxygenValues
         .addAll({(oxygenValues.length).toString(): entryPressure.toDouble()});
     usageRates.addAll({(oxygenValues.length - 1).toString(): 10.0 / 60.0});
@@ -89,7 +94,12 @@ class SquadModel extends ChangeNotifier {
           index: oxygenValues.length - 1,
           entryPressure: entryPressure.toDouble(),
           exitPressure: exitPressure,
-          text: "R${workingSquads.length + 1}")
+          text: "R${workingSquads.length + 1}",
+          localization: localization,
+          firstPerson: firstPerson,
+          secondPerson: secondPerson,
+          thirdPerson: thirdPerson,
+          )
     });
     tabs.addAll({
       (oxygenValues.length - 1).toString(): SquadTab(
