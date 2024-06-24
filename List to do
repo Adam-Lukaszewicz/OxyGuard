@@ -29,5 +29,3 @@
 	W menu wyboru powinny być dostępne tylko możliwe ciśnienia (nie większe niż poprzedni pomiar)
 :Edycja pomiarów
 	Możliwość edycji pomiaru przedostatniego pomiarau na większy niż ten ostatni. W takim przypadku ciśnienie w butli rośnie co jest delikatnie mówiąc bezsensem
-:Bug - tworzenie nowej akcji
-	Na jedno uruchomienie aplikacji można stworzyć tylko jedną akcję - próba stworzenia każdej kolejnej po prostu wróci nas do tej pierwszej stworzonej.
