@@ -10,7 +10,7 @@ class GlobalService {
   static DatabaseSevice databaseSevice = DatabaseSevice();
   static bool serviceEnabled = false;
   static LocationPermission permission = LocationPermission.denied;
-  static ActionModel currentAction = ActionModel();
+  static late ActionModel currentAction;
   static PersonnelModel currentPersonnel = PersonnelModel();
 
   static void checkGPSPermission() async {

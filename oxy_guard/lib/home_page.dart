@@ -5,6 +5,7 @@ import 'package:oxy_guard/action_list.dart';
 import 'package:oxy_guard/context_windows.dart';
 import 'package:oxy_guard/global_service.dart';
 import 'package:oxy_guard/login_page.dart';
+import 'package:oxy_guard/models/action_model.dart';
 import 'package:oxy_guard/models/personnel/worker.dart';
 import 'package:oxy_guard/personnel/personnel_page.dart';
 import 'package:oxy_guard/shift_squad_choice.dart';
@@ -291,6 +292,7 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 20),
               ElevatedButton(
                   onPressed: () {
+                    GlobalService.currentAction = ActionModel();
                     GlobalService.currentAction
                         .setActionLocation()
                         .then((none) {
