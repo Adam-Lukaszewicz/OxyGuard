@@ -40,14 +40,20 @@ class SquadPage extends StatefulWidget {
       List<DateTime>? checkTimes,
       bool? working,
       String localization = "",
-      Worker? firstPerson, secondPerson, thirdPerson})
+      Worker? firstPerson,
+      Worker? secondPerson,
+      Worker? thirdPerson})
       : exitTime = exitTime ?? 0,
         usageRate = usageRate ?? 10.0 / 60.0,
         returnPressure = returnPressure ?? 100.0,
         plannedReturnPressure = plannedReturnPressure ?? 120.0,
         checks = checks ?? <double>[],
         checkTimes = checkTimes ?? <DateTime>[],
-        working = working ?? false;
+        working = working ?? false,
+        localization = localization ?? "",
+        firstPerson = firstPerson ?? null,
+        secondPerson = secondPerson ?? null,
+        thirdPerson = thirdPerson ?? null;
 
   SquadPage.fromJson(Map<String, dynamic> json)
       : this(
@@ -92,6 +98,10 @@ class SquadPage extends StatefulWidget {
     List<double>? checks,
     List<DateTime>? checkTimes,
     bool? working,
+    String localization = "",
+    Worker? firstPerson,
+    Worker? secondPerson,
+    Worker? thirdPerson,
   }) {
     return SquadPage(
         usageRate: usageRate ?? this.usageRate,
@@ -106,7 +116,11 @@ class SquadPage extends StatefulWidget {
         entryPressure: entryPressure ?? this.entryPressure,
         exitPressure: exitPressure ?? this.exitPressure,
         text: text ?? this.text,
-        working: working ?? this.working);
+        working: working ?? this.working,
+        localization: localization,
+        firstPerson: firstPerson ?? this.firstPerson,
+        secondPerson: secondPerson ?? this.secondPerson,
+        thirdPerson: thirdPerson ?? this.thirdPerson);
   }
 
   Map<String, dynamic> toJson() {
@@ -133,6 +147,12 @@ class SquadPage extends StatefulWidget {
       "SecondPerson": secondPerson?.toJson(),
       "ThirdPerson": thirdPerson?.toJson(),
     };
+  }
+
+  void setPerson (Worker? person)
+  {
+    firstPerson = person;
+    GlobalService.currentAction.update();
   }
 }
 
@@ -290,13 +310,14 @@ class _SquadPageState extends State<SquadPage>
                                   child: Row(
                                     children: [
                                       const Icon(Icons.fire_extinguisher),
-                                      firstPerson==null
+                                      widget.firstPerson==null
                                           ? Expanded(
                                                     child: ElevatedButton(
                                                       onPressed: ()async {
                                                         var selectedItem = await selectWorkerFromList(context);
                                                         setState(() {
-                                                          firstPerson = selectedItem;
+                                                          widget.firstPerson = selectedItem;
+                                                                Provider.of<SquadPage>(context, listen: false).setPerson(selectedItem);
                                                         });
                                                       },
                                                       style: ButtonStyle(
@@ -325,7 +346,7 @@ class _SquadPageState extends State<SquadPage>
                                                     ),
                                             )
                                           : Text(
-                                              firstPerson != null ? '${firstPerson!.name} ${firstPerson!.surname}' : 'Wprowadź imię',
+                                              widget.firstPerson != null ? '${widget.firstPerson!.name} ${widget.firstPerson!.surname}' : 'Wprowadź imię',
                                               style: squadTextStyle,
                                             ),
                                     ],
@@ -385,7 +406,7 @@ class _SquadPageState extends State<SquadPage>
                                             children: [
                                               const Icon(Icons.fire_extinguisher),
                                                 Text(
-                                                    '${firstPerson!.name} ${firstPerson!.surname}',
+                                                    '${widget.firstPerson!.name} ${widget.firstPerson!.surname}',
                                                     style: squadTextStyle,
                                                 )
                                             ],
