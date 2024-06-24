@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:oxy_guard/action/manage_page.dart';
 import 'package:oxy_guard/global_service.dart';
+import 'package:oxy_guard/home_page.dart';
 import 'package:oxy_guard/models/squad_model.dart';
 
 class SquadChoice extends StatefulWidget {
@@ -23,23 +24,34 @@ class _SquadChoiceState extends State<SquadChoice> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             ElevatedButton(
-                onPressed: () async {
-                  String? chosenSquadIndex = await chooseExistingSquadDialog();
-                  if (chosenSquadIndex != null) {
-                    SquadModel rebuild = SquadModel();
-                    rebuild.copyFrom(GlobalService.currentAction.squads[chosenSquadIndex]!);
-                    GlobalService.currentAction.squads[chosenSquadIndex] = rebuild;
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ManagePage(
-                                chosenAction: rebuild,
-                              )),
-                    );
-                  }
-                },
-                child: const Center(child: Text("Wybierz odcinek"))),
+              style: ButtonStyle(
+                fixedSize: MaterialStateProperty.all(
+                  Size(MediaQuery.of(context).size.width * 0.7, 0)
+                ),
+              ),
+              onPressed: () async {
+                String? chosenSquadIndex = await chooseExistingSquadDialog();
+                if (chosenSquadIndex != null) {
+                  SquadModel rebuild = SquadModel();
+                  rebuild.copyFrom(GlobalService.currentAction.squads[chosenSquadIndex]!);
+                  GlobalService.currentAction.squads[chosenSquadIndex] = rebuild;
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ManagePage(
+                              chosenAction: rebuild,
+                            )),
+                  );
+                }
+              },
+              child: const Center(child: Text("Wybierz odcinek"))),
+            SizedBox(height: 13),
             ElevatedButton(
+              style: ButtonStyle(
+                fixedSize: MaterialStateProperty.all(
+                  Size(MediaQuery.of(context).size.width * 0.7, 0)
+                ),
+              ),
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -47,7 +59,19 @@ class _SquadChoiceState extends State<SquadChoice> {
                   );
                 },
                 child: const Center(child: Text("Stwórz odcinek"))),
-          ],
+            SizedBox(height: 13),
+            ElevatedButton(
+              style: ButtonStyle(
+                fixedSize: MaterialStateProperty.all(
+                  Size(MediaQuery.of(context).size.width * 0.7, 0)
+                ),
+              ),
+              onPressed: () {
+                GlobalService.databaseSevice.endAction(GlobalService.currentAction);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
+              },
+            child: const Center(child: Text("Zakończ akcję"))),
+      ],
         ),
       ),
     );

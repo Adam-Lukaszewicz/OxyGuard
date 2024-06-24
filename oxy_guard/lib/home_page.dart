@@ -131,17 +131,6 @@ class _HomePageState extends State<HomePage> {
                 },
                 child: const Center(child: Text("Wybór zmiany")),
               ),
-              // ElevatedButton(
-              //   onPressed: () async {
-              //     Navigator.push(
-              //       context,
-              //       MaterialPageRoute(
-              //         builder: (context) => PersonnelPage()
-              //       ),
-              //     );
-              //   },
-              //   child: const Center(child: Text("Ekran kadry")),
-              // ),
               ElevatedButton(
                 onPressed: () async {
                   var value = await timeDialog(context, secondsController,

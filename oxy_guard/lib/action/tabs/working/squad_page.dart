@@ -23,6 +23,8 @@ class SquadPage extends StatefulWidget {
   List<double> checks;
   List<DateTime> checkTimes;
   bool working;
+  String localization = "";
+  Worker? firstPerson, secondPerson, thirdPerson;
   SquadPage(
       {super.key,
       required this.interval,
@@ -36,7 +38,9 @@ class SquadPage extends StatefulWidget {
       double? plannedReturnPressure,
       List<double>? checks,
       List<DateTime>? checkTimes,
-      bool? working})
+      bool? working,
+      String localization = "",
+      Worker? firstPerson, secondPerson, thirdPerson})
       : exitTime = exitTime ?? 0,
         usageRate = usageRate ?? 10.0 / 60.0,
         returnPressure = returnPressure ?? 100.0,
@@ -44,6 +48,7 @@ class SquadPage extends StatefulWidget {
         checks = checks ?? <double>[],
         checkTimes = checkTimes ?? <DateTime>[],
         working = working ?? false;
+
   SquadPage.fromJson(Map<String, dynamic> json)
       : this(
           usageRate: json["UsageRate"]! as double,
@@ -58,6 +63,18 @@ class SquadPage extends StatefulWidget {
           checks: List<double>.from(jsonDecode(json["Checks"]!)),
           checkTimes: (jsonDecode(json["CheckTimes"]!) as List).map((time) => DateTime.parse(time).toLocal()).toList(),
           working: json["Working"] as bool,
+          localization: json["Localization"] as String? ?? "",
+          firstPerson: json["firstPerson"] != null
+            ? Worker.fromJson(json["firstPerson"] as Map<String, dynamic>)
+            : null,
+          secondPerson: json["secondPerson"] != null
+            ? Worker.fromJson(json["secondPerson"] as Map<String, dynamic>)
+            : null,
+          thirdPerson: json["thirdPerson"] != null
+            ? Worker.fromJson(json["thirdPerson"] as Map<String, dynamic>)
+            : null,
+
+
         );
   @override
   State<SquadPage> createState() => _SquadPageState();
@@ -111,6 +128,10 @@ class SquadPage extends StatefulWidget {
             : throw UnsupportedError('Cannot convert to JSON: $nonEncodable'),
       ),
       "Working": working,
+      "localization": localization,
+      "FirstPerson": firstPerson?.toJson(),
+      "SecondPerson": secondPerson?.toJson(),
+      "ThirdPerson": thirdPerson?.toJson(),
     };
   }
 }
