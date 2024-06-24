@@ -143,7 +143,6 @@ class SquadPage extends StatefulWidget {
 class _SquadPageState extends State<SquadPage>
     with AutomaticKeepAliveClientMixin {
   //Declarations
-  final workStartStopwatch = Stopwatch();
   late Timer halfSec;
   late FixedExtentScrollController checkController;
   late FixedExtentScrollController lastCheckController;
@@ -781,16 +780,11 @@ class _SquadPageState extends State<SquadPage>
                             if (widget.exitTime == 0) {
                               if (widget.working) {
                                 setState(() {
-                                  workStartStopwatch.stop();
-                                  widget.exitTime =
-                                      workStartStopwatch.elapsedMilliseconds ~/
-                                          1000;
-                                  workStartStopwatch.reset();
+                                  widget.exitTime = DateTime.now().difference(widget.checkTimes.first).inSeconds;
                                 });
                               } else {
                                 setState(() {
                                 widget.working = true;
-                                workStartStopwatch.start();
                                 DateTime timestamp = DateTime.now();
                                 widget.checkTimes.add(timestamp);
                                 Provider.of<SquadModel>(context, listen: false).setWorkTimestamp(widget.index, timestamp);

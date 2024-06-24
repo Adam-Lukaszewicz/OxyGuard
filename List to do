@@ -17,8 +17,6 @@
 	co jeżeli osoba A jest w Akcji a osoba B zakończy ją
 :Wskaźniki ciśnienia (trójkąty)
 	Wskaźniki nie przesuwają się wraz ze zmianą przewidywanego ciśnienia wyjścia
-:Status roty
-	Po rozpoczęciu pracy roty, opuszczceniu jej, i ponownym blokuje się możliwość zmiany statusy (np Punkt pracy)
 :Granica dostępu do akcji
 	Każdy użytkownik z dostępem do aplikacji może dołączyć do dowolnej akcji. Wprowadzić mechanizm klucza dostępu generowanego automatycznie lub tworzonego przez założyciela akcji.
 	Brak takiego mechanizmu może powodować nieporządane zmiany wprowadzane przez użytkowników zewnętrznych (śmieszków 15-letnich mających dostęp do internetu).
@@ -31,3 +29,5 @@
 	W menu wyboru powinny być dostępne tylko możliwe ciśnienia (nie większe niż poprzedni pomiar)
 :Edycja pomiarów
 	Możliwość edycji pomiaru przedostatniego pomiarau na większy niż ten ostatni. W takim przypadku ciśnienie w butli rośnie co jest delikatnie mówiąc bezsensem
+:Bug - tworzenie nowej akcji
+	Na jedno uruchomienie aplikacji można stworzyć tylko jedną akcję - próba stworzenia każdej kolejnej po prostu wróci nas do tej pierwszej stworzonej.
