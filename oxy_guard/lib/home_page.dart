@@ -19,8 +19,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late FixedExtentScrollController secondsController;
-  late FixedExtentScrollController minuteController;
   int _extremePressure = 0;
   int _startingPressure = 0;
   int _timePeriod = 0;
@@ -32,8 +30,6 @@ class _HomePageState extends State<HomePage> {
     _loadExtremePresssure();
     _loadStartingPresssure();
     _loadTimePeriod();
-    secondsController = FixedExtentScrollController();
-    minuteController = FixedExtentScrollController();
   }
 
   Future<void> _loadExtremePresssure() async {
@@ -134,8 +130,8 @@ class _HomePageState extends State<HomePage> {
               ),
               ElevatedButton(
                 onPressed: () async {
-                  var value = await timeDialog(context, secondsController,
-                      minuteController, "wprowadz nowy pomiar");
+                  var value = await timeDialog(context, 
+                       "wprowadz nowy pomiar");
                   _setTimePeriod(value ?? 0);
                 },
                 child: Center(
@@ -145,7 +141,7 @@ class _HomePageState extends State<HomePage> {
               ElevatedButton(
                 onPressed: () async {
                   var value = await checkListDialog(
-                      context, secondsController, 330, "wprowadz nowy pomiar");
+                      context,  330,  160, "wprowadz nowy pomiar");
                   _setStartingPresssure(value ?? 0);
                 },
                 child: Center(
@@ -154,10 +150,7 @@ class _HomePageState extends State<HomePage> {
               ElevatedButton(
                 onPressed: () async {
                   var value = await checkListDialog(
-                      context,
-                      secondsController,
-                      _startingPressure - 10 > 0 ? _startingPressure - 10 : 0,
-                      "wprowadz nowy pomiar");
+                      context,  150, 10,"wprowadz nowy pomiar");
                   _setExtremePresssure(value ?? 0);
                 },
                 child: Center(

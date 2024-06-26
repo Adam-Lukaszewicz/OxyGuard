@@ -338,7 +338,8 @@ Future<void> _loadExtremePresssure() async {
                     ),
                     ElevatedButton(
                         onPressed: () async {
-                          var newEntryPressure = await pressureDialog();
+                          var newEntryPressure = await checkListDialog(
+                      context,  330,  160, "wprowadz nowy pomiar");
                           if (newEntryPressure != null) {
                             setState(() {
                               entryPressure = newEntryPressure;
@@ -372,7 +373,8 @@ Future<void> _loadExtremePresssure() async {
                     ),
                     ElevatedButton(
                         onPressed: () async {
-                          var newExitPressure = await pressureDialog();
+                          var newExitPressure = await checkListDialog(
+                      context,  150,  10, "wprowadz nowy pomiar");
                           if (newExitPressure == null) {
                             return;
                           }

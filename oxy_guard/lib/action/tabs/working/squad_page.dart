@@ -150,6 +150,7 @@ class _SquadPageState extends State<SquadPage>
   late FixedExtentScrollController exitMinuteController;
   late FixedExtentScrollController exitSecondsController;
   DateTime? lastCheck;
+  int entryPressureLabel = 0;
 
 
   //Placeholder values, consider using late inits
@@ -185,6 +186,7 @@ class _SquadPageState extends State<SquadPage>
   @override
   void initState() {
     super.initState();
+    entryPressureLabel = widget.entryPressure.toInt();
     lastCheck = widget.checkTimes.isEmpty ? null : widget.checkTimes.last;
     checkController = FixedExtentScrollController();
     exitMinuteController = FixedExtentScrollController();
@@ -192,6 +194,7 @@ class _SquadPageState extends State<SquadPage>
     lastCheckController = FixedExtentScrollController();
     secondLastCheckController = FixedExtentScrollController();
     widget.checks.add(widget.entryPressure);
+    GlobalService.currentAction.update();
     halfSec = Timer.periodic(const Duration(milliseconds: 500), (Timer t) {
       if (!mounted) return;
       setState(() {
@@ -682,7 +685,7 @@ class _SquadPageState extends State<SquadPage>
                                 left: 0,
                                 right: 0,
                                 child: Center(
-                                  child: Text("330", style: varTextStyle),
+                                  child: Text(entryPressureLabel.toString(), style: varTextStyle),
                                 ),
                               ),
                               Positioned(
@@ -787,6 +790,7 @@ class _SquadPageState extends State<SquadPage>
                                 widget.working = true;
                                 DateTime timestamp = DateTime.now();
                                 widget.checkTimes.add(timestamp);
+                                GlobalService.currentAction.update();
                                 Provider.of<SquadModel>(context, listen: false).setWorkTimestamp(widget.index, timestamp);
                                 lastCheck = timestamp;
                                 });
@@ -820,11 +824,13 @@ class _SquadPageState extends State<SquadPage>
                               await warningDialog(context, "Nie można wprowadzać nowych pomiarów przed rozpoczęciem pracy");
                               return;
                             }
-                            final parse = await checkListDialog(context, checkController,
-                                (oxygenValue! ~/ 10) * 10 + 10, 
+                            final parse = await checkListDialog(context, 
+                                (oxygenValue! ~/ 10 - 1) * 10, 0,
                                 "Wprowadź nowy pomiar");
+                            print (oxygenValue);
                             if (parse == null) return;
                             final valid = parse.toDouble();
+                            print ('valid $valid');
                             setState(() {
                               if (valid < oxygenValue) {
                                 widget.entryPressure = valid;
@@ -836,15 +842,19 @@ class _SquadPageState extends State<SquadPage>
                                           .difference(widget.checkTimes.last)
                                           .inSeconds);
                                 }
-                                Provider.of<SquadModel>(context, listen: false)
-                                    .addCheck(
-                                        widget.entryPressure,
-                                        widget.usageRate,
-                                        timestamp,
-                                        widget.index);
+                                
                                 widget.checkTimes.add(timestamp);
                                 widget.checks.add(widget.entryPressure);
+
+                                Provider.of<SquadModel>(context, listen: false)
+                                  .addCheck(
+                                      widget.entryPressure,
+                                      widget.usageRate,
+                                      timestamp,
+                                      widget.index
+                                  );
                                 lastCheck = timestamp;
+
                               }
                             });
                           },
@@ -894,6 +904,9 @@ class _SquadPageState extends State<SquadPage>
                                 Provider.of<SquadModel>(context, listen: false)
                                     .changeStarting(
                                         widget.checks.last, widget.index);
+                                setState(() {
+                                  entryPressureLabel = edits.last.toInt();
+                                });
                               } else {
                                 widget.checks[widget.checks.length - 2] =
                                     edits.first;
@@ -902,6 +915,7 @@ class _SquadPageState extends State<SquadPage>
                               setState(() {
                                 widget.entryPressure = widget.checks.last;
                               });
+                              GlobalService.currentAction.update();
                             }
                           },
                           style: bottomButtonStyle,
@@ -915,7 +929,7 @@ class _SquadPageState extends State<SquadPage>
                           vertical: 8.0, horizontal: 5.0),
                       child: ElevatedButton(
                           onPressed: () async {
-                            var newExitTime = await timeDialog(context, exitSecondsController, exitMinuteController, "Wprowadź czas wyjścia");
+                            var newExitTime = await timeDialog(context,  "Wprowadź czas wyjścia");
                             if (newExitTime == null) return;
                             setState(() {
                               widget.exitTime = newExitTime;
@@ -959,154 +973,6 @@ class _SquadPageState extends State<SquadPage>
     });
   }
 
-  // Future<int?> checkListDialog(double oxygenValue) => showDialog<int>(
-  //     context: context,
-  //     builder: (context) => Dialog(
-  //           child: SizedBox(
-  //             height: 500,
-  //             width: 600,
-  //             child: Padding(
-  //               padding: const EdgeInsets.all(15.0),
-  //               child: Column(
-  //                 mainAxisAlignment: MainAxisAlignment.center,
-  //                 children: [
-  //                   const Expanded(
-  //                       flex: 2,
-  //                       child: Text(
-  //                         "Wprowadź nowy pomiar",
-  //                         style: TextStyle(
-  //                             fontSize: 25, fontWeight: FontWeight.bold),
-  //                       )),
-  //                   Expanded(
-  //                     flex: 6,
-  //                     child: ListWheelScrollView.useDelegate(
-  //                         controller: checkController,
-  //                         itemExtent: 50,
-  //                         perspective: 0.005,
-  //                         overAndUnderCenterOpacity: 0.6,
-  //                         squeeze: 1,
-  //                         magnification: 1.1,
-  //                         diameterRatio: 1.5,
-  //                         physics: const FixedExtentScrollPhysics(),
-  //                         childDelegate: ListWheelChildBuilderDelegate(
-  //                           childCount: (oxygenValue.toInt() - 60) ~/ 10,
-  //                           builder: (context, index) =>
-  //                               Text("${oxygenValue.toInt() - 10 * index}",
-  //                                   style: const TextStyle(
-  //                                     fontSize: 30,
-  //                                     fontWeight: FontWeight.bold,
-  //                                   )),
-  //                         )),
-  //                   ),
-  //                   Expanded(
-  //                       flex: 2,
-  //                       child: TextButton(
-  //                           onPressed: () {
-  //                             Navigator.of(context).pop(oxygenValue.toInt() -
-  //                                 10 * checkController.selectedItem);
-  //                           },
-  //                           child: const Text("Wprowadź")))
-  //                 ],
-  //               ),
-  //             ),
-  //           ),
-  //         ));
-
-  // Future<int?> exitTimeDialog() => showDialog<int>(
-  //     context: context,
-  //     builder: (context) => Dialog(
-  //           child: SizedBox(
-  //             height: 500,
-  //             width: 600,
-  //             child: Padding(
-  //               padding: const EdgeInsets.all(15.0),
-  //               child: Column(
-  //                 mainAxisAlignment: MainAxisAlignment.center,
-  //                 children: [
-  //                   const Expanded(
-  //                       flex: 2,
-  //                       child: Row(
-  //                       children:[
-  //                         Text(
-  //                           "Wprowadź czas wyjścia",
-  //                           style: TextStyle(
-  //                               fontSize: 25, fontWeight: FontWeight.bold),
-  //                         ),
-  //                         Text(
-  //                           "(min)",
-  //                           style: TextStyle(
-  //                               fontSize: 16, fontWeight: FontWeight.normal), 
-  //                         ),
-  //                       ],
-  //                     )),
-  //                   Expanded(
-  //                     flex: 6,
-  //                     child: Row(
-  //                       mainAxisAlignment: MainAxisAlignment.center,
-  //                       children: [
-  //                         SizedBox(
-  //                           width: 100,
-  //                           child: ListWheelScrollView.useDelegate(
-  //                               controller: exitMinuteController,
-  //                               itemExtent: 50,
-  //                               perspective: 0.005,
-  //                               overAndUnderCenterOpacity: 0.6,
-  //                               squeeze: 1,
-  //                               magnification: 1.1,
-  //                               diameterRatio: 1.5,
-  //                               physics: const FixedExtentScrollPhysics(),
-  //                               childDelegate: ListWheelChildBuilderDelegate(
-  //                                 childCount: 16,
-  //                                 builder: (context, index) => Text("$index",
-  //                                     style: const TextStyle(
-  //                                         fontSize: 25,
-  //                                         fontWeight: FontWeight.bold)),
-  //                               )),
-  //                         ),
-  //                         Container(
-  //                           width: 10,
-  //                           padding: const EdgeInsets.only(bottom: 18),
-  //                           child: const Text(":",
-  //                               style: TextStyle(
-  //                                   fontSize: 25, fontWeight: FontWeight.bold)),
-  //                         ),
-  //                         SizedBox(
-  //                           width: 100,
-  //                           child: ListWheelScrollView.useDelegate(
-  //                               controller: exitSecondsController,
-  //                               itemExtent: 50,
-  //                               perspective: 0.005,
-  //                               overAndUnderCenterOpacity: 0.6,
-  //                               squeeze: 1,
-  //                               magnification: 1.1,
-  //                               diameterRatio: 1.5,
-  //                               physics: const FixedExtentScrollPhysics(),
-  //                               childDelegate: ListWheelChildBuilderDelegate(
-  //                                 childCount: 4,
-  //                                 builder: (context, index) => Text(
-  //                                     "${index * 15}",
-  //                                     style: const TextStyle(
-  //                                         fontSize: 25,
-  //                                         fontWeight: FontWeight.bold)),
-  //                               )),
-  //                         ),
-  //                       ],
-  //                     ),
-  //                   ),
-  //                   Expanded(
-  //                       flex: 2,
-  //                       child: TextButton(
-  //                           onPressed: () {
-  //                             Navigator.of(context).pop(
-  //                                 15 * exitSecondsController.selectedItem +
-  //                                     60 * exitMinuteController.selectedItem);
-  //                           },
-  //                           child: const Text("Wprowadź")))
-  //                 ],
-  //               ),
-  //             ),
-  //           ),
-  //         ));
 
   Future<List<double>?> editChecksDialog() => showDialog<List<double>>(
       context: context,
@@ -1137,7 +1003,7 @@ class _SquadPageState extends State<SquadPage>
                           itemExtent: 50,
                           physics: const FixedExtentScrollPhysics(),
                           childDelegate: ListWheelChildBuilderDelegate(
-                            childCount: (330 - 60) ~/ 10,
+                            childCount: (330 - 150) ~/ 10,
                             builder: (context, index) =>
                                 Text("${330 - 10 * index}",
                                     style: const TextStyle(
@@ -1163,7 +1029,7 @@ class _SquadPageState extends State<SquadPage>
           );
         } else {
           WidgetsBinding.instance.addPostFrameCallback((context) =>
-              lastCheckController.jumpToItem((330 - widget.checks.last) ~/ 10));
+              lastCheckController.jumpToItem((widget.checks[widget.checks.length-2] ~/ 10 - widget.checks.last) ~/ 10));
           WidgetsBinding.instance.addPostFrameCallback((context) =>
               secondLastCheckController.jumpToItem(
                   (330 - widget.checks[widget.checks.length - 2]) ~/ 10));
@@ -1172,28 +1038,36 @@ class _SquadPageState extends State<SquadPage>
               height: 500,
               width: 600,
               child: Padding(
-                padding: const EdgeInsets.all(15.0),
+                padding: EdgeInsets.all(15.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Expanded(
+                    Expanded(
                       flex: 2,
                       child: Row(
                         children: [
                           Expanded(
-                              flex: 5,
-                              child: Text(
-                                "Popraw przedostatni pomiar",
-                                style: TextStyle(
-                                    fontSize: 25, fontWeight: FontWeight.bold),
-                              )),
+                            flex: 5,
+                            child: Text(
+                              "Popraw przedostatni pomiar (${widget.checks[widget.checks.length-2].toInt()})",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
                           Expanded(
-                              flex: 5,
-                              child: Text(
-                                "Popraw ostatni pomiar",
-                                style: TextStyle(
-                                    fontSize: 25, fontWeight: FontWeight.bold),
-                              )),
+                            flex: 5,
+                            child: Text(
+                              "Popraw ostatni pomiar (${widget.checks.last.toInt()})",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center, 
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -1208,9 +1082,9 @@ class _SquadPageState extends State<SquadPage>
                                 itemExtent: 50,
                                 physics: const FixedExtentScrollPhysics(),
                                 childDelegate: ListWheelChildBuilderDelegate(
-                                  childCount: (330 - 60) ~/ 10,
+                                  childCount: ((widget.checks.length<3?330:(widget.checks[widget.checks.length-3]))-widget.checks.last) ~/ 10,
                                   builder: (context, index) =>
-                                      Text("${330 - 10 * index}",
+                                      Text("${(widget.checks.length<3?330:widget.checks[widget.checks.length-3].toInt()) - 10 * index}",
                                           style: const TextStyle(
                                             fontSize: 25,
                                             fontWeight: FontWeight.bold,
@@ -1224,9 +1098,9 @@ class _SquadPageState extends State<SquadPage>
                                 itemExtent: 50,
                                 physics: const FixedExtentScrollPhysics(),
                                 childDelegate: ListWheelChildBuilderDelegate(
-                                  childCount: (330 - 60) ~/ 10,
+                                  childCount: widget.checks[widget.checks.length-2] ~/ 10,
                                   builder: (context, index) =>
-                                      Text("${330 - 10 * index}",
+                                      Text("${(widget.checks[widget.checks.length-2]-10).toInt() - 10 * index}",
                                           style: const TextStyle(
                                             fontSize: 25,
                                             fontWeight: FontWeight.bold,
@@ -1240,15 +1114,19 @@ class _SquadPageState extends State<SquadPage>
                         flex: 2,
                         child: TextButton(
                             onPressed: () {
-                              Navigator.of(context).pop([
-                                (330 -
-                                        10 *
-                                            secondLastCheckController
-                                                .selectedItem)
-                                    .toDouble(),
-                                (330 - 10 * lastCheckController.selectedItem)
-                                    .toDouble()
-                              ]);
+                              if(((widget.checks.length<3?330:widget.checks[widget.checks.length-3].toInt()) - 10 *secondLastCheckController.selectedItem)  >
+                                (widget.checks[widget.checks.length-2]-10 - 10 * lastCheckController.selectedItem)){
+                                  
+                                  Navigator.of(context).pop([
+                                    ((widget.checks.length<3?330:widget.checks[widget.checks.length-3].toInt()) - 10 *secondLastCheckController.selectedItem)
+                                        .toDouble(),
+                                    (widget.checks[widget.checks.length-2]-10 - 10 * lastCheckController.selectedItem)
+                                        .toDouble()
+                                  ]);
+                              }
+                              else{
+                                warningDialog(context, "Wartość przedostatniego pomiaru musi być większość niż ostatniego pomiaru!");
+                              }
                             },
                             child: const Text("Wprowadź")))
                   ],
@@ -1259,32 +1137,7 @@ class _SquadPageState extends State<SquadPage>
         }
       });
 
-  // Future<void> warningDialog(warningText) async {
-  //   return showDialog<void>(
-  //     context: context,
-  //     barrierDismissible: false, // user must tap button!
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         title: const Text('OSTRZEŻENIE'),
-  //         content: SingleChildScrollView(
-  //           child: ListBody(
-  //             children: <Widget>[
-  //               Center(child: Text(warningText)),
-  //             ],
-  //           ),
-  //         ),
-  //         actions: <Widget>[
-  //           TextButton(
-  //             child: const Text('OK'),
-  //             onPressed: () {
-  //               Navigator.of(context).pop();
-  //             },
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
+ 
 }
 
 class LeftTriangle extends CustomClipper<Path> {

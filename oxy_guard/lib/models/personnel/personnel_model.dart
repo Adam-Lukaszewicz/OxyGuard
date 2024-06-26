@@ -24,4 +24,8 @@ class PersonnelModel{
     team.insert(0, newWorker);//wstawia na początek listy - ładnie to wygląda w zakładce kadry :D
     GlobalService.databaseSevice.updatePersonnel(this);
   }
+  void subWorker(Worker Worker){
+    team.remove(Worker);
+    GlobalService.databaseSevice.updatePersonnel(this);
+  }
 }

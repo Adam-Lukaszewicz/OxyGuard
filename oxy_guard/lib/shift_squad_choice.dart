@@ -139,8 +139,16 @@ class _ShiftSquadChoicePageState extends State<ShiftSquadChoicePage> {
                     child: ListView(
                       children: GlobalService.currentPersonnel.team
                           .map((worker) => ListTile(
-                                title: Text('${worker.name} ${worker.surname}'),
-                              ))
+                              title: Text('${worker.name} ${worker.surname}'),
+                              trailing: IconButton(
+                                icon: Icon(Icons.delete),
+                                onPressed: () {
+                                  setState(() {
+                                    GlobalService.currentPersonnel.subWorker(worker);
+                                  });
+                                },
+                              ),
+                            ))
                           .toList(),
                     ),
                   ),
