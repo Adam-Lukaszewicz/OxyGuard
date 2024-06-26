@@ -151,6 +151,7 @@ class _SquadPageState extends State<SquadPage>
   late FixedExtentScrollController exitSecondsController;
   DateTime? lastCheck;
   int entryPressureLabel = 0;
+  double _usageRate = 0.0;
 
 
   //Placeholder values, consider using late inits
@@ -183,9 +184,29 @@ class _SquadPageState extends State<SquadPage>
   @override
   bool get wantKeepAlive => true;
 
+@override
+void didUpdateWidget(covariant SquadPage oldWidget) {
+  super.didUpdateWidget(oldWidget);
+  
+  if (widget.usageRate != _usageRate) {
+    setState(() {
+      _usageRate = widget.usageRate;
+      
+      if (widget.usageRate * 60 > 10) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          warningDialog(context, "Obecne zużycie jest bardzo duże. Upewnij się czy wprowadziłeś poprawny pomiar!!!");
+        });
+      }
+    });
+  }
+}
+
+
+
   @override
   void initState() {
     super.initState();
+    _usageRate = widget.usageRate;
     entryPressureLabel = widget.entryPressure.toInt();
     lastCheck = widget.checkTimes.isEmpty ? null : widget.checkTimes.last;
     checkController = FixedExtentScrollController();
@@ -827,10 +848,8 @@ class _SquadPageState extends State<SquadPage>
                             final parse = await checkListDialog(context, 
                                 (oxygenValue! ~/ 10 - 1) * 10, 0,
                                 "Wprowadź nowy pomiar");
-                            print (oxygenValue);
                             if (parse == null) return;
                             final valid = parse.toDouble();
-                            print ('valid $valid');
                             setState(() {
                               if (valid < oxygenValue) {
                                 widget.entryPressure = valid;
@@ -900,20 +919,29 @@ class _SquadPageState extends State<SquadPage>
                             var edits = await editChecksDialog();
                             if (edits != null) {
                               widget.checks.last = edits.last;
-                              if (widget.checks.length == 1) {
-                                Provider.of<SquadModel>(context, listen: false)
-                                    .changeStarting(
-                                        widget.checks.last, widget.index);
-                                setState(() {
-                                  entryPressureLabel = edits.last.toInt();
-                                });
-                              } else {
-                                widget.checks[widget.checks.length - 2] =
-                                    edits.first;
-                                recalculateTime();
-                              }
                               setState(() {
-                                widget.entryPressure = widget.checks.last;
+                                if (widget.checks.length == 1) {
+                                  Provider.of<SquadModel>(context, listen: false)
+                                      .changeStarting(
+                                          widget.checks.first, widget.index);
+                                    entryPressureLabel = edits.first.toInt();
+                                } 
+                                else {
+                                  if(widget.checks.length==2)
+                                  {
+                                      entryPressureLabel = edits.first.toInt();
+                                  }
+                                    widget.checks[widget.checks.length - 2] = edits.first;
+                                    widget.checks[widget.checks.length - 1] = edits.last;
+                                  recalculateTime();
+                                  widget.entryPressure = widget.checks.last;
+                                  DateTime timestamp = DateTime.now();
+                                  widget.usageRate = (widget.checks[widget.checks.length - 2] -
+                                          widget.checks[widget.checks.length - 1]) /
+                                      (timestamp
+                                          .difference(widget.checkTimes.last)
+                                          .inSeconds);
+                                }
                               });
                               GlobalService.currentAction.update();
                             }
@@ -1001,6 +1029,11 @@ class _SquadPageState extends State<SquadPage>
                       child: ListWheelScrollView.useDelegate(
                           controller: lastCheckController,
                           itemExtent: 50,
+                          perspective: 0.005,
+                          overAndUnderCenterOpacity: 0.6,
+                          squeeze: 1,
+                          magnification: 1.1,
+                          diameterRatio: 1.5,
                           physics: const FixedExtentScrollPhysics(),
                           childDelegate: ListWheelChildBuilderDelegate(
                             childCount: (330 - 150) ~/ 10,
@@ -1029,10 +1062,9 @@ class _SquadPageState extends State<SquadPage>
           );
         } else {
           WidgetsBinding.instance.addPostFrameCallback((context) =>
-              lastCheckController.jumpToItem((widget.checks[widget.checks.length-2] ~/ 10 - widget.checks.last) ~/ 10));
+              lastCheckController.jumpToItem((widget.checks[widget.checks.length-2] - widget.checks.last-10) ~/ 10));
           WidgetsBinding.instance.addPostFrameCallback((context) =>
-              secondLastCheckController.jumpToItem(
-                  (330 - widget.checks[widget.checks.length - 2]) ~/ 10));
+              secondLastCheckController.jumpToItem(((widget.checks.length<3?330:widget.checks[widget.checks.length-3].toInt()) - widget.checks[widget.checks.length - 2]) ~/ 10));
           return Dialog(
             child: SizedBox(
               height: 500,
@@ -1080,6 +1112,11 @@ class _SquadPageState extends State<SquadPage>
                             child: ListWheelScrollView.useDelegate(
                                 controller: secondLastCheckController,
                                 itemExtent: 50,
+                                perspective: 0.005,
+                                overAndUnderCenterOpacity: 0.6,
+                                squeeze: 1,
+                                magnification: 1.1,
+                                diameterRatio: 1.5,
                                 physics: const FixedExtentScrollPhysics(),
                                 childDelegate: ListWheelChildBuilderDelegate(
                                   childCount: ((widget.checks.length<3?330:(widget.checks[widget.checks.length-3]))-widget.checks.last) ~/ 10,
@@ -1096,6 +1133,11 @@ class _SquadPageState extends State<SquadPage>
                             child: ListWheelScrollView.useDelegate(
                                 controller: lastCheckController,
                                 itemExtent: 50,
+                                perspective: 0.005,
+                                overAndUnderCenterOpacity: 0.6,
+                                squeeze: 1,
+                                magnification: 1.1,
+                                diameterRatio: 1.5,
                                 physics: const FixedExtentScrollPhysics(),
                                 childDelegate: ListWheelChildBuilderDelegate(
                                   childCount: widget.checks[widget.checks.length-2] ~/ 10,
