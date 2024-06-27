@@ -21,3 +21,5 @@
 	Propozycja nazyw OB - domyślnie nazwisko (podawane przy rejestracji) osoby która nimi kieruje (jeden dowódca kieruje jednym odcinkiem bojowym), nazwa może być zmieniona podczas tworzenia odcinka
 :Kadra
 	Z jakiegoś powodu, na jednym urzadzeniu po zmianie zalogowanego użytkownika skład kadry zostaje ten sam
+:Czas wyjścia
+	po wprowadzeniu czasu wyjścia przed rozpoczęciem pracy rota się blokuje
