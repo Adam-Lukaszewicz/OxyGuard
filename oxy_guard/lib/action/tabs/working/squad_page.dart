@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:convert';
 //import 'dart:html';
 
@@ -154,6 +155,7 @@ class _SquadPageState extends State<SquadPage>
   double _usageRate = 0.0;
 
 
+
   //Placeholder values, consider using late inits
   //var oxygenValue = 320.0;
 
@@ -232,6 +234,7 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
   //UI
   @override
   Widget build(BuildContext context) {
+      widget.returnPressure =(widget.exitTime * 1 ~/ 2 + widget.exitPressure).toDouble();
     var oxygenValue = Provider.of<SquadModel>(context, listen: false)
         .oxygenValues[widget.index.toString()];
     var screenWidth = MediaQuery.of(context).size.width;
@@ -610,7 +613,7 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                                             child: Row(
                                           children: [
                                             Text(
-                                                "${widget.exitTime * 1 ~/ 2 + widget.exitPressure}",
+                                                "${widget.returnPressure.toInt()}",
                                                 style: varTextStyle),
                                             Text("BAR", style: unitTextStyle)
                                           ],
@@ -754,7 +757,7 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                                 },
                               ),
                               Positioned(
-                                  top: 24.5 + ((constraints.maxHeight - 69)/(widget.checks.first - widget.exitPressure) * (widget.checks.first - widget.returnPressure)),
+                                  top: 24.5 + ((constraints.maxHeight - 69)/(widget.checks.first - widget.exitPressure) * (widget.checks.first - (widget.returnPressure<widget.checks.first?widget.returnPressure:widget.checks.first))),
                                   left: -3,
                                   child: ClipPath(
                                     clipper: LeftTriangle(),
@@ -765,7 +768,7 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                                     ),
                                   )),
                               Positioned(
-                                  top: 24.5 + ((constraints.maxHeight - 69)/(widget.checks.first - widget.exitPressure) * (widget.checks.first - widget.plannedReturnPressure)),
+                                  top: 24.5 + ((constraints.maxHeight - 69)/(widget.checks.first - widget.exitPressure) * (widget.checks.first - (widget.exitTime * widget.usageRate).toInt() + widget.exitPressure)),
                                   right: -3,
                                   child: ClipPath(
                                     clipper: RightTriangle(),
@@ -915,6 +918,7 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                                 if (widget.checks.length == 1) {
                                   Provider.of<SquadModel>(context, listen: false).changeStarting(widget.checks.first, widget.index);
                                   entryPressureLabel = edits.first.toInt();
+                                  widget.checks.first = edits.first;
                                 } 
                                 else {
                                   if(widget.checks.length==2)
