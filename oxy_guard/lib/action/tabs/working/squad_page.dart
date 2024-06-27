@@ -45,8 +45,8 @@ class SquadPage extends StatefulWidget {
       this.thirdPerson})
       : exitTime = exitTime ?? 0,
         usageRate = usageRate ?? 10.0 / 60.0,
-        returnPressure = returnPressure ?? 100.0,
-        plannedReturnPressure = plannedReturnPressure ?? 120.0,
+        returnPressure = returnPressure ?? exitPressure.toDouble(),
+        plannedReturnPressure = plannedReturnPressure ?? exitPressure.toDouble(),
         checks = checks ?? <double>[entryPressure],
         checkTimes = checkTimes ?? <DateTime>[],
         working = working ?? false;
@@ -729,9 +729,9 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                               Consumer<SquadModel>(
                                 builder: (context, cat, child) {
                                   return Positioned(
-                                    top: 20 +
-                                        ((constraints.maxHeight - 40) / 270) *
-                                            (330 - cat.getOxygenRemaining(widget.index)),
+                                    top: cat.getOxygenRemaining(widget.index) >= widget.exitPressure ?
+                                     14 + ((constraints.maxHeight - 69)/(widget.checks.first - widget.exitPressure) * (widget.checks.first - cat.getOxygenRemaining(widget.index)))
+                                      : 14 + ((constraints.maxHeight - 69)/(widget.checks.first - widget.exitPressure) * (widget.checks.first - widget.exitPressure)),
                                     left: 1,
                                     right: 1,
                                     child: Container(
@@ -745,16 +745,16 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                                         child: Align(
                                             alignment: Alignment.center,
                                             child: Text(
-                                              cat.getOxygenRemaining(widget.index).toInt().toString(),
+                                              cat.getOxygenRemaining(widget.index) >= 0 ?
+                                              cat.getOxygenRemaining(widget.index).toInt().toString():
+                                              "0",
                                               style: varTextStyle,
                                             ))),
                                   );
                                 },
                               ),
                               Positioned(
-                                  top: 20 +
-                                      ((constraints.maxHeight - 40) / 270) *
-                                          (330 - widget.returnPressure),
+                                  top: 24.5 + ((constraints.maxHeight - 69)/(widget.checks.first - widget.exitPressure) * (widget.checks.first - widget.returnPressure)),
                                   left: -3,
                                   child: ClipPath(
                                     clipper: LeftTriangle(),
@@ -765,9 +765,7 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                                     ),
                                   )),
                               Positioned(
-                                  top: 20 +
-                                      ((constraints.maxHeight - 40) / 270) *
-                                          (330 - widget.plannedReturnPressure),
+                                  top: 24.5 + ((constraints.maxHeight - 69)/(widget.checks.first - widget.exitPressure) * (widget.checks.first - widget.plannedReturnPressure)),
                                   right: -3,
                                   child: ClipPath(
                                     clipper: RightTriangle(),

@@ -9,8 +9,8 @@ import 'package:oxy_guard/models/personnel/personnel_model.dart';
 
 class DatabaseSevice{
   final _firestore = FirebaseFirestore.instance;
-  late final CollectionReference _actionsRef;
-  late final CollectionReference _endedRef;
+  late CollectionReference _actionsRef;
+  late CollectionReference _endedRef;
   late DocumentReference _personnelRef;
   late String actionId;
   DatabaseSevice(){
