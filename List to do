@@ -4,12 +4,11 @@
 	Alarm dźwiękowy + wizualny przypominający o konieczności wykonania pomiaru
 :Alarmy
 	Alarm dźwiękowy + wizualny przypominający o konieczności odwrotu (zgodnie z założonym wyjściem)
-:Wskaźniki ciśnienia (trójkąty)
-	Wskaźniki nie przesuwają się wraz ze zmianą przewidywanego ciśnienia wyjścia
 :Kadra
-	Z jakiegoś powodu, na jednym urzadzeniu po zmianie zalogowanego użytkownika skład kadry zostaje ten sam
-:Czas wyjścia
+	Kadra nie jest na bieżąco aktualizowana między dwoma urządzeniami
+:Czas wyjścia - 
 	po wprowadzeniu czasu wyjścia przed rozpoczęciem pracy, rota się blokuje
+	przyczyną jest przycisk start którego warunek jest oparty na czasie wyjścia. Mam wrażenie że mogło to być jakoś lepiej zrobione xd
 
 TO DO w przyszłości (jak apka będzie banglać)
 :Archiwum 
