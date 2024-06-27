@@ -7,6 +7,7 @@ import 'package:oxy_guard/global_service.dart';
 import 'package:oxy_guard/login_page.dart';
 import 'package:oxy_guard/models/action_model.dart';
 import 'package:oxy_guard/models/personnel/worker.dart';
+import 'package:oxy_guard/models/squad_model.dart';
 import 'package:oxy_guard/personnel/personnel_page.dart';
 import 'package:oxy_guard/shift_squad_choice.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -215,38 +216,34 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Placeholder(
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    top:
-                                        MediaQuery.of(context).size.height / 2 -
-                                            50), // Dodaj padding od góry
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Center(
-                                    child: Text(
-                                      "powrót",
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        height: 5,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
+                  onPressed: () async {
+                    ActionModel preparedAction = ActionModel();
+                    SquadModel preparedSquad = SquadModel();
+                    preparedAction.addSquad(preparedSquad);
+                    await SharedPreferences.getInstance().then((prefs){
+                      int entryPressure = prefs.getInt("startingPressure") ?? 300;
+                      int exitPressure = prefs.getInt("extremePressure") ?? 60;
+                      int interval = prefs.getInt("timePeriod") ?? 600;
+                      preparedSquad.startSquadWork(entryPressure, exitPressure, interval, "", null, null, null, true);
+                      preparedSquad.startSquadWork(entryPressure, exitPressure, interval, "", null, null, null, true);
+                      preparedSquad.startSquadWork(entryPressure, exitPressure, interval, "", null, null, null, true);
+                      GlobalService.currentAction = preparedAction;
+                      GlobalService.currentAction
+                        .setActionLocation()
+                        .then((none) {
+                          setState(() {
+                            _isLoading = false;
+                          });
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SquadChoice(quickStart: true,)),
+                          );
+                    });
+                    });
+                    setState(() {
+                      _isLoading = true;
+                    });
                   },
                   style: ButtonStyle(
                     maximumSize: MaterialStateProperty.all(Size(
@@ -295,7 +292,7 @@ class _HomePageState extends State<HomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SquadChoice()),
+                            builder: (context) => SquadChoice()),
                       );
                     });
                     setState(() {

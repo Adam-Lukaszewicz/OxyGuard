@@ -10,7 +10,8 @@ import 'tabs/working/working_page.dart';
 
 class ManagePage extends StatefulWidget {
   SquadModel? chosenAction;
-  ManagePage({super.key, this.chosenAction});
+  bool quickStart;
+  ManagePage({super.key, this.chosenAction, this.quickStart = false});
   @override
   State<ManagePage> createState() => _ManagePageState();
 }
@@ -22,6 +23,15 @@ class _ManagePageState extends State<ManagePage>
     Tab(text: "Pracujące"),
     Tab(text: "Zakończone"),
   ];
+
+  int executeQuickStart(){
+    if(widget.quickStart){
+      widget.quickStart = false;
+      return 1;
+    }else {
+      return 0;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +53,7 @@ class _ManagePageState extends State<ManagePage>
         return MaterialApp(
           home: DefaultTabController(
             length: categories.length,
+            initialIndex: executeQuickStart(),
             child: Scaffold(
                 appBar: PreferredSize(
                   preferredSize: Size.fromHeight(screenHeight * 0.1),

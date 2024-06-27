@@ -1,5 +1,9 @@
 :Archiwum
-	Zapisanie symbolicznego śladu po zakończonej akcji
+	Ekran z listą akcji zakończonych przez to konto
+	(można przemyśleć, co chcemy o akcji zapisać do archiwum, na ten moment zapisuje się "snapshot" akcji w momencie kiedy została zakończona)
+:Podłączenie ustawień z burger menu z ekranu głównego do startu na waiting pageu
+	Propozycja - do global service dodać też statyczna klasę Settings, w której będziemy chować te wartości ustawiane w burger menu, wtedy łatwo będzie inicjalizować
+	je w odcinkach
 :Dostęp do lokalizacji
 	Przypadek jeżeli użytkownik nie zezwoli na udostępnianie lokalizacji - jaki tytuł akcji stworzyć
 :Przycisk alarmowy
@@ -9,13 +13,11 @@
 	Kolory dobierać za pomocą Theme.of(context).... Pozwoli to ujednolicić kolorystykę aplikacji oraz wprowadzić motyw ciemny
 :Alarmy
 	Alarm dźwiękowy + wizualny przypominający o konieczności wykonania pomiaru
-:Wskaźniki ciśnienia (trójkąty)
-	Wskaźniki nie przesuwają się wraz ze zmianą przewidywanego ciśnienia wyjścia
+:Kończenie akcji 
+	co jeżeli osoba A jest w Akcji a osoba B zakończy ją
 :Granica dostępu do akcji
 	Każdy użytkownik z dostępem do aplikacji może dołączyć do dowolnej akcji. Wprowadzić mechanizm klucza dostępu generowanego automatycznie lub tworzonego przez założyciela akcji.
 	Brak takiego mechanizmu może powodować nieporządane zmiany wprowadzane przez użytkowników zewnętrznych (śmieszków 15-letnich mających dostęp do internetu).
-:Szybki start - Adam robi
-	Uruchomić przycisk
 :Nazwy odcinków bojowych
 	Fajnie gdyby odcinki były jakoś nazywalne. nazwa ta powinna wyświetlać się na górze ekranu (OB nazwa).
 	Propozycja nazyw OB - domyślnie nazwisko (podawane przy rejestracji) osoby która nimi kieruje (jeden dowódca kieruje jednym odcinkiem bojowym), nazwa może być zmieniona podczas tworzenia odcinka
@@ -23,3 +25,7 @@
 	Z jakiegoś powodu, na jednym urzadzeniu po zmianie zalogowanego użytkownika skład kadry zostaje ten sam
 :Czas wyjścia
 	po wprowadzeniu czasu wyjścia przed rozpoczęciem pracy rota się blokuje
+:Nowe pomiary
+	W menu wyboru powinny być dostępne tylko możliwe ciśnienia (nie większe niż poprzedni pomiar)
+:Edycja pomiarów
+	Możliwość edycji pomiaru przedostatniego pomiarau na większy niż ten ostatni. W takim przypadku ciśnienie w butli rośnie co jest delikatnie mówiąc bezsensem

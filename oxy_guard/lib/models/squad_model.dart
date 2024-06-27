@@ -82,7 +82,7 @@ class SquadModel extends ChangeNotifier {
     GlobalService.currentAction.update();
   }
 
-  void startSquadWork(int entryPressure, int exitPressure, int interval, String localization, Worker? firstPerson, Worker? secondPerson, Worker? thirdPerson) {
+  void startSquadWork(int entryPressure, int exitPressure, int interval, String localization, Worker? firstPerson, Worker? secondPerson, Worker? thirdPerson, bool quick) {
     oxygenValues
         .addAll({(oxygenValues.length).toString(): entryPressure.toDouble()});
     usageRates.addAll({(oxygenValues.length - 1).toString(): 10.0 / 60.0});
@@ -105,8 +105,10 @@ class SquadModel extends ChangeNotifier {
       (oxygenValues.length - 1).toString(): SquadTab(
           text: "R${workingSquads.length}", index: oxygenValues.length - 1)
     });
+    if(!quick){
     notifyListeners();
     GlobalService.currentAction.update();
+    }
   }
 
   void endSquadWork(int index){

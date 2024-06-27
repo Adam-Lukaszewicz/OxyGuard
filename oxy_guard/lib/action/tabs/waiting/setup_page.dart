@@ -417,7 +417,7 @@ Future<void> _loadExtremePresssure() async {
                       3) {
                     Provider.of<SquadModel>(context, listen: false)
                         .startSquadWork(
-                            entryPressure, exitPressure, checkInterval, localization, firstPerson, secondPerson, thirdPerson);
+                            entryPressure, exitPressure, checkInterval, localization, firstPerson, secondPerson, thirdPerson, false);
                     await succesDialog(context, 'Pomyślnie dodano rotę do pracujących');
                   } else {
                     await warningDialog('Maksymalnie 3 pracujace roty na raz');

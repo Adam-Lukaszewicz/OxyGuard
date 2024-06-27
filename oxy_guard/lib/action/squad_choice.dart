@@ -5,7 +5,8 @@ import 'package:oxy_guard/home_page.dart';
 import 'package:oxy_guard/models/squad_model.dart';
 
 class SquadChoice extends StatefulWidget {
-  const SquadChoice({super.key});
+  bool quickStart;
+  SquadChoice({super.key, this.quickStart = false});
 
   @override
   State<SquadChoice> createState() => _SquadChoiceState();
@@ -15,15 +16,23 @@ class _SquadChoiceState extends State<SquadChoice> {
 
   @override
   void initState() {
-        super.initState();
-        if (GlobalService.currentAction.squads.entries.toList().isEmpty) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ManagePage()),
-              );
-          });
-        }
+    super.initState();
+    if(widget.quickStart){
+      widget.quickStart = false;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ManagePage(chosenAction: GlobalService.currentAction.squads["0"], quickStart: true,)),
+        );
+      });
+    }else if (GlobalService.currentAction.squads.entries.toList().isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+         Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ManagePage()),
+        );
+      });
+    }
   }
 
   @override

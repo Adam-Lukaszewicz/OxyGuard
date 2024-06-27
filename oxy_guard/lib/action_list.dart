@@ -84,7 +84,7 @@ class _ActionListState extends State<ActionList> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const SquadChoice()));
+                                    builder: (context) => SquadChoice()));
                           },
                         ))
                       );
