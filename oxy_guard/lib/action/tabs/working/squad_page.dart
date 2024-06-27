@@ -47,7 +47,7 @@ class SquadPage extends StatefulWidget {
         usageRate = usageRate ?? 10.0 / 60.0,
         returnPressure = returnPressure ?? 100.0,
         plannedReturnPressure = plannedReturnPressure ?? 120.0,
-        checks = checks ?? <double>[],
+        checks = checks ?? <double>[entryPressure],
         checkTimes = checkTimes ?? <DateTime>[],
         working = working ?? false;
 
@@ -201,8 +201,6 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
   }
 }
 
-
-
   @override
   void initState() {
     super.initState();
@@ -214,8 +212,6 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
     exitSecondsController = FixedExtentScrollController();
     lastCheckController = FixedExtentScrollController();
     secondLastCheckController = FixedExtentScrollController();
-    widget.checks.add(widget.entryPressure);
-    GlobalService.currentAction.update();
     halfSec = Timer.periodic(const Duration(milliseconds: 500), (Timer t) {
       if (!mounted) return;
       setState(() {
@@ -805,13 +801,13 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                               if (widget.working) {
                                 setState(() {
                                   widget.exitTime = DateTime.now().difference(widget.checkTimes.first).inSeconds;
+                                  GlobalService.currentAction.update();
                                 });
                               } else {
                                 setState(() {
                                 widget.working = true;
                                 DateTime timestamp = DateTime.now();
                                 widget.checkTimes.add(timestamp);
-                                GlobalService.currentAction.update();
                                 Provider.of<SquadModel>(context, listen: false).setWorkTimestamp(widget.index, timestamp);
                                 lastCheck = timestamp;
                                 });
@@ -921,29 +917,23 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                               widget.checks.last = edits.last;
                               setState(() {
                                 if (widget.checks.length == 1) {
-                                  Provider.of<SquadModel>(context, listen: false)
-                                      .changeStarting(
-                                          widget.checks.first, widget.index);
-                                    entryPressureLabel = edits.first.toInt();
+                                  Provider.of<SquadModel>(context, listen: false).changeStarting(widget.checks.first, widget.index);
+                                  entryPressureLabel = edits.first.toInt();
                                 } 
                                 else {
                                   if(widget.checks.length==2)
                                   {
                                       entryPressureLabel = edits.first.toInt();
                                   }
-                                    widget.checks[widget.checks.length - 2] = edits.first;
-                                    widget.checks[widget.checks.length - 1] = edits.last;
+                                  widget.checks[widget.checks.length - 2] = edits.first;
+                                  widget.checks[widget.checks.length - 1] = edits.last;
                                   recalculateTime();
                                   widget.entryPressure = widget.checks.last;
                                   DateTime timestamp = DateTime.now();
-                                  widget.usageRate = (widget.checks[widget.checks.length - 2] -
-                                          widget.checks[widget.checks.length - 1]) /
-                                      (timestamp
-                                          .difference(widget.checkTimes.last)
-                                          .inSeconds);
+                                  widget.usageRate = (widget.checks[widget.checks.length - 2] - widget.checks[widget.checks.length - 1]) / (timestamp.difference(widget.checkTimes.last).inSeconds);
+                                  GlobalService.currentAction.update();
                                 }
                               });
-                              GlobalService.currentAction.update();
                             }
                           },
                           style: bottomButtonStyle,
