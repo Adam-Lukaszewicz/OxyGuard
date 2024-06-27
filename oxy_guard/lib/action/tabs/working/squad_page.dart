@@ -610,7 +610,7 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                                             child: Row(
                                           children: [
                                             Text(
-                                                "${widget.exitTime * 1 ~/ 2 + 60}",
+                                                "${widget.exitTime * 1 ~/ 2 + widget.exitPressure}",
                                                 style: varTextStyle),
                                             Text("BAR", style: unitTextStyle)
                                           ],
@@ -658,7 +658,7 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                                             child: Row(
                                           children: [
                                             Text(
-                                                "${(widget.exitTime * widget.usageRate).toInt() + 60}",
+                                                "${(widget.exitTime * widget.usageRate).toInt() + widget.exitPressure}",
                                                 style: varTextStyle),
                                             Text("BAR", style: unitTextStyle)
                                           ],
@@ -845,30 +845,28 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                             if (parse == null) return;
                             final valid = parse.toDouble();
                             setState(() {
-                              if (valid < oxygenValue) {
-                                widget.entryPressure = valid;
+                              //if (valid < oxygenValue) { //ten if nie ma sensu bo zmieniłem menu wyboru tlenu - teraz nie da się wprowadzić większego pomiaru :D
+                                //widget.entryPressure = valid;//to jest jakiś dzikie - przypisywanie ostatniego pomiaru do entryPressure. Zostawiam komentaż bo obstawiam że takie podejście miało swoje źródło
                                 DateTime timestamp = DateTime.now();
-                                if (widget.checks.isNotEmpty) {
+                                if (widget.checks.isNotEmpty) { 
                                   widget.usageRate = (widget.checks.last -
-                                          widget.entryPressure) /
+                                          valid) /
                                       (timestamp
                                           .difference(widget.checkTimes.last)
                                           .inSeconds);
                                 }
                                 
                                 widget.checkTimes.add(timestamp);
-                                widget.checks.add(widget.entryPressure);
-
+                                widget.checks.add(valid);
                                 Provider.of<SquadModel>(context, listen: false)
                                   .addCheck(
-                                      widget.entryPressure,
+                                      valid,
                                       widget.usageRate,
                                       timestamp,
                                       widget.index
                                   );
                                 lastCheck = timestamp;
-
-                              }
+                              //}
                             });
                           },
                           style: bottomButtonStyle,
@@ -882,7 +880,7 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                                   style: unitTextStyle,
                                 ),
                                 Text(
-                                  "${widget.entryPressure.toInt()}",
+                                  "${widget.checks.last.toInt()}",
                                   style: varTextStyle,
                                 ),
                                 Text(
@@ -926,7 +924,7 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                                   widget.checks[widget.checks.length - 2] = edits.first;
                                   widget.checks[widget.checks.length - 1] = edits.last;
                                   recalculateTime();
-                                  widget.entryPressure = widget.checks.last;
+                                  //widget.entryPressure = widget.checks.last;
                                   DateTime timestamp = DateTime.now();
                                   widget.usageRate = (widget.checks[widget.checks.length - 2] - widget.checks[widget.checks.length - 1]) / (timestamp.difference(widget.checkTimes.last).inSeconds);
                                   GlobalService.currentAction.update();
