@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:oxy_guard/global_service.dart';
 import 'package:oxy_guard/models/squad_model.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WorkingPage extends StatefulWidget {
   WorkingPage({required Key key}) : super(key: key);
@@ -48,6 +49,47 @@ class _WorkingPageState extends State<WorkingPage>
             MediaQuery.of(GlobalService.navigatorKey.currentContext!)
                 .viewPadding
                 .vertical;
+
+    if (Provider.of<SquadModel>(context, listen: false)
+                  .workingSquads
+                  .values
+                  .toList().isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                "Brak przygotowanych rot do pracy. W celu skonfigurowania roty przejdź do zakładki 'oczekujące' lub kliknij poniższy przycisk w celu stworzenia domyślneje roty.",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () async {
+                  final prefs = await SharedPreferences.getInstance();
+                  Provider.of<SquadModel>(context, listen: false).startSquadWork(
+                    (prefs.getInt('startingPressure')) ?? 330, 
+                    (prefs.getInt('extremePressure')) ?? 60, 
+                    (prefs.getInt('timePeriod')) ?? 300, 
+                    "", 
+                    null, 
+                    null, 
+                    null,
+                  );
+                },
+                child: Text("Rozpocznij pracę roty"),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
     return Column(
       children: [
         SizedBox(

@@ -126,7 +126,6 @@ class _ActionListState extends State<ActionList> {
                     }
                   }),
             ),
-            const Text("TODO"),
             ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);

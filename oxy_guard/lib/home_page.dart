@@ -150,7 +150,7 @@ class _HomePageState extends State<HomePage> {
               ElevatedButton(
                 onPressed: () async {
                   var value = await checkListDialog(
-                      context,  150, 10,"wprowadz nowy pomiar");
+                      context,  150, 0,"wprowadz nowy pomiar");
                   _setExtremePresssure(value ?? 0);
                 },
                 child: Center(

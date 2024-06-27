@@ -714,7 +714,7 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                                 left: 0,
                                 right: 0,
                                 child: Center(
-                                  child: Text("60", style: varTextStyle),
+                                  child: Text(widget.exitPressure.toString(), style: varTextStyle),
                                 ),
                               ),
                               Positioned(

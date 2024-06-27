@@ -9,6 +9,30 @@ class FinishedPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+        if (Provider.of<SquadModel>(context, listen: false)
+                  .finishedSquads
+                  .values
+                  .toList().isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                "Tutaj będą wyświetlane statystki rot które zakończyły pracę.",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
         label: const Center(child: Text("Zakończ akcję")),

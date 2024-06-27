@@ -12,6 +12,20 @@ class SquadChoice extends StatefulWidget {
 }
 
 class _SquadChoiceState extends State<SquadChoice> {
+
+  @override
+  void initState() {
+        super.initState();
+        if (GlobalService.currentAction.squads.entries.toList().isEmpty) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ManagePage()),
+              );
+          });
+        }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
