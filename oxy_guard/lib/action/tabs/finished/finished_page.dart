@@ -5,7 +5,7 @@ import 'package:oxy_guard/models/squad_model.dart';
 import 'package:provider/provider.dart';
 
 class FinishedPage extends StatelessWidget {
-  FinishedPage({super.key});
+  const FinishedPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,9 +13,9 @@ class FinishedPage extends StatelessWidget {
                   .finishedSquads
                   .values
                   .toList().isEmpty) {
-      return Center(
+      return const Center(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(16.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
