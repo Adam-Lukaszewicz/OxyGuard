@@ -10,7 +10,7 @@ class EndedModel{
   EndedModel({required this.actionLocation, required this.averageUse, required this.endTime});
   EndedModel.fromJson(Map<String, dynamic> json):this(
     actionLocation: Position.fromMap(jsonDecode(json["Location"])),
-    averageUse: json["AverageUse"] as double,
+    averageUse: jsonDecode(json["AverageUse"]) as double,
     endTime: DateTime.parse(json["EndTime"]),
   );
   Map<String, dynamic> toJson(){

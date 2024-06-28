@@ -39,6 +39,10 @@ class DatabaseSevice{
     return _personnelRef.get();
   }
 
+  Stream<QuerySnapshot> getArchive(){
+    return _endedRef.snapshots();
+  }
+
   Future<void> addAction(ActionModel actionModel) async {
    DocumentReference doc = await _actionsRef.add(actionModel);
    actionId = doc.id;

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:oxy_guard/action/squad_choice.dart';
 import 'package:oxy_guard/action_list.dart';
+import 'package:oxy_guard/archive_page.dart';
 import 'package:oxy_guard/context_windows.dart';
 import 'package:oxy_guard/global_service.dart';
 import 'package:oxy_guard/login_page.dart';
@@ -166,31 +167,7 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => Placeholder(
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  top: MediaQuery.of(context).size.height / 2 -
-                                      50), // Dodaj padding od góry
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Center(
-                                  child: Text(
-                                    "powrót",
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      height: 5,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      builder: (context) => const ArchivePage()
                     ),
                   );
                 },
