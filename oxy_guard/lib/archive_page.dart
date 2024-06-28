@@ -28,8 +28,18 @@ class ArchivePage extends StatelessWidget{
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Text("Loading");
                   }
+                  var entryList = snapshot.data!.docs;
+                  entryList.sort((a, b) {
+                    if(a.data() is EndedModel && b.data() is EndedModel){
+                      EndedModel aModel = a.data() as EndedModel;
+                      EndedModel bModel = b.data() as EndedModel;
+                      return bModel.endTime.compareTo(aModel.endTime);
+                    }else{
+                      return 0;
+                    }
+                  },);
                   return ListView(
-                    children: snapshot.data!.docs.map((entry){
+                    children: entryList.map((entry){
                       if(entry.data() is EndedModel){
                         EndedModel model = entry.data() as EndedModel;
                         return FutureBuilder(future: placemarkFromCoordinates(model.actionLocation.latitude, model.actionLocation.longitude), builder: (context, snap){
