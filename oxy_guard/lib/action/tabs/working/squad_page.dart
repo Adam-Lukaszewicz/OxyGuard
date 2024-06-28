@@ -801,22 +801,20 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                           vertical: 8.0, horizontal: 5.0),
                       child: ElevatedButton(
                           onPressed: () {
-                            if (widget.exitTime == 0) {
-                              if (widget.working) {
-                                setState(() {
-                                  widget.exitTime = DateTime.now().difference(widget.checkTimes.first).inSeconds;
-                                  GlobalService.currentAction.update();
-                                });
-                              } else {
-                                setState(() {
+                            if(!widget.working){
+                              setState(() {
                                 widget.working = true;
                                 DateTime timestamp = DateTime.now();
                                 widget.checkTimes.add(timestamp);
                                 Provider.of<SquadModel>(context, listen: false).setWorkTimestamp(widget.index, timestamp);
                                 lastCheck = timestamp;
-                                });
-                              }
-                            } else {
+                              });
+                            }else if(widget.exitTime == 0){
+                              setState(() {
+                                widget.exitTime = DateTime.now().difference(widget.checkTimes.first).inSeconds;
+                                GlobalService.currentAction.update();
+                              });
+                            }else{
                               setState(() {
                                 widget.working = false;
                                 Provider.of<SquadModel>(context, listen: false).endSquadWork(widget.index);
@@ -826,11 +824,11 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                           style: bottomButtonStyle,
                           child: Center(
                             child: Text(
-                              widget.exitTime == 0
-                                  ? widget.working
-                                      ? "PUNKT PRACY"
-                                      : "START PRACY"
-                                  : "WYCOFAJ",
+                              !widget.working ?
+                                "START PRACY" :
+                                widget.exitTime == 0 ?
+                                  "PUNKT PRACY" :
+                                  "WYCOFAJ",
                               style: varTextStyle,
                             ),
                           )))),

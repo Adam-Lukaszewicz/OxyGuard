@@ -6,9 +6,6 @@
 	Alarm dźwiękowy + wizualny przypominający o konieczności odwrotu (zgodnie z założonym wyjściem)
 :Kadra
 	Kadra nie jest na bieżąco aktualizowana między dwoma urządzeniami
-:Czas wyjścia - 
-	po wprowadzeniu czasu wyjścia przed rozpoczęciem pracy, rota się blokuje
-	przyczyną jest przycisk start którego warunek jest oparty na czasie wyjścia. Mam wrażenie że mogło to być jakoś lepiej zrobione xd
 
 TO DO w przyszłości (jak apka będzie banglać)
 :UI - nie wierzę że to się stanie jeszcze w tym semestrze
