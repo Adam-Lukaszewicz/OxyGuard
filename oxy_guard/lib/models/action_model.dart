@@ -3,6 +3,8 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:oxy_guard/action/tabs/working/squad_page.dart';
+import 'package:oxy_guard/models/ended_model.dart';
 import 'package:oxy_guard/models/squad_model.dart';
 
 import '../global_service.dart';
@@ -51,6 +53,19 @@ class ActionModel{
     };
   }
 
+  EndedModel archivize(){
+    double averageUse = 0;
+    int divider = 0;
+    squads.forEach((key, squad){
+      squad.finishedSquads.forEach((key, value) {
+        averageUse += value.averageUse;
+        divider++;
+      });
+    });
+    averageUse /= divider;
+    return EndedModel(actionLocation: actionLocation, averageUse: averageUse, endTime: DateTime.now());
+  }
+
   void listenToChanges() {
     _listener = GlobalService.databaseSevice.getActionsRef().listen((event) {
       ActionModel newData = event.data() as ActionModel;
@@ -67,6 +82,7 @@ class ActionModel{
       actionLocation = newData.actionLocation;
     });
   }
+
 
   void finishListening(){
     _listener.cancel();
