@@ -144,6 +144,8 @@ class SquadPage extends StatefulWidget {
 class _SquadPageState extends State<SquadPage>
     with AutomaticKeepAliveClientMixin {
   //Declarations
+  DateTime? lastCheckAllert;
+  DateTime? lastExitAllert;
   late Timer halfSec;
   late FixedExtentScrollController checkController;
   late FixedExtentScrollController lastCheckController;
@@ -217,7 +219,22 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
     secondLastCheckController = FixedExtentScrollController();
     halfSec = Timer.periodic(const Duration(milliseconds: 500), (Timer t) {
       if (!mounted) return;
-      setState(() {
+      setState((){
+            if( lastCheck != null ){
+          if ( (DateTime.now().difference(lastCheck!).inSeconds > widget.interval )& ((lastCheckAllert==null)? true: DateTime.now().difference(lastCheckAllert!).inSeconds > 40))
+          {  
+            warningDialog(context, "Wprowadź nowy pomiar ciśnienia dla roty ${widget.text}");
+            lastCheckAllert = DateTime.now();
+          }
+        }
+        if (!widget.checks.isEmpty)
+        {
+          if((((widget.exitTime * widget.usageRate).toInt() + widget.exitPressure)>widget.checks.last )& ((lastExitAllert==null)? true: DateTime.now().difference(lastExitAllert!).inSeconds > 40))
+          {
+            warningDialog(context, "Ilość powietrza w butli jest poniżej bezpiecznego progu. Rozpocznij powrót z strefy działań roty ${widget.text}");
+            lastExitAllert = DateTime.now();
+          }
+        }
       });
     });
   }
