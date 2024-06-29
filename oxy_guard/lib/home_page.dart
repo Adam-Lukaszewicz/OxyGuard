@@ -175,6 +175,7 @@ class _HomePageState extends State<HomePage> {
               ),
               ElevatedButton(
                 onPressed: () async {
+                  GlobalService.currentPersonnel.finishListening();
                   FirebaseAuth.instance.signOut();
                   Navigator.pushReplacement(
                     context,

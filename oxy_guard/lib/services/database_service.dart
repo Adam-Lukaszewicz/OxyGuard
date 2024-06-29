@@ -29,6 +29,7 @@ class DatabaseSevice{
     }else{
       _personnelRef.set(personnelModel);
     }
+    GlobalService.currentPersonnel.listenToChanges();
   }
 
   Stream<QuerySnapshot> getActions() {
@@ -37,6 +38,10 @@ class DatabaseSevice{
 
   Future<DocumentSnapshot> getPersonnel() {
     return _personnelRef.get();
+  }
+
+  Stream<DocumentSnapshot<Object?>> getPersonnelRef(){
+    return _personnelRef.snapshots();
   }
 
   Stream<QuerySnapshot> getArchive(){

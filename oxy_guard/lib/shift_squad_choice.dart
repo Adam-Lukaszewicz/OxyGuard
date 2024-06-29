@@ -136,20 +136,25 @@ class _ShiftSquadChoicePageState extends State<ShiftSquadChoicePage> {
                   ),
                   SizedBox(height: 10),
                   Expanded(
-                    child: ListView(
-                      children: GlobalService.currentPersonnel.team
-                          .map((worker) => ListTile(
-                              title: Text('${worker.name} ${worker.surname}'),
-                              trailing: IconButton(
-                                icon: Icon(Icons.delete),
-                                onPressed: () {
-                                  setState(() {
-                                    GlobalService.currentPersonnel.subWorker(worker);
-                                  });
-                                },
-                              ),
-                            ))
-                          .toList(),
+                    child: ListenableBuilder(
+                      listenable: GlobalService.currentPersonnel,
+                      builder: (context, child) {
+                        return ListView(
+                        children: GlobalService.currentPersonnel.team
+                            .map((worker) => ListTile(
+                                title: Text('${worker.name} ${worker.surname}'),
+                                trailing: IconButton(
+                                  icon: Icon(Icons.delete),
+                                  onPressed: () {
+                                    setState(() {
+                                      GlobalService.currentPersonnel.subWorker(worker);
+                                    });
+                                  },
+                                ),
+                              ))
+                            .toList(),
+                      );
+                      },
                     ),
                   ),
                 ],

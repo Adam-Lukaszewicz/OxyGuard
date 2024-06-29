@@ -1,10 +1,13 @@
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:oxy_guard/global_service.dart';
 import 'package:oxy_guard/models/personnel/shift.dart';
 import 'package:oxy_guard/models/personnel/worker.dart';
 
-class PersonnelModel{
+class PersonnelModel extends ChangeNotifier{
   List<Worker> team;
   List<Shift> shifts;
   PersonnelModel({List<Worker>? team, List<Shift>? shifts}): team = team ?? [], shifts = shifts ?? [];
@@ -13,6 +16,8 @@ class PersonnelModel{
     shifts: (jsonDecode(json["Shifts"]) as List).map((shift) => Shift.fromJson(shift)).toList()
   );
 
+  late StreamSubscription<DocumentSnapshot<Object?>> _listener;
+
   Map<String, dynamic> toJson(){
     return{
       "Team": jsonEncode(team),
@@ -20,12 +25,27 @@ class PersonnelModel{
     };
   }
 
+  void listenToChanges() {
+    _listener = GlobalService.databaseSevice.getPersonnelRef().listen((event) {
+      PersonnelModel newData = event.data() as PersonnelModel;
+      team = newData.team;
+      shifts = newData.shifts;
+      notifyListeners();
+    });
+  }
+
+  void finishListening(){
+    _listener.cancel();
+  }
+
   void addWorker(Worker newWorker){
-    team.insert(0, newWorker);//wstawia na początek listy - ładnie to wygląda w zakładce kadry :D
+    team.insert(0, newWorker);
+    notifyListeners();
     GlobalService.databaseSevice.updatePersonnel(this);
   }
   void subWorker(Worker Worker){
     team.remove(Worker);
+    notifyListeners();
     GlobalService.databaseSevice.updatePersonnel(this);
   }
 }
