@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:oxy_guard/action/tabs/working/squad_page.dart';
+import 'package:oxy_guard/context_windows.dart';
 import 'package:oxy_guard/models/ended_model.dart';
 import 'package:oxy_guard/models/squad_model.dart';
 
@@ -13,15 +15,16 @@ class ActionModel{
   int internalIndex;
   Map<String, SquadModel> squads;
   Position actionLocation;
+  String actionName;
   ActionModel({
     int? internalIndex,
     Map<String, SquadModel>? squads,
-    Position? actionLocation
+    Position? actionLocation,
+    String? actionName
   }):
-   internalIndex = internalIndex ?? 0,
-   squads = squads ?? <String, SquadModel>{},
-   actionLocation = actionLocation ??
-            Position(
+    internalIndex = internalIndex ?? 0,
+    squads = squads ?? <String, SquadModel>{},
+    actionLocation = actionLocation ?? Position(
                 longitude: 0,
                 latitude: 0,
                 timestamp: DateTime.now(),
@@ -32,7 +35,8 @@ class ActionModel{
                 headingAccuracy: 0,
                 speed: 0,
                 speedAccuracy: 0
-                );
+                ),
+    actionName = actionName ?? "";
   
   late StreamSubscription<DocumentSnapshot<Object?>> _listener;
 
@@ -49,7 +53,8 @@ class ActionModel{
     return{
       "InternalIndex": jsonEncode(internalIndex),
       "Squads": jsonEncode(squads),
-      "Location": jsonEncode(actionLocation)
+      "Location": jsonEncode(actionLocation),
+      "Name": actionName
     };
   }
 
@@ -88,8 +93,13 @@ class ActionModel{
     _listener.cancel();
   }
 
-  Future<void> setActionLocation() async {
-    actionLocation = await Geolocator.getCurrentPosition();
+  Future<void> setActionLocation(BuildContext context) async {
+    if(GlobalService.permission == LocationPermission.always || GlobalService.permission == LocationPermission.whileInUse){
+      actionLocation = await Geolocator.getCurrentPosition();
+    }else{
+      String? input = await textInputDialog(context, "Podaj nazwę akcji", "Nazwa akcji");
+      if(input != null) actionName = input;
+    }
     GlobalService.databaseSevice.addAction(this).then((value) => listenToChanges());
   }
 
@@ -97,6 +107,7 @@ class ActionModel{
     internalIndex: jsonDecode(json["InternalIndex"]),
     squads: Map.castFrom(jsonDecode(json["Squads"])).map((key, value) => MapEntry(key.toString(), SquadModel.fromJson(value))),
     actionLocation: Position.fromMap(jsonDecode(json["Location"])),
+    actionName: json["Name"] != null ? json["Name"]! as String : "",
   );
 
   void copyFrom(ActionModel other){

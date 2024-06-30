@@ -49,24 +49,19 @@ class _ActionListState extends State<ActionList> {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Text("Loading");
                     }
-                    List<(Position, Card)> preSort =
-                        snapshot.data!.docs.map((action) {
-                      Position actionLocation =
-                          Position.fromMap(jsonDecode(action["Location"]!));
+                    List<(Position, Card)> preSort = snapshot.data!.docs.map((action) {      
+                      Position actionLocation = Position.fromMap(jsonDecode(action["Location"]!));
                       return (
                         actionLocation,
                         Card(
                             child: InkWell(
                           child: ListTile(
-                            title: FutureBuilder(
-                              future: placemarkFromCoordinates(actionLocation.latitude,
-                                  actionLocation.longitude),
+                            title: (action.data() as ActionModel).actionName.isNotEmpty ? Text((action.data() as ActionModel).actionName) : FutureBuilder(
+                              future: placemarkFromCoordinates(actionLocation.latitude, actionLocation.longitude),
                               builder: (context, snap) {
-                                if (snap.connectionState ==
-                                    ConnectionState.done) {
+                                if (snap.connectionState == ConnectionState.done) {
                                   if (snap.hasData) {
-                                    final address =
-                                        "${snap.data!.first.street}, ${snap.data!.first.locality}";
+                                    final address = "${snap.data!.first.street}, ${snap.data!.first.locality}";
                                     return Text(address);
                                   } else if (snap.hasError) {
                                     return const Text("Brak pasującego adresu");

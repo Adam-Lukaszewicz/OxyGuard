@@ -413,3 +413,39 @@ Future<Worker?> selectWorkerFromList(BuildContext context) async {
   );
 }
 
+Future<String?> textInputDialog(BuildContext context, String title, String label) async {
+  final TextEditingController _textController = TextEditingController();
+
+  return showDialog<String?>(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(title),
+        content: Container(
+          constraints: BoxConstraints(maxHeight: 300.0),
+          width: double.maxFinite,
+          child: Column(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _textController,
+                  decoration: InputDecoration(labelText: label),
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text('OK'),
+            onPressed: () {
+              if(_textController.text.isNotEmpty) Navigator.of(context).pop(_textController.text.trim());
+              warningDialog(context, "Akcja bez GPS musi być nazwana");
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+

@@ -207,7 +207,7 @@ class _HomePageState extends State<HomePage> {
                       preparedSquad.startSquadWork(entryPressure, exitPressure, interval, "", null, null, null, true);
                       GlobalService.currentAction = preparedAction;
                       GlobalService.currentAction
-                        .setActionLocation()
+                        .setActionLocation(context)
                         .then((none) {
                           setState(() {
                             _isLoading = false;
@@ -262,7 +262,7 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () {
                     GlobalService.currentAction = ActionModel();
                     GlobalService.currentAction
-                        .setActionLocation()
+                        .setActionLocation(context)
                         .then((none) {
                       setState(() {
                         _isLoading = false;
