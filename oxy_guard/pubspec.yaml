@@ -43,6 +43,8 @@ dependencies:
   geocoding: ^3.0.0
   shared_preferences: ^2.0.12
   firebase_auth: ^4.20.0
+  just_audio: ^0.9.38
+  audio_service: ^0.18.13
 
 dev_dependencies:
   flutter_test:
@@ -69,6 +71,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
      - media_files/logo.png
+     - media_files/not.mp3
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

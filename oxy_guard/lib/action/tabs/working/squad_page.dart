@@ -10,6 +10,10 @@ import 'package:oxy_guard/context_windows.dart';
 
 import '../../../models/squad_model.dart';
 import '../../../global_service.dart';
+//import 'package:audioplayers/audioplayers.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:audio_service/audio_service.dart';
+
 
 class SquadPage extends StatefulWidget {
   double usageRate;
@@ -156,6 +160,8 @@ class _SquadPageState extends State<SquadPage>
   int entryPressureLabel = 0;
   double _usageRate = 0.0;
   double _returnPressure =0;
+  AudioPlayer _audioPlayer= AudioPlayer();
+
 
 
 
@@ -199,6 +205,8 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
       
       if (widget.usageRate * 60 > 10) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
+          _audioPlayer.setAsset('media_files/not.mp3');
+          _audioPlayer.play();
           warningDialog(context, "Obecne zużycie jest bardzo duże. Upewnij się czy wprowadziłeś poprawny pomiar!!!");
         });
       }
@@ -220,9 +228,12 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
     halfSec = Timer.periodic(const Duration(milliseconds: 500), (Timer t) {
       if (!mounted) return;
       setState((){
-            if( lastCheck != null ){
+            if( lastCheck != null ){//zamiast 10 powinno być widget.interval
           if ( (DateTime.now().difference(lastCheck!).inSeconds > widget.interval )& ((lastCheckAllert==null)? true: DateTime.now().difference(lastCheckAllert!).inSeconds > 40))
           {  
+            //audioPlayer i warningDialog powinny być z awaitem i wtedy wszystko bedzie banglać
+            _audioPlayer.setAsset('media_files/not.mp3');
+            _audioPlayer.play(); 
             warningDialog(context, "Wprowadź nowy pomiar ciśnienia dla roty ${widget.text}");
             lastCheckAllert = DateTime.now();
           }
@@ -231,6 +242,9 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
         {
           if((((widget.exitTime * widget.usageRate).toInt() + widget.exitPressure)>widget.checks.last )& ((lastExitAllert==null)? true: DateTime.now().difference(lastExitAllert!).inSeconds > 40))
           {
+            //audioPlayer i warningDialog powinny być z awaitem i wtedy wszystko bedzie banglać
+            _audioPlayer.setAsset('media_files/not.mp3');
+            _audioPlayer.play(); 
             warningDialog(context, "Ilość powietrza w butli jest poniżej bezpiecznego progu. Rozpocznij powrót z strefy działań roty ${widget.text}");
             lastExitAllert = DateTime.now();
           }
@@ -248,6 +262,8 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
     secondLastCheckController.dispose();
     super.dispose();
   }
+
+
 
   //UI
   @override
@@ -289,6 +305,7 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                                           ? Expanded(
                                                     child: ElevatedButton(
                                                       onPressed: ()async {
+                                                        
                                                         var selectedItem = await selectFromList(context, ['piwnica', 'parter', 'pierwsze piętro', 'drugie piętro', 'poddasze', 'garaż', 'inne']);
                                                         setState(() {
                                                           widget.localization = selectedItem ?? "";
