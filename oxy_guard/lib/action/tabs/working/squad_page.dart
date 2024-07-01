@@ -255,7 +255,6 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
               body: "Wprowadź nowy pomiar ciśnienia dla roty ${widget.text}" , 
               fln: _flutterLocalNotificationsPlugin);
             }
-            //audioPlayer i warningDialog powinny być z awaitem i wtedy wszystko bedzie banglać
             _audioPlayer.setAsset('media_files/not.mp3');
             _audioPlayer.play(); 
             warningDialog(context, "Wprowadź nowy pomiar ciśnienia dla roty ${widget.text}");
@@ -272,7 +271,6 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
               body: "Ilość powietrza w butli jest poniżej bezpiecznego progu. Rozpocznij powrót z strefy działań roty ${widget.text}" , 
               fln: _flutterLocalNotificationsPlugin);
             }
-            //audioPlayer i warningDialog powinny być z awaitem i wtedy wszystko bedzie banglać
             _audioPlayer.setAsset('media_files/not.mp3');
             _audioPlayer.play(); 
             warningDialog(context, "Ilość powietrza w butli jest poniżej bezpiecznego progu. Rozpocznij powrót z strefy działań roty ${widget.text}");
