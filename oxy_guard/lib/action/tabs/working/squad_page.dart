@@ -4,6 +4,7 @@ import 'dart:convert';
 //import 'dart:html';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:oxy_guard/models/personnel/worker.dart';
 import 'package:provider/provider.dart';
 import 'package:oxy_guard/context_windows.dart';
@@ -12,8 +13,10 @@ import '../../../models/squad_model.dart';
 import '../../../global_service.dart';
 //import 'package:audioplayers/audioplayers.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:audio_service/audio_service.dart';
+//import 'package:audio_service/audio_service.dart';
+import 'package:oxy_guard/notification.dart';
 
+final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 class SquadPage extends StatefulWidget {
   double usageRate;
@@ -146,7 +149,7 @@ class SquadPage extends StatefulWidget {
 }
 
 class _SquadPageState extends State<SquadPage>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver{
   //Declarations
   DateTime? lastCheckAllert;
   DateTime? lastExitAllert;
@@ -161,6 +164,13 @@ class _SquadPageState extends State<SquadPage>
   double _usageRate = 0.0;
   double _returnPressure =0;
   AudioPlayer _audioPlayer= AudioPlayer();
+  bool _isInForeground = true;
+
+ @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    _isInForeground = state == AppLifecycleState.resumed;
+  }
 
 
 
@@ -205,6 +215,12 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
       
       if (widget.usageRate * 60 > 10) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
+          if(!_isInForeground)
+          {
+            Noti.showBigTextNotification(title: "Przypomnienie", 
+            body: "Obecne zużycie jest bardzo duże. Upewnij się czy wprowadziłeś poprawny pomiar!!!" , 
+            fln: _flutterLocalNotificationsPlugin);
+          }
           _audioPlayer.setAsset('media_files/not.mp3');
           _audioPlayer.play();
           warningDialog(context, "Obecne zużycie jest bardzo duże. Upewnij się czy wprowadziłeś poprawny pomiar!!!");
@@ -217,6 +233,8 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    Noti.initialize(_flutterLocalNotificationsPlugin);
     _usageRate = widget.usageRate;
     entryPressureLabel = widget.entryPressure.toInt();
     lastCheck = widget.checkTimes.isEmpty ? null : widget.checkTimes.last;
@@ -229,8 +247,14 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
       if (!mounted) return;
       setState((){
             if( lastCheck != null ){//zamiast 10 powinno być widget.interval
-          if ( (DateTime.now().difference(lastCheck!).inSeconds > widget.interval )& ((lastCheckAllert==null)? true: DateTime.now().difference(lastCheckAllert!).inSeconds > 40))
+          if ( (DateTime.now().difference(lastCheck!).inSeconds > 10 )& ((lastCheckAllert==null)? true: DateTime.now().difference(lastCheckAllert!).inSeconds > 10))
           {  
+            if(!_isInForeground)
+            {
+              Noti.showBigTextNotification(title: "Przypomnienie", 
+              body: "Wprowadź nowy pomiar ciśnienia dla roty ${widget.text}" , 
+              fln: _flutterLocalNotificationsPlugin);
+            }
             //audioPlayer i warningDialog powinny być z awaitem i wtedy wszystko bedzie banglać
             _audioPlayer.setAsset('media_files/not.mp3');
             _audioPlayer.play(); 
@@ -242,6 +266,12 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
         {
           if((((widget.exitTime * widget.usageRate).toInt() + widget.exitPressure)>widget.checks.last )& ((lastExitAllert==null)? true: DateTime.now().difference(lastExitAllert!).inSeconds > 40))
           {
+            if(!_isInForeground)
+            {
+              Noti.showBigTextNotification(title: "Przypomnienie", 
+              body: "Ilość powietrza w butli jest poniżej bezpiecznego progu. Rozpocznij powrót z strefy działań roty ${widget.text}" , 
+              fln: _flutterLocalNotificationsPlugin);
+            }
             //audioPlayer i warningDialog powinny być z awaitem i wtedy wszystko bedzie banglać
             _audioPlayer.setAsset('media_files/not.mp3');
             _audioPlayer.play(); 
@@ -255,6 +285,7 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     checkController.dispose();
     exitMinuteController.dispose();
     exitSecondsController.dispose();
@@ -305,7 +336,10 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                                           ? Expanded(
                                                     child: ElevatedButton(
                                                       onPressed: ()async {
-                                                        
+                                                        if(!_isInForeground)
+                                                        {
+                                                        Noti.showBigTextNotification(title: "Przypomnienie", body: "wprowadź ciśnienie", fln: _flutterLocalNotificationsPlugin);
+                                                        }
                                                         var selectedItem = await selectFromList(context, ['piwnica', 'parter', 'pierwsze piętro', 'drugie piętro', 'poddasze', 'garaż', 'inne']);
                                                         setState(() {
                                                           widget.localization = selectedItem ?? "";

@@ -12,7 +12,8 @@ import 'package:oxy_guard/models/squad_model.dart';
 import 'package:oxy_guard/personnel/personnel_page.dart';
 import 'package:oxy_guard/shift_squad_choice.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:permission_handler/permission_handler.dart';
+import 'package:volume_controller/volume_controller.dart';
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -29,6 +30,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    checkAndRequestPermission();
+    checkVolumeStatus();
     _loadExtremePresssure();
     _loadStartingPresssure();
     _loadTimePeriod();
@@ -304,4 +307,29 @@ class _HomePageState extends State<HomePage> {
         ),
     ]);
   }
+
+  void checkAndRequestPermission() async {
+  var status = await Permission.locationWhenInUse.status;
+  if (status.isDenied) {
+    await Permission.locationWhenInUse.request();
+  }
+  status = await Permission.notification.status;
+  if (status.isDenied) {
+    await Permission.notification.request();
+  }
+}
+
+void checkVolumeStatus() async {
+    try {
+      double volume = await VolumeController().getVolume();
+      
+
+
+        print('Aktualny poziom głośności: $volume');
+
+    } catch (e) {
+      print('Błąd podczas sprawdzania głośności: $e');
+    }
+  }
+
 }

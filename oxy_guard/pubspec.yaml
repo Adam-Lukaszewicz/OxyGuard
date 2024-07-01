@@ -45,6 +45,9 @@ dependencies:
   firebase_auth: ^4.20.0
   just_audio: ^0.9.38
   audio_service: ^0.18.13
+  flutter_local_notifications: ^17.2.1
+  permission_handler: ^11.3.1
+  volume_controller: ^2.0.7
 
 dev_dependencies:
   flutter_test:
