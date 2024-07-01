@@ -22,7 +22,7 @@ class Noti{
       importance: Importance.max,
       priority: Priority.high,
       fullScreenIntent: true,
-      //largeIcon: DrawableResourceAndroidBitmap('logo'), 
+
     );
 
   DarwinNotificationDetails iOSPlatformChannelSpecifics = new DarwinNotificationDetails(

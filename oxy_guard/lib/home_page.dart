@@ -14,6 +14,7 @@ import 'package:oxy_guard/shift_squad_choice.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:volume_controller/volume_controller.dart';
+import 'package:real_volume/real_volume.dart';
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -320,16 +321,29 @@ class _HomePageState extends State<HomePage> {
 }
 
 void checkVolumeStatus() async {
-    try {
       double volume = await VolumeController().getVolume();
-      
-
-
-        print('Aktualny poziom głośności: $volume');
-
-    } catch (e) {
-      print('Błąd podczas sprawdzania głośności: $e');
-    }
+      if( volume < 0.4)
+      {
+        warningDialog(context, "Poziom głośności multimediów jest poniżej 40%.\nWażne powiadomienia mogą być niesłyszalne!");
+      }
+      double notificationVolume = (await RealVolume.getCurrentVol(StreamType.NOTIFICATION)) ?? 0.0;
+      if( notificationVolume < 0.4)
+      {
+        warningDialog(context, "Poziom głośności powiadomień jest poniżej 40%.\nWażne powiadomienia mogą być niesłyszalne!");
+      }
+      double ringVolume = (await RealVolume.getCurrentVol(StreamType.RING)) ?? 0.0;
+      if( ringVolume < 0.4)
+      {
+        warningDialog(context, "Poziom głośności dzwonka jest poniżej 40%.\nWażne powiadomienia mogą być niesłyszalne!");
+      }
+      var status = await Permission.locationWhenInUse.status;
+      if (status.isDenied) {
+        warningDialog(context, "Brak uprawnień do lokalizacji.\nFunkcjonalnoś aplikacji jest ograniczona!");
+      }
+      status = await Permission.notification.status;
+      if (status.isDenied) {
+        warningDialog(context, "Brak uprawnień do wyświetlania powiadomień.\nFunkcjonalnoś aplikacji jest ograniczona!");
+      }
   }
 
 }

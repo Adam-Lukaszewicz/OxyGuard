@@ -246,7 +246,7 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
     halfSec = Timer.periodic(const Duration(milliseconds: 500), (Timer t) {
       if (!mounted) return;
       setState((){
-            if( lastCheck != null ){//zamiast 10 powinno być widget.interval
+            if( lastCheck != null ){//zamiast 10 powinno być widget.interval                                              //zamiast 10 powinno być ok 40s
           if ( (DateTime.now().difference(lastCheck!).inSeconds > 10 )& ((lastCheckAllert==null)? true: DateTime.now().difference(lastCheckAllert!).inSeconds > 10))
           {  
             if(!_isInForeground)
