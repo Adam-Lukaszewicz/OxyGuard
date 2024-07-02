@@ -203,8 +203,8 @@ Future<int?> timeDialog(BuildContext context, String titleText) {
 
   
 
-  Future<void> warningDialog(BuildContext context, warningText) async {
-    return showDialog<void>(
+  Future<bool?> warningDialog(BuildContext context, warningText) async {
+    return showDialog<bool?>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
@@ -226,7 +226,7 @@ Future<int?> timeDialog(BuildContext context, String titleText) {
             TextButton(
               child: const Text('OK'),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(true);
               },
             ),
           ],

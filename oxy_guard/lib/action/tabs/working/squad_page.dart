@@ -165,6 +165,8 @@ class _SquadPageState extends State<SquadPage>
   double _returnPressure =0;
   AudioPlayer _audioPlayer= AudioPlayer();
   bool _isInForeground = true;
+  bool isCheckAllertInactive = true;
+  bool isExitAllertInactive = true;
 
  @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -246,37 +248,7 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
     halfSec = Timer.periodic(const Duration(milliseconds: 500), (Timer t) {
       if (!mounted) return;
       setState((){
-            if( lastCheck != null ){//zamiast 10 powinno być widget.interval                                              //zamiast 10 powinno być ok 40s
-          if ( (DateTime.now().difference(lastCheck!).inSeconds > 10 )& ((lastCheckAllert==null)? true: DateTime.now().difference(lastCheckAllert!).inSeconds > 10))
-          {  
-            if(!_isInForeground)
-            {
-              Noti.showBigTextNotification(title: "Przypomnienie", 
-              body: "Wprowadź nowy pomiar ciśnienia dla roty ${widget.text}" , 
-              fln: _flutterLocalNotificationsPlugin);
-            }
-            _audioPlayer.setAsset('media_files/not.mp3');
-            _audioPlayer.play(); 
-            warningDialog(context, "Wprowadź nowy pomiar ciśnienia dla roty ${widget.text}");
-            lastCheckAllert = DateTime.now();
-          }
-        }
-        if (!widget.checks.isEmpty)
-        {
-          if((((widget.exitTime * widget.usageRate).toInt() + widget.exitPressure)>widget.checks.last )& ((lastExitAllert==null)? true: DateTime.now().difference(lastExitAllert!).inSeconds > 40))
-          {
-            if(!_isInForeground)
-            {
-              Noti.showBigTextNotification(title: "Przypomnienie", 
-              body: "Ilość powietrza w butli jest poniżej bezpiecznego progu. Rozpocznij powrót z strefy działań roty ${widget.text}" , 
-              fln: _flutterLocalNotificationsPlugin);
-            }
-            _audioPlayer.setAsset('media_files/not.mp3');
-            _audioPlayer.play(); 
-            warningDialog(context, "Ilość powietrza w butli jest poniżej bezpiecznego progu. Rozpocznij powrót z strefy działań roty ${widget.text}");
-            lastExitAllert = DateTime.now();
-          }
-        }
+            _checkPressureAndNotify();
       });
     });
   }
@@ -1235,6 +1207,50 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
           );
         }
       });
+
+
+void  _checkPressureAndNotify() async{
+  
+  if( lastCheck != null ){//zamiast 10 powinno być widget.interval                        //zamiast 10 powinno być ok 40s
+    if ( (DateTime.now().difference(lastCheck!).inSeconds > widget.interval  )& ((lastCheckAllert==null)? true: DateTime.now().difference(lastCheckAllert!).inSeconds > 40))
+    {  
+      lastCheckAllert = DateTime.now();
+      if(!_isInForeground)
+      {
+        Noti.showBigTextNotification(title: "Przypomnienie", 
+        body: "Wprowadź nowy pomiar ciśnienia dla roty ${widget.text}" , 
+        fln: _flutterLocalNotificationsPlugin);
+      }
+      _audioPlayer.setAsset('media_files/not.mp3');
+      await _audioPlayer.play();
+      if(isCheckAllertInactive){
+        isCheckAllertInactive = false;    
+        isCheckAllertInactive = await warningDialog(context, "Wprowadź nowy pomiar ciśnienia dla roty ${widget.text}")??false;
+      }
+      
+    }
+  }
+  if (!widget.checks.isEmpty)
+  {
+    if((((widget.exitTime * widget.usageRate).toInt() + widget.exitPressure)>widget.checks.last )& ((lastExitAllert==null)? true: DateTime.now().difference(lastExitAllert!).inSeconds > 40))
+    {
+      lastExitAllert = DateTime.now();
+      if(!_isInForeground)
+      {
+        Noti.showBigTextNotification(title: "Przypomnienie", 
+        body: "Ilość powietrza w butli jest poniżej bezpiecznego progu. Rozpocznij powrót z strefy działań roty ${widget.text}" , 
+        fln: _flutterLocalNotificationsPlugin);
+      }
+      _audioPlayer.setAsset('media_files/not.mp3');
+      await _audioPlayer.play();
+      if(isExitAllertInactive){
+        isExitAllertInactive = false;   
+        isExitAllertInactive = await warningDialog(context, "Ilość powietrza w butli jest poniżej bezpiecznego progu. Rozpocznij powrót z strefy działań roty ${widget.text}")??false;
+      }
+      
+    }
+  }
+}
 
  
 }
