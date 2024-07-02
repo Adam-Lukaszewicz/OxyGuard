@@ -29,7 +29,7 @@ class Noti{
 
   );
 
-    var not= NotificationDetails(android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics,
+    var not= await NotificationDetails(android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics,
     );
     await fln.show(0, title, body,not );
   }
