@@ -1,9 +1,8 @@
-:Dostęp do lokalizacji
-	Przypadek jeżeli użytkownik nie zezwoli na udostępnianie lokalizacji - jaki tytuł akcji stworzyć
-:Alarmy
-	Alarm dźwiękowy + wizualny przypominający o konieczności wykonania pomiaru
 :Alarmy
 	Alarm dźwiękowy + wizualny przypominający o konieczności odwrotu (zgodnie z założonym wyjściem)
+:potwierdzenie zakończenia akcji
+:na ekranie konfiguracji akcji wyświetlić jej nazwę(lokalizację)
+:dodać identyfikację akcji (jakieś imię czy coś)
 
 TO DO w przyszłości (jak apka będzie banglać)
 :UI - nie wierzę że to się stanie jeszcze w tym semestrze
