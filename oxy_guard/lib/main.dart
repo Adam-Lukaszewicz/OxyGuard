@@ -30,7 +30,8 @@ class OxyGuard extends StatelessWidget {
       navigatorKey: GlobalService.navigatorKey,
       title: 'OxyGuard',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue.shade400, brightness: Brightness.light, contrastLevel: 0.5),
+        scaffoldBackgroundColor: const Color(0xfffcfcfc),
         useMaterial3: true,
       ),
       home: _getLandingPage()

@@ -100,8 +100,6 @@ class _LoginPageState extends State<LoginPage> {
                               builder: (context) => const HomePage()),
                         );
                       } on FirebaseAuthException catch (e) {
-                        print(e.code);
-                        print(e.message);
                         switch (e.code) {
                           case 'invalid-credential':
                             warningDialog(context,
@@ -135,7 +133,7 @@ class _LoginPageState extends State<LoginPage> {
                       }
                     },
                     style: ButtonStyle(
-                      maximumSize: MaterialStateProperty.all(Size(
+                      fixedSize: WidgetStateProperty.all(Size(
                           MediaQuery.of(context).size.width * 0.89,
                           double.infinity)),
                     ),
@@ -159,7 +157,7 @@ class _LoginPageState extends State<LoginPage> {
                           );
                         },
                         style: ButtonStyle(
-                          maximumSize: MaterialStateProperty.all(Size(
+                          fixedSize: WidgetStateProperty.all(Size(
                               MediaQuery.of(context).size.width * 0.4,
                               double.infinity)),
                         ),
@@ -181,7 +179,7 @@ class _LoginPageState extends State<LoginPage> {
                           );
                         },
                         style: ButtonStyle(
-                          maximumSize: MaterialStateProperty.all(Size(
+                          fixedSize: WidgetStateProperty.all(Size(
                               MediaQuery.of(context).size.width * 0.43,
                               double.infinity)),
                         ),

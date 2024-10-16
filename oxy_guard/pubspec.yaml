@@ -76,6 +76,7 @@ flutter:
   assets:
      - media_files/logo.png
      - media_files/not.mp3
+     - media_files/logo_no_fire.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

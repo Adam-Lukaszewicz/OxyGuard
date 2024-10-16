@@ -83,7 +83,7 @@ class _ManagePageState extends State<ManagePage>
                                 fontPackage: CupertinoIcons.iconFontPackage)),
                             style: const ButtonStyle(
                                 backgroundColor:
-                                    MaterialStatePropertyAll(Colors.red),
+                                    WidgetStatePropertyAll(Colors.red),
                                 foregroundColor:
                                     MaterialStatePropertyAll(Colors.white),
                                 shape: MaterialStatePropertyAll(

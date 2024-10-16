@@ -88,13 +88,8 @@ class _HomePageState extends State<HomePage> {
     return Stack(children: [
       Scaffold(
         appBar: AppBar(
-          toolbarHeight: MediaQuery.of(context).size.height * 0.18,
-          title: Image.asset(
-            'media_files/logo.png',
-            fit: BoxFit.scaleDown,
-            width: 250,
-          ),
           centerTitle: true,
+          backgroundColor: Colors.white,
         ),
         drawer: Drawer(
           backgroundColor: Theme.of(context).primaryColorLight,
@@ -129,7 +124,7 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ShiftSquadChoicePage()
+                      builder: (context) => const ShiftSquadChoicePage()
                     ));
                 },
                 child: const Center(child: Text("Wybór zmiany")),
@@ -162,12 +157,8 @@ class _HomePageState extends State<HomePage> {
                 child: Center(
                     child: Text("Ciśnienie graniczne ($_extremePressure)")),
               ),
-              //Center(child: Text('Licznik: $_counter')),
-              //Center(child: Text('czas: $_time')),
               ElevatedButton(
                 onPressed: () async {
-                  //var value = await timeDialog(context, secondsController, minuteController, "wprowadz nowy pomiar");
-                  //_setTime(value!);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -195,104 +186,132 @@ class _HomePageState extends State<HomePage> {
         ),
         body: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              ElevatedButton(
-                  onPressed: () async {
-                    ActionModel preparedAction = ActionModel();
-                    SquadModel preparedSquad = SquadModel();
-                    preparedAction.addSquad(preparedSquad);
-                    await SharedPreferences.getInstance().then((prefs){
-                      int entryPressure = prefs.getInt("startingPressure") ?? 300;
-                      int exitPressure = prefs.getInt("extremePressure") ?? 60;
-                      int interval = prefs.getInt("timePeriod") ?? 600;
-                      preparedSquad.startSquadWork(entryPressure, exitPressure, interval, "", null, null, null, true);
-                      preparedSquad.startSquadWork(entryPressure, exitPressure, interval, "", null, null, null, true);
-                      preparedSquad.startSquadWork(entryPressure, exitPressure, interval, "", null, null, null, true);
-                      GlobalService.currentAction = preparedAction;
-                      GlobalService.currentAction
-                        .setActionLocation(context)
-                        .then((none) {
+              SizedBox(height: MediaQuery.of(context).size.height * 0.05,),
+              Image.asset(
+                'media_files/logo_no_fire.png',
+                width: MediaQuery.of(context).size.width * 0.7,
+                ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.17,),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                      onPressed: () async {
+                        ActionModel preparedAction = ActionModel();
+                        SquadModel preparedSquad = SquadModel();
+                        preparedAction.addSquad(preparedSquad);
+                        await SharedPreferences.getInstance().then((prefs){
+                          int entryPressure = prefs.getInt("startingPressure") ?? 300;
+                          int exitPressure = prefs.getInt("extremePressure") ?? 60;
+                          int interval = prefs.getInt("timePeriod") ?? 600;
+                          preparedSquad.startSquadWork(entryPressure, exitPressure, interval, "", null, null, null, true);
+                          preparedSquad.startSquadWork(entryPressure, exitPressure, interval, "", null, null, null, true);
+                          preparedSquad.startSquadWork(entryPressure, exitPressure, interval, "", null, null, null, true);
+                          GlobalService.currentAction = preparedAction;
+                          GlobalService.currentAction
+                            .setActionLocation(context)
+                            .then((none) {
+                              setState(() {
+                                _isLoading = false;
+                              });
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SquadChoice(quickStart: true,)),
+                              );
+                        });
+                        });
+                        setState(() {
+                          _isLoading = true;
+                        });
+                      },
+                      style: ButtonStyle(
+                        fixedSize: WidgetStateProperty.all(Size(
+                            MediaQuery.of(context).size.width * 0.7,
+                            MediaQuery.of(context).size.height * 0.1)),
+                        elevation: WidgetStateProperty.all(5),
+                        shape: WidgetStateProperty.all(
+                          const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15)), side: BorderSide(width: 0.1))
+                        ),
+                        backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColorDark)
+                      ),
+                      child: Center(
+                          child: Text(
+                        "Szybki start",
+                        style: TextStyle(
+                          fontSize: 27,
+                          color: Theme.of(context).colorScheme.onPrimary
+                        ),
+                      ))),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ActionList()),
+                        );
+                      },
+                      style: ButtonStyle(
+                        fixedSize: WidgetStateProperty.all(Size(
+                            MediaQuery.of(context).size.width * 0.7,
+                            MediaQuery.of(context).size.height * 0.07)),
+                        shape: WidgetStateProperty.all(
+                          const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15)), side: BorderSide(width: 0.1))
+                        ),
+                        elevation: const WidgetStatePropertyAll(5),
+                        backgroundColor: const WidgetStatePropertyAll(Colors.white),
+                      ),
+                      child: Center(
+                          child: Text(
+                        "Dołącz do akcji",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Theme.of(context).primaryColorDark
+                        ),
+                      ))),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+                  ElevatedButton(
+                      onPressed: () {
+                        GlobalService.currentAction = ActionModel();
+                        GlobalService.currentAction
+                            .setActionLocation(context)
+                            .then((none) {
                           setState(() {
                             _isLoading = false;
                           });
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => SquadChoice(quickStart: true,)),
+                                builder: (context) => SquadChoice()),
                           );
-                    });
-                    });
-                    setState(() {
-                      _isLoading = true;
-                    });
-                  },
-                  style: ButtonStyle(
-                    maximumSize: MaterialStateProperty.all(Size(
-                        MediaQuery.of(context).size.width * 0.7,
-                        double.infinity)),
-                  ),
-                  child: const Center(
-                      child: Text(
-                    "Szybki start",
-                    style: TextStyle(
-                      fontSize: 27,
-                      height: 4,
-                    ),
-                  ))),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ActionList()),
-                    );
-                  },
-                  style: ButtonStyle(
-                    maximumSize: MaterialStateProperty.all(Size(
-                        MediaQuery.of(context).size.width * 0.7,
-                        double.infinity)),
-                  ),
-                  child: const Center(
-                      child: Text(
-                    "Dołącz do akcji",
-                    style: TextStyle(
-                      fontSize: 20,
-                    ),
-                  ))),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                  onPressed: () {
-                    GlobalService.currentAction = ActionModel();
-                    GlobalService.currentAction
-                        .setActionLocation(context)
-                        .then((none) {
-                      setState(() {
-                        _isLoading = false;
-                      });
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SquadChoice()),
-                      );
-                    });
-                    setState(() {
-                      _isLoading = true;
-                    });
-                  },
-                  style: ButtonStyle(
-                    maximumSize: MaterialStateProperty.all(Size(
-                        MediaQuery.of(context).size.width * 0.7,
-                        double.infinity)),
-                  ),
-                  child: const Center(
-                      child: Text(
-                    "Stwórz akcję",
-                    style: TextStyle(
-                      fontSize: 20,
-                    ),
-                  ))),
+                        });
+                        setState(() {
+                          _isLoading = true;
+                        });
+                      },
+                      style: ButtonStyle(
+                        fixedSize: WidgetStateProperty.all(Size(
+                            MediaQuery.of(context).size.width * 0.7,
+                            MediaQuery.of(context).size.height * 0.07)),
+                        shape: WidgetStateProperty.all(
+                          const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15)), side: BorderSide(width: 0.1))
+                        ),
+                        backgroundColor: const WidgetStatePropertyAll(Colors.white),
+                        elevation: const WidgetStatePropertyAll(5)
+                      ),
+                      child: Center(
+                          child: Text(
+                        "Stwórz akcję",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Theme.of(context).primaryColorDark
+                        ),
+                      ))),
+                ],
+              ),
             ],
           ),
         ),
