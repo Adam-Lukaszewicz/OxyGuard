@@ -89,7 +89,7 @@ class _HomePageState extends State<HomePage> {
       Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          backgroundColor: Colors.white,
+          backgroundColor: const Color(0xfffcfcfc)
         ),
         drawer: Drawer(
           backgroundColor: Theme.of(context).primaryColorLight,

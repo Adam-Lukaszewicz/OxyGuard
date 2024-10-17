@@ -37,12 +37,7 @@ class _LoginPageState extends State<LoginPage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          toolbarHeight: MediaQuery.of(context).size.height * 0.18,
-          title: Image.asset(
-            'media_files/logo.png',
-            fit: BoxFit.scaleDown,
-            width: 250,
-          ),
+          backgroundColor: const Color(0xfffcfcfc),
           centerTitle: true,
         ),
         body: Center(
@@ -51,8 +46,13 @@ class _LoginPageState extends State<LoginPage> {
                 horizontal: MediaQuery.of(context).size.width * 0.05,
                 vertical: 5.0),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
+                Image.asset(
+                  'media_files/logo_no_fire.png',
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.13,),
                 TextField(
                   controller: emailController,
                   decoration: const InputDecoration(
@@ -60,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
                     hintText: 'Wprowadź e-mail',
                   ),
                 ),
-                const SizedBox(height: 50),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.05,),
                 TextField(
                   controller: passwordController,
                   decoration: InputDecoration(
@@ -77,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
                               : const Icon(Icons.remove_red_eye))),
                   obscureText: !passwordShowing,
                 ),
-                const SizedBox(height: 50),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.07,),
                 ElevatedButton(
                     onPressed: () async {
                       try {
@@ -133,18 +133,24 @@ class _LoginPageState extends State<LoginPage> {
                       }
                     },
                     style: ButtonStyle(
-                      fixedSize: WidgetStateProperty.all(Size(
-                          MediaQuery.of(context).size.width * 0.89,
-                          double.infinity)),
-                    ),
-                    child: const Center(
+                        fixedSize: WidgetStateProperty.all(Size(
+                            MediaQuery.of(context).size.width * 0.9,
+                            MediaQuery.of(context).size.height * 0.07)),
+                        elevation: WidgetStateProperty.all(5),
+                        shape: WidgetStateProperty.all(
+                          const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10)), side: BorderSide(width: 0.1))
+                        ),
+                        backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColorDark)
+                      ),
+                    child: Center(
                         child: Text(
                       "Zaloguj się",
                       style: TextStyle(
                         fontSize: 24,
+                        color: Theme.of(context).colorScheme.onPrimary
                       ),
                     ))),
-                const SizedBox(height: 20),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.03,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -157,15 +163,21 @@ class _LoginPageState extends State<LoginPage> {
                           );
                         },
                         style: ButtonStyle(
-                          fixedSize: WidgetStateProperty.all(Size(
-                              MediaQuery.of(context).size.width * 0.4,
-                              double.infinity)),
+                        fixedSize: WidgetStateProperty.all(Size(
+                            MediaQuery.of(context).size.width * 0.42,
+                            MediaQuery.of(context).size.height * 0.07)),
+                        shape: WidgetStateProperty.all(
+                          const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10)), side: BorderSide(width: 0.1))
                         ),
-                        child: const Center(
+                        elevation: const WidgetStatePropertyAll(5),
+                        backgroundColor: const WidgetStatePropertyAll(Colors.white),
+                      ),
+                        child: Center(
                             child: Text(
                           "Zarejestruj się",
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 18,
+                            color: Theme.of(context).primaryColorDark
                           ),
                         ))),
                     SizedBox(width: MediaQuery.of(context).size.width * 0.06),
@@ -179,15 +191,21 @@ class _LoginPageState extends State<LoginPage> {
                           );
                         },
                         style: ButtonStyle(
-                          fixedSize: WidgetStateProperty.all(Size(
-                              MediaQuery.of(context).size.width * 0.43,
-                              double.infinity)),
+                        fixedSize: WidgetStateProperty.all(Size(
+                            MediaQuery.of(context).size.width * 0.42,
+                            MediaQuery.of(context).size.height * 0.07)),
+                        shape: WidgetStateProperty.all(
+                          const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10)), side: BorderSide(width: 0.1))
                         ),
-                        child: const Center(
+                        elevation: const WidgetStatePropertyAll(5),
+                        backgroundColor: const WidgetStatePropertyAll(Colors.white),
+                      ),
+                        child: Center(
                             child: Text(
                           "Odzyskaj hasło",
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 16,
+                            color: Theme.of(context).primaryColorDark
                           ),
                         ))),
                   ],

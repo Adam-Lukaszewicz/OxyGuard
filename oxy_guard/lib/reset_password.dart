@@ -30,12 +30,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: MediaQuery.of(context).size.height * 0.18,
-        title: Image.asset(
-          'media_files/logo.png',
-          fit: BoxFit.scaleDown,
-          width: 250,
-        ),
+        backgroundColor: const Color(0xfffcfcfc),
         centerTitle: true,
       ),
       body: Center(
@@ -44,8 +39,13 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               horizontal: MediaQuery.of(context).size.width * 0.05,
               vertical: 5.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
+              Image.asset(
+                  'media_files/logo_no_fire.png',
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.13,),
               TextField(
                 controller: emailController,
                 decoration: const InputDecoration(
@@ -56,7 +56,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               const SizedBox(height: 50),
               ElevatedButton(
                   onPressed: () async {
-                    
                       try {
                         final credential = await FirebaseAuth.instance
                             .sendPasswordResetEmail(
@@ -88,15 +87,21 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     }
                   },
                   style: ButtonStyle(
-                    maximumSize: MaterialStateProperty.all(Size(
-                        MediaQuery.of(context).size.width * 0.5,
-                        double.infinity)),
-                  ),
-                  child: const Center(
+                        fixedSize: WidgetStateProperty.all(Size(
+                            MediaQuery.of(context).size.width * 0.9,
+                            MediaQuery.of(context).size.height * 0.07)),
+                        elevation: WidgetStateProperty.all(5),
+                        shape: WidgetStateProperty.all(
+                          const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10)), side: BorderSide(width: 0.1))
+                        ),
+                        backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColorDark)
+                      ),
+                  child: Center(
                       child: Text(
                     "Zresetuj hasło",
                     style: TextStyle(
                       fontSize: 20,
+                      color: Theme.of(context).colorScheme.onPrimary
                     ),
                   ))),
             ],
