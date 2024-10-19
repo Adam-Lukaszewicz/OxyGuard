@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:oxy_guard/global_service.dart';
 import 'package:oxy_guard/models/action_model.dart';
 import 'package:oxy_guard/models/ended_model.dart';

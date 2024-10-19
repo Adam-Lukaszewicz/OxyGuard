@@ -58,67 +58,78 @@ class _SquadChoiceState extends State<SquadChoice> {
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   return Card(
-                  color: Colors.white,
-                  elevation: 5,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: constraints.maxHeight * 0.02, horizontal: constraints.maxWidth * 0.05),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: constraints.maxHeight * 0.1,),
-                        const Text(
-                          "Miejsce akcji:",
-                          style: TextStyle(
-                            fontSize: 18,
+                    color: Colors.white,
+                    elevation: 5,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: constraints.maxHeight * 0.02,
+                          horizontal: constraints.maxWidth * 0.05),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: constraints.maxHeight * 0.1,
                           ),
-                        ),
-                        SizedBox(height: constraints.maxHeight * 0.1,),
-                        FutureBuilder(
-                          future: placemarkFromCoordinates(
-                              GlobalService.currentAction.actionLocation.latitude,
-                              GlobalService
-                                  .currentAction.actionLocation.longitude),
-                          builder: (context, snap) {
-                            if (snap.connectionState == ConnectionState.done) {
-                              if (snap.hasData) {
-                                final address = "${snap.data!.first.street}";
-                                final city = "${snap.data!.first.locality}";
-                                return Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      city,
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 28),
-                                    ),
-                                    SizedBox(height: constraints.maxHeight * 0.05,),
-                                    Text(
-                                      address,
-                                      style: const TextStyle(
-                                        fontSize: 24,
+                          const Text(
+                            "Miejsce akcji:",
+                            style: TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
+                          SizedBox(
+                            height: constraints.maxHeight * 0.1,
+                          ),
+                          FutureBuilder(
+                            future: placemarkFromCoordinates(
+                                GlobalService
+                                    .currentAction.actionLocation.latitude,
+                                GlobalService
+                                    .currentAction.actionLocation.longitude),
+                            builder: (context, snap) {
+                              if (snap.connectionState ==
+                                  ConnectionState.done) {
+                                if (snap.hasData) {
+                                  final address = "${snap.data!.first.street}";
+                                  final city = "${snap.data!.first.locality}";
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        city,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 28),
                                       ),
-                                    )
-                                  ],
-                                );
-                                //MOŻLIWY BUG: nie wiem czy ta logika pokryje brak lokalizacji w akcji (czy brak actionlocation spowoduje snap.hasError czy cos co nie jest handlowane)
-                              } else if (snap.hasError) {
-                                return const ListTile(
-                                  title:
-                                      Text("Brak pasującego adresu/nazwy akcji"),
-                                );
+                                      SizedBox(
+                                        height: constraints.maxHeight * 0.05,
+                                      ),
+                                      Text(
+                                        address,
+                                        style: const TextStyle(
+                                          fontSize: 24,
+                                        ),
+                                      )
+                                    ],
+                                  );
+                                  //MOŻLIWY BUG: nie wiem czy ta logika pokryje brak lokalizacji w akcji (czy brak actionlocation spowoduje snap.hasError czy cos co nie jest handlowane)
+                                } else if (snap.hasError) {
+                                  return const ListTile(
+                                    title: Text(
+                                        "Brak pasującego adresu/nazwy akcji"),
+                                  );
+                                }
                               }
-                            }
-                            return const ListTile(
-                              title: Text("Ładowanie..."),
-                            );
-                          },
-                        ),
-                      ],
+                              return const ListTile(
+                                title: Text("Ładowanie..."),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
+                  );
                 },
               ),
             ),
@@ -228,22 +239,46 @@ class _SquadChoiceState extends State<SquadChoice> {
   Future<String?> chooseExistingSquadDialog() => showDialog<String>(
       context: context,
       builder: (context) => Dialog(
-            child: ListView(
-              children: GlobalService.currentAction.squads.entries
-                  .toList()
-                  .map((squad) {
-                return Card(
-                    child: InkWell(
-                  child: ListTile(
-                    title: Text(squad.key),
+            backgroundColor: const Color(0xfffcfcfc),
+            child: LayoutBuilder(builder: (context, constraints){
+              return Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: constraints.maxHeight * 0.05,
+                horizontal: constraints.maxWidth * 0.1
+                ),
+              child: Column(
+                children: [
+                  const Center(child: Text(
+                    "Odcinki w akcji",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24,
+                    ),
+                    ),),
+                  SizedBox(height: constraints.maxHeight * 0.05,),
+                  SizedBox(
+                    height: constraints.maxHeight * 0.8,
+                    child: ListView(
+                      children: GlobalService.currentAction.squads.entries
+                          .toList()
+                          .map((squad) {
+                        return Card(
+                          color: Colors.white,
+                          elevation: 5,
+                            child: InkWell(
+                          child: ListTile(
+                            title: Text(squad.key),
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pop(squad.key);
+                          },
+                        ));
+                      }).toList(),
+                    ),
                   ),
-                  onTap: () {
-                    //create
-                    //action.
-                    Navigator.of(context).pop(squad.key);
-                  },
-                ));
-              }).toList(),
-            ),
-          ));
+                ],
+              ),
+            );
+            }))
+          );
 }

@@ -42,6 +42,7 @@ class _WorkingPageState extends State<WorkingPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     var screenHeight =
         MediaQuery.of(GlobalService.navigatorKey.currentContext!)
                 .size
@@ -61,7 +62,7 @@ class _WorkingPageState extends State<WorkingPage>
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
+              const Text(
                 "Brak przygotowanych rot do pracy. W celu skonfigurowania roty przejdź do zakładki 'oczekujące' lub kliknij poniższy przycisk w celu stworzenia domyślneje roty.",
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -69,7 +70,7 @@ class _WorkingPageState extends State<WorkingPage>
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
                   final prefs = await SharedPreferences.getInstance();
@@ -84,7 +85,7 @@ class _WorkingPageState extends State<WorkingPage>
                     false,
                   );
                 },
-                child: Text("Rozpocznij pracę roty"),
+                child: const Text("Rozpocznij pracę roty"),
               ),
             ],
           ),

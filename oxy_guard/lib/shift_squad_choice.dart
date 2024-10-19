@@ -57,11 +57,10 @@ class _ShiftSquadChoicePageState extends State<ShiftSquadChoicePage> {
       body: Column(
         children: [
           SafeArea(
-            child: Container(
               child: Row(
                 children: [
                   IconButton(
-                    icon: Icon(Icons.arrow_back),
+                    icon: const Icon(Icons.arrow_back),
                     onPressed: () {
                       Navigator.pop(context);
                     },
@@ -77,12 +76,11 @@ class _ShiftSquadChoicePageState extends State<ShiftSquadChoicePage> {
                   ),
                 ],
               ),
-            ),
           ),
           Expanded(
             child: Container(
-              margin: EdgeInsets.all(20.0),
-              padding: EdgeInsets.all(20),
+              margin: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(12.0),
@@ -97,24 +95,24 @@ class _ShiftSquadChoicePageState extends State<ShiftSquadChoicePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'Dodaj pracownika:',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Row(
                     children: [
                       Expanded(
                         child: TextField(
                           controller: _firstNameController,
-                          decoration: InputDecoration(labelText: 'Imię'),
+                          decoration: const InputDecoration(labelText: 'Imię'),
                         ),
                       ),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       Expanded(
                         child: TextField(
                           controller: _lastNameController,
-                          decoration: InputDecoration(labelText: 'Nazwisko'),
+                          decoration: const InputDecoration(labelText: 'Nazwisko'),
                         ),
                       ),
                       Container(
@@ -122,19 +120,19 @@ class _ShiftSquadChoicePageState extends State<ShiftSquadChoicePage> {
                         child: ElevatedButton(
                           onPressed: _addToList,
                           style: ElevatedButton.styleFrom(
-                            shape: CircleBorder(),
+                            shape: const CircleBorder(),
                           ),
-                          child: Icon(Icons.add),
+                          child: const Icon(Icons.add),
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
-                  Text(
+                  const SizedBox(height: 20),
+                  const Text(
                     'Kadra pracownicza:',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Expanded(
                     child: ListenableBuilder(
                       listenable: GlobalService.currentPersonnel,
@@ -144,7 +142,7 @@ class _ShiftSquadChoicePageState extends State<ShiftSquadChoicePage> {
                             .map((worker) => ListTile(
                                 title: Text('${worker.name} ${worker.surname}'),
                                 trailing: IconButton(
-                                  icon: Icon(Icons.delete),
+                                  icon: const Icon(Icons.delete),
                                   onPressed: () {
                                     setState(() {
                                       GlobalService.currentPersonnel.subWorker(worker);

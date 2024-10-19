@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:oxy_guard/action/tabs/working/squad_page.dart';
 import 'package:oxy_guard/context_windows.dart';
 import 'package:oxy_guard/models/ended_model.dart';
 import 'package:oxy_guard/models/squad_model.dart';

@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'dart:collection';
 import 'dart:convert';
-//import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -11,9 +9,7 @@ import 'package:oxy_guard/context_windows.dart';
 
 import '../../../models/squad_model.dart';
 import '../../../global_service.dart';
-//import 'package:audioplayers/audioplayers.dart';
 import 'package:just_audio/just_audio.dart';
-//import 'package:audio_service/audio_service.dart';
 import 'package:oxy_guard/notification.dart';
 
 final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -198,9 +194,9 @@ class _SquadPageState extends State<SquadPage>
 
   //Base ButtonStyles
   var bottomButtonStyle = const ButtonStyle(
-    backgroundColor: MaterialStatePropertyAll(Colors.grey),
-    foregroundColor: MaterialStatePropertyAll(Colors.black),
-    padding: MaterialStatePropertyAll(EdgeInsets.symmetric(vertical: 1.0)),
+    backgroundColor: WidgetStatePropertyAll(Colors.grey),
+    foregroundColor: WidgetStatePropertyAll(Colors.black),
+    padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 1.0)),
   );
 
   //Overrides necessary for functioning
@@ -269,6 +265,7 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
   //UI
   @override
   Widget build(BuildContext context) {
+    super.build(context);
       _returnPressure =(widget.exitTime * 1 ~/ 2 + widget.exitPressure).toDouble();
     var oxygenValue = Provider.of<SquadModel>(context, listen: false)
         .oxygenValues[widget.index.toString()];
@@ -316,18 +313,18 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                                                         });
                                                       },
                                                       style: ButtonStyle(
-                                                        minimumSize: MaterialStateProperty.all(Size(
+                                                        minimumSize: WidgetStatePropertyAll(Size(
                                                           MediaQuery.of(context).size.width * 0.58,
                                                           45,
                                                         ),),
-                                                        shape: MaterialStateProperty.all(
+                                                        shape: WidgetStatePropertyAll(
                                                           RoundedRectangleBorder(
                                                             borderRadius: BorderRadius.circular(15),
                                                           ),
                                                         ),
                                                       ),
                                                       
-                                                      child: Center(
+                                                      child: const Center(
                                                         child: Row(
                                                           mainAxisAlignment: MainAxisAlignment.center,
                                                           children: [
@@ -362,18 +359,18 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                                                         });
                                                       },
                                                       style: ButtonStyle(
-                                                        minimumSize: MaterialStateProperty.all(Size(
+                                                        minimumSize: WidgetStatePropertyAll(Size(
                                                           MediaQuery.of(context).size.width * 0.58,
                                                           45,
                                                         ),),
-                                                        shape: MaterialStateProperty.all(
+                                                        shape: WidgetStatePropertyAll(
                                                           RoundedRectangleBorder(
                                                             borderRadius: BorderRadius.circular(15),
                                                           ),
                                                         ),
                                                       ),
                                                       
-                                                      child: Center(
+                                                      child: const Center(
                                                         child: Row(
                                                           mainAxisAlignment: MainAxisAlignment.center,
                                                           children: [
@@ -408,18 +405,18 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                                                         });
                                                       },
                                                       style: ButtonStyle(
-                                                        minimumSize: MaterialStateProperty.all(Size(
+                                                        minimumSize: WidgetStatePropertyAll(Size(
                                                           MediaQuery.of(context).size.width * 0.58,
                                                           45,
                                                         ),),
-                                                        shape: MaterialStateProperty.all(
+                                                        shape: WidgetStatePropertyAll(
                                                           RoundedRectangleBorder(
                                                             borderRadius: BorderRadius.circular(15),
                                                           ),
                                                         ),
                                                       ),
                                                       
-                                                      child: Center(
+                                                      child: const Center(
                                                         child: Row(
                                                           mainAxisAlignment: MainAxisAlignment.center,
                                                           children: [
@@ -1099,7 +1096,7 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
               height: 500,
               width: 600,
               child: Padding(
-                padding: EdgeInsets.all(15.0),
+                padding: const EdgeInsets.all(15.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -1111,7 +1108,7 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                             flex: 5,
                             child: Text(
                               "Popraw przedostatni pomiar (${widget.checks[widget.checks.length-2].toInt()})",
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -1122,7 +1119,7 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                             flex: 5,
                             child: Text(
                               "Popraw ostatni pomiar (${widget.checks.last.toInt()})",
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -1230,7 +1227,7 @@ void  _checkPressureAndNotify() async{
       
     }
   }
-  if (!widget.checks.isEmpty)
+  if (widget.checks.isNotEmpty)
   {
     if((((widget.exitTime * widget.usageRate).toInt() + widget.exitPressure)>widget.checks.last )& ((lastExitAllert==null)? true: DateTime.now().difference(lastExitAllert!).inSeconds > 40))
     {

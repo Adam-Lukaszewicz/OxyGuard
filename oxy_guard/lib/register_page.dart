@@ -2,10 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:oxy_guard/context_windows.dart';
 import 'package:oxy_guard/login_page.dart';
-import 'package:oxy_guard/main.dart';
-
-
-import 'home_page.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -110,8 +106,6 @@ class _RegisterPageState extends State<RegisterPage> {
                             succesDialog(context, "Na twój adres email został wysłany link aktywujący konto. Otwórz go w celu aktywacji konta.");
                             
                       } on FirebaseAuthException catch (e) {
-                        print(e.code);
-                        print(e.message);
                         switch (e.code) {
                           case 'email-already-in-use':
                             warningDialog(context, "Istnieje już konto związane z podanym adresem email. Podaj inny adres.");

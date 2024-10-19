@@ -16,10 +16,10 @@ class _WaitingPageState extends State<WaitingPage> with AutomaticKeepAliveClient
   bool get wantKeepAlive => true;
 
   var genericButtonStyle = const ButtonStyle(
-      backgroundColor: MaterialStatePropertyAll(Colors.grey),
-      foregroundColor: MaterialStatePropertyAll(Colors.black),
-      padding: MaterialStatePropertyAll(EdgeInsets.symmetric(vertical: 1.0)),
-      textStyle: MaterialStatePropertyAll(TextStyle(
+      backgroundColor: WidgetStatePropertyAll(Colors.grey),
+      foregroundColor: WidgetStatePropertyAll(Colors.black),
+      padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 1.0)),
+      textStyle: WidgetStatePropertyAll(TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 20,
       )));
@@ -41,6 +41,7 @@ class _WaitingPageState extends State<WaitingPage> with AutomaticKeepAliveClient
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     var screenHeight = MediaQuery.of(GlobalService.navigatorKey.currentContext!).size.height - MediaQuery.of(GlobalService.navigatorKey.currentContext!).viewPadding.vertical;
     return Column(
       children: [

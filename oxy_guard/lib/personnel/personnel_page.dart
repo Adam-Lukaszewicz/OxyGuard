@@ -3,7 +3,7 @@ import 'package:oxy_guard/global_service.dart';
 import 'package:oxy_guard/models/personnel/worker.dart';
 
 class PersonnelPage extends StatefulWidget{
-  PersonnelPage({super.key});
+  const PersonnelPage({super.key});
 
   @override
   State<PersonnelPage> createState() => _PersonnelPageState();
@@ -82,7 +82,7 @@ class _PersonnelPageState extends State<PersonnelPage> {
                         Navigator.of(context).pop((nameController.text, surnameController.text));
                       },
                       style: ButtonStyle(
-                        maximumSize: MaterialStateProperty.all(Size(
+                        maximumSize: WidgetStatePropertyAll(Size(
                             MediaQuery.of(context).size.width * 0.37,
                             double.infinity)),
                       ),

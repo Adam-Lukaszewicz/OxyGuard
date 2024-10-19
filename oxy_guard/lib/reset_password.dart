@@ -2,10 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:oxy_guard/context_windows.dart';
 import 'package:oxy_guard/login_page.dart';
-import 'package:oxy_guard/main.dart';
-
-
-import 'home_page.dart';
 
 class ResetPasswordPage extends StatefulWidget {
   const ResetPasswordPage({super.key});
@@ -69,8 +65,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       
                             succesDialog(context, "Na twój adres email został wysłany link resetujący hasło. Otwórz go w celu zmiany hasła.");
                       } on FirebaseAuthException catch (e) {
-                        print(e.code);
-                        print(e.message);
                         switch (e.code) {
                           case 'invalid-email':
                             warningDialog(context, "Błędny format adresu email.");

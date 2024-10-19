@@ -85,8 +85,8 @@ class _ManagePageState extends State<ManagePage>
                                 backgroundColor:
                                     WidgetStatePropertyAll(Colors.red),
                                 foregroundColor:
-                                    MaterialStatePropertyAll(Colors.white),
-                                shape: MaterialStatePropertyAll(
+                                    WidgetStatePropertyAll(Colors.white),
+                                shape: WidgetStatePropertyAll(
                                     RoundedRectangleBorder(
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(10))))))
@@ -103,7 +103,7 @@ class _ManagePageState extends State<ManagePage>
                               .workingSquads
                               .length),
                     ),
-                    FinishedPage(),
+                    const FinishedPage(),
                   ],
                 )),
           ),

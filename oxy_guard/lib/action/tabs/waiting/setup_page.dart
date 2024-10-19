@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:oxy_guard/global_service.dart';
-import 'package:oxy_guard/models/personnel/personnel_model.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:oxy_guard/context_windows.dart';
@@ -40,11 +39,11 @@ class _SetupPage2State extends State<SetupPage> with AutomaticKeepAliveClientMix
   late FixedExtentScrollController secondsController;
   late FixedExtentScrollController minuteController;
   var genericButtonStyle = const ButtonStyle(
-      backgroundColor: MaterialStatePropertyAll(Colors.grey),
-      foregroundColor: MaterialStatePropertyAll(Colors.black),
-      padding: MaterialStatePropertyAll(
+      backgroundColor: WidgetStatePropertyAll(Colors.grey),
+      foregroundColor: WidgetStatePropertyAll(Colors.black),
+      padding: WidgetStatePropertyAll(
           EdgeInsets.symmetric(vertical: 6.0, horizontal: 6.0)),
-      textStyle: MaterialStatePropertyAll(TextStyle(
+      textStyle: WidgetStatePropertyAll(TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 20,
       )));
@@ -97,6 +96,7 @@ Future<void> _loadExtremePresssure() async {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Column(
       children: [
         Padding(
@@ -107,8 +107,8 @@ Future<void> _loadExtremePresssure() async {
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
-                    Icon(Icons.location_pin, size: 40),
-                    SizedBox(width: 16),
+                    const Icon(Icons.location_pin, size: 40),
+                    const SizedBox(width: 16),
                     ElevatedButton(
                       onPressed: ()async {
                         var selectedItem = await selectFromList(context, ['piwnica', 'parter', 'pierwsze piętro', 'drugie piętro', 'poddasze', 'garaż', 'inne']);
@@ -117,11 +117,11 @@ Future<void> _loadExtremePresssure() async {
                         });
                       },
                       style: ButtonStyle(
-                        minimumSize: MaterialStateProperty.all(Size(
+                        minimumSize: WidgetStatePropertyAll(Size(
                           MediaQuery.of(context).size.width * 0.58,
                           55,
                         ),),
-                        shape: MaterialStateProperty.all(
+                        shape: WidgetStatePropertyAll(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
@@ -136,7 +136,7 @@ Future<void> _loadExtremePresssure() async {
                             Text(
                               localization,
                             ),
-                            Icon(Icons.keyboard_arrow_down),
+                            const Icon(Icons.keyboard_arrow_down),
                           ],
                         ),
                       ),
@@ -148,8 +148,8 @@ Future<void> _loadExtremePresssure() async {
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
-                    Icon(Icons.fire_extinguisher, size: 40),
-                    SizedBox(width: 16),
+                    const Icon(Icons.fire_extinguisher, size: 40),
+                    const SizedBox(width: 16),
                     ElevatedButton(
                       onPressed: ()async {
                         var selectedItem = await selectWorkerFromList(context);
@@ -158,11 +158,11 @@ Future<void> _loadExtremePresssure() async {
                         });
                       },
                       style: ButtonStyle(
-                        minimumSize: MaterialStateProperty.all(Size(
+                        minimumSize: WidgetStatePropertyAll(Size(
                           MediaQuery.of(context).size.width * 0.58,
                           55,
                         ),),
-                        shape: MaterialStateProperty.all(
+                        shape: WidgetStatePropertyAll(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
@@ -176,7 +176,7 @@ Future<void> _loadExtremePresssure() async {
                             Text(
                               firstPerson != null ? '${firstPerson!.name} ${firstPerson!.surname}' : 'Wprowadź imię',
                             ),
-                            Icon(Icons.keyboard_arrow_down),
+                            const Icon(Icons.keyboard_arrow_down),
                           ],
                         ),
                       ),
@@ -188,8 +188,8 @@ Future<void> _loadExtremePresssure() async {
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
-                    Icon(Icons.fire_extinguisher, size: 40),
-                    SizedBox(width: 16),
+                    const Icon(Icons.fire_extinguisher, size: 40),
+                    const SizedBox(width: 16),
                     ElevatedButton(
                       onPressed: ()async {
                         List<String> workierString = [];
@@ -202,11 +202,11 @@ Future<void> _loadExtremePresssure() async {
                         });
                       },
                       style: ButtonStyle(
-                        minimumSize: MaterialStateProperty.all(Size(
+                        minimumSize: WidgetStatePropertyAll(Size(
                           MediaQuery.of(context).size.width * 0.58,
                           55,
                         ),),
-                        shape: MaterialStateProperty.all(
+                        shape: WidgetStatePropertyAll(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
@@ -220,7 +220,7 @@ Future<void> _loadExtremePresssure() async {
                             Text(
                               secondPerson != null ? '${secondPerson!.name} ${secondPerson!.surname}' : 'Wprowadź imię',
                             ),
-                            Icon(Icons.keyboard_arrow_down),
+                            const Icon(Icons.keyboard_arrow_down),
                           ],
                         ),
                       ),
@@ -233,8 +233,8 @@ Future<void> _loadExtremePresssure() async {
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
-                    Icon(Icons.fire_extinguisher, size: 40),
-                    SizedBox(width: 16),
+                    const Icon(Icons.fire_extinguisher, size: 40),
+                    const SizedBox(width: 16),
                     ElevatedButton(
                       onPressed: ()async {
                         var selectedItem = await selectWorkerFromList(context);
@@ -243,11 +243,11 @@ Future<void> _loadExtremePresssure() async {
                         });
                       },
                       style: ButtonStyle(
-                        minimumSize: MaterialStateProperty.all(Size(
+                        minimumSize: WidgetStatePropertyAll(Size(
                           MediaQuery.of(context).size.width * 0.58,
                           55,
                         ),),
-                        shape: MaterialStateProperty.all(
+                        shape: WidgetStatePropertyAll(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
@@ -261,7 +261,7 @@ Future<void> _loadExtremePresssure() async {
                             Text(
                               thirdPerson != null ? '${thirdPerson!.name} ${thirdPerson!.surname}' : 'Wprowadź imię',
                             ),
-                            Icon(Icons.keyboard_arrow_down),
+                            const Icon(Icons.keyboard_arrow_down),
                           ],
                         ),
                       ),
@@ -278,9 +278,9 @@ Future<void> _loadExtremePresssure() async {
                     });
                   },
                   style: ElevatedButton.styleFrom(
-                    shape: CircleBorder(),
+                    shape: const CircleBorder(),
                   ),
-                child: Icon(Icons.add),
+                child: const Icon(Icons.add),
                       
                 ),
               )
@@ -409,7 +409,6 @@ Future<void> _loadExtremePresssure() async {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-                //TODO: Ten system z gotowościa bo nie wiem co jest 5
                 onPressed: () async {
                   if (Provider.of<SquadModel>(context, listen: false)
                           .workingSquads

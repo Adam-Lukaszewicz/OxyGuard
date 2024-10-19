@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:oxy_guard/global_service.dart';
 import 'package:oxy_guard/models/ended_model.dart';
