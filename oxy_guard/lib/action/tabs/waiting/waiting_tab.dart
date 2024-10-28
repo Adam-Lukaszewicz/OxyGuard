@@ -7,34 +7,20 @@ class WaitingTab extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
+    var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
     return Tab(
-      height: screenHeight * 0.08,
+      height: screenHeight * 0.1,
       child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.black),
-          borderRadius: const BorderRadius.all(Radius.circular(10)),
-          //color: Colors.grey,
+        decoration: const BoxDecoration(
+          border: Border.symmetric(vertical: BorderSide(color: Colors.grey, width: 0.8))
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Stack(
-            children: [
-               Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: Center(
-                  child: Text(
-                    text,
-                    style: const TextStyle(
-                      fontSize: 30,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+        child: Center(
+          child: Text(
+            text,
+            style: TextStyle(
+              fontSize: screenWidth * 0.1,
+            ),
           ),
         ),
       ),

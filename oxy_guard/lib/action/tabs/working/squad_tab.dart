@@ -40,55 +40,59 @@ class _SquadTabState extends State<SquadTab> {
             MediaQuery.of(GlobalService.navigatorKey.currentContext!)
                 .viewPadding
                 .vertical;
+    var screenWidth = MediaQuery.of(context).size.width;
     return Tab(
       height: screenHeight * 0.1,
       child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.black),
-          borderRadius: const BorderRadius.all(Radius.circular(10)),
-          //color: Colors.grey,
+        decoration: const BoxDecoration(
+          border: Border.symmetric(vertical: BorderSide(color: Colors.grey, width: 0.8))
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Stack(
-            children: [
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: Consumer<SquadModel>(builder: (context, cat, child) {
-                    return Text(
-                        '${cat.getTimeRemaining(widget.index) ~/ 60}:${cat.getTimeRemaining(widget.index) % 60 < 10 ? "0${cat.getTimeRemaining(widget.index) % 60}" : "${cat.getTimeRemaining(widget.index) % 60}"}',
-                        style: TextStyle(
-                          color: HSVColor.lerp(
-                                  HSVColor.fromColor(Colors.green),
-                                  HSVColor.fromColor(Colors.red),
-                                  1 -
-                                      (cat.getOxygenRemaining(widget.index) -
-                                              60) /
-                                          270)!
-                              .toColor(),
-                          fontSize: 30,
-                        ));
-                  }),
-                ),
-              ),
-              Positioned(
-                top: 34,
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: Text(
-                    widget.text,
-                    style: const TextStyle(
-                      fontSize: 30,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Center(
+              child: Consumer<SquadModel>(builder: (context, cat, child) {
+                var tabText = '${cat.getTimeRemaining(widget.index) ~/ 60}:${cat.getTimeRemaining(widget.index) % 60 < 10 ? "0${cat.getTimeRemaining(widget.index) % 60}" : "${cat.getTimeRemaining(widget.index) % 60}"}';
+                return Stack(
+                  children: [
+                    Text(
+                      tabText,
+                      style: TextStyle(
+                        height: 1.0,
+                        fontSize: screenWidth * 0.065,
+                        foreground: Paint()
+                        ..style = PaintingStyle.stroke
+                        ..strokeWidth = 1
+                        ..color = Colors.white
+                      ),
                     ),
-                  ),
+                    Text(
+                      tabText,
+                      style: TextStyle(
+                        height: 1.0,
+                        color: HSVColor.lerp(
+                                HSVColor.fromColor(Colors.green),
+                                HSVColor.fromColor(Colors.red),
+                                1 -
+                                    (cat.getOxygenRemaining(widget.index) -
+                                            60) /
+                                        270)!
+                            .toColor(),
+                        fontSize: screenWidth * 0.065,
+                      )),
+                  ],
+                );
+              }),
+            ),
+            Center(
+              child: Text(
+                widget.text,
+                style: TextStyle(
+                  fontSize: screenWidth * 0.075,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

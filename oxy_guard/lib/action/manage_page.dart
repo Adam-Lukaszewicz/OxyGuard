@@ -18,10 +18,10 @@ class ManagePage extends StatefulWidget {
 
 class _ManagePageState extends State<ManagePage>
     with SingleTickerProviderStateMixin {
-  static const List<Tab> categories = <Tab>[
-    Tab(text: "Oczekujące"),
-    Tab(text: "Pracujące"),
-    Tab(text: "Zakończone"),
+  List<Tab> categories = <Tab>[
+    const Tab(text: "Oczekujące"),
+    const Tab(text: "Pracujące"),
+    const Tab(text: "Zakończone"),
   ];
 
   int executeQuickStart(){
@@ -55,10 +55,12 @@ class _ManagePageState extends State<ManagePage>
             length: categories.length,
             initialIndex: executeQuickStart(),
             child: Scaffold(
+              backgroundColor: const Color(0xfffcfcfc),
                 appBar: PreferredSize(
                   preferredSize: Size.fromHeight(screenHeight * 0.1),
                   child: SafeArea(
                     child: AppBar(
+                      backgroundColor: const Color(0xfffcfcfc),
                       //toolbarHeight: MediaQuery.of(context).size.height * 0.05,
                       leading: IconButton(
                         icon: const Icon(Icons.arrow_back),
@@ -66,18 +68,20 @@ class _ManagePageState extends State<ManagePage>
                           Navigator.pop(context);
                         },
                       ),
-                      title: const Text("Odcinek bojowy X"),
+                      title: const Text("Odcinek bojowy X"), //Zamiast X faktycznie nazwa tego odcinka
                       centerTitle: true,
                       bottom: PreferredSize(
                         preferredSize: Size.fromHeight(screenHeight * 0.05),
-                        child: const TabBar(
+                        child: TabBar(
+                          labelColor: Theme.of(context).primaryColorDark,
+                          indicatorColor: Theme.of(context).primaryColorDark,
                           tabs: categories,
                         ),
                       ),
                       actions: [
-                        const Text("KRG 1"), //TODO: Ekran konfiguracyjny
+                        const Text("KRG 1"),
                         IconButton(
-                            onPressed: () {},
+                            onPressed: () {}, //TODO: Tryb alarmowy
                             icon: const Icon(IconData(0xf3e1,
                                 fontFamily: CupertinoIcons.iconFont,
                                 fontPackage: CupertinoIcons.iconFontPackage)),

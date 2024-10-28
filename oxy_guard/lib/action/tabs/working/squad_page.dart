@@ -193,11 +193,6 @@ class _SquadPageState extends State<SquadPage>
   );
 
   //Base ButtonStyles
-  var bottomButtonStyle = const ButtonStyle(
-    backgroundColor: WidgetStatePropertyAll(Colors.grey),
-    foregroundColor: WidgetStatePropertyAll(Colors.black),
-    padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 1.0)),
-  );
 
   //Overrides necessary for functioning
   @override
@@ -265,6 +260,14 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
   //UI
   @override
   Widget build(BuildContext context) {
+  var bottomButtonStyle =  ButtonStyle(
+    backgroundColor: const WidgetStatePropertyAll(Colors.white),
+    foregroundColor: WidgetStatePropertyAll(Theme.of(context).primaryColorDark),
+    padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 1.0)),
+    elevation: WidgetStatePropertyAll(5),
+    shape: const WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))))
+  );
+
     super.build(context);
       _returnPressure =(widget.exitTime * 1 ~/ 2 + widget.exitPressure).toDouble();
     var oxygenValue = Provider.of<SquadModel>(context, listen: false)
@@ -298,7 +301,7 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                                   child: Row(
                                     children: [
-                                      const Icon(Icons.location_pin),
+                                      Icon(Icons.location_pin, size: screenWidth * 0.1,),
                                       widget.localization.isEmpty
                                           ? Expanded(
                                                     child: ElevatedButton(
@@ -313,9 +316,12 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                                                         });
                                                       },
                                                       style: ButtonStyle(
+                                                        backgroundColor:
+                                  const WidgetStatePropertyAll(Colors.white),
+                              elevation: const WidgetStatePropertyAll(5),
                                                         minimumSize: WidgetStatePropertyAll(Size(
-                                                          MediaQuery.of(context).size.width * 0.58,
-                                                          45,
+                                                          screenWidth * 0.58,
+                                                          screenHeight * 0.06,
                                                         ),),
                                                         shape: WidgetStatePropertyAll(
                                                           RoundedRectangleBorder(
@@ -324,30 +330,39 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                                                         ),
                                                       ),
                                                       
-                                                      child: const Center(
+                                                      child: Center(
                                                         child: Row(
                                                           mainAxisAlignment: MainAxisAlignment.center,
                                                           children: [
                                                             Text(
                                                               "Wprowadź lokalizację",
+                                                              style: TextStyle(
+                                        fontSize: screenWidth * 0.035,
+                                        color:
+                                            Theme.of(context).primaryColorDark),
                                                             ),
-                                                            Icon(Icons.keyboard_arrow_down),
+                                                            const Icon(Icons.keyboard_arrow_down),
                                                           ],
                                                         ),
                                                       ),
                                                     ),
                                             )
-                                          : Text(
-                                              widget.localization,
-                                              style: squadTextStyle,
+                                          : SizedBox(
+                                            width: screenWidth * 0.5,
+                                            child: Center(
+                                              child: Text(
+                                                  widget.localization,
+                                                  style: squadTextStyle,
+                                                ),
                                             ),
+                                          ),
                                     ],
                                 ),),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                                   child: Row(
                                     children: [
-                                      const Icon(Icons.fire_extinguisher),
+                                     Icon(Icons.fire_extinguisher, size: screenWidth * 0.1,),
                                       widget.firstPerson==null
                                           ? Expanded(
                                                     child: ElevatedButton(
@@ -359,9 +374,12 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                                                         });
                                                       },
                                                       style: ButtonStyle(
+                                                        backgroundColor:
+                                  const WidgetStatePropertyAll(Colors.white),
+                              elevation: const WidgetStatePropertyAll(5),
                                                         minimumSize: WidgetStatePropertyAll(Size(
-                                                          MediaQuery.of(context).size.width * 0.58,
-                                                          45,
+                                                          screenWidth * 0.58,
+                                                          screenHeight * 0.06,
                                                         ),),
                                                         shape: WidgetStatePropertyAll(
                                                           RoundedRectangleBorder(
@@ -370,30 +388,39 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                                                         ),
                                                       ),
                                                       
-                                                      child: const Center(
+                                                      child: Center(
                                                         child: Row(
                                                           mainAxisAlignment: MainAxisAlignment.center,
                                                           children: [
                                                             Text(
                                                               "Wprowadź imię",
+                                                              style: TextStyle(
+                                        fontSize: screenWidth * 0.035,
+                                        color:
+                                            Theme.of(context).primaryColorDark),
                                                             ),
-                                                            Icon(Icons.keyboard_arrow_down),
+                                                            const Icon(Icons.keyboard_arrow_down),
                                                           ],
                                                         ),
                                                       ),
                                                     ),
                                             )
-                                          : Text(
-                                              widget.firstPerson != null ? '${widget.firstPerson!.name} ${widget.firstPerson!.surname}' : 'Wprowadź imię',
-                                              style: squadTextStyle,
+                                          : SizedBox(
+                                            width: screenWidth * 0.5,
+                                            child: Center(
+                                              child: Text(
+                                                  widget.firstPerson != null ? '${widget.firstPerson!.name} ${widget.firstPerson!.surname}' : 'Wprowadź imię',
+                                                  style: squadTextStyle,
+                                                ),
                                             ),
+                                          ),
                                     ],
                                 ),),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                                   child: Row(
                                     children: [
-                                      const Icon(Icons.fire_extinguisher),
+                                      Icon(Icons.fire_extinguisher, size: screenWidth * 0.1,),
                                       widget.secondPerson==null
                                           ? Expanded(
                                                     child: ElevatedButton(
@@ -405,9 +432,12 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                                                         });
                                                       },
                                                       style: ButtonStyle(
+                                                        backgroundColor:
+                                  const WidgetStatePropertyAll(Colors.white),
+                              elevation: const WidgetStatePropertyAll(5),
                                                         minimumSize: WidgetStatePropertyAll(Size(
-                                                          MediaQuery.of(context).size.width * 0.58,
-                                                          45,
+                                                          screenWidth * 0.58,
+                                                          screenHeight * 0.06,
                                                         ),),
                                                         shape: WidgetStatePropertyAll(
                                                           RoundedRectangleBorder(
@@ -416,23 +446,32 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                                                         ),
                                                       ),
                                                       
-                                                      child: const Center(
+                                                      child: Center(
                                                         child: Row(
                                                           mainAxisAlignment: MainAxisAlignment.center,
                                                           children: [
                                                             Text(
                                                               "Wprowadź imię",
+                                                              style: TextStyle(
+                                        fontSize: screenWidth * 0.035,
+                                        color:
+                                            Theme.of(context).primaryColorDark),
                                                             ),
-                                                            Icon(Icons.keyboard_arrow_down),
+                                                            const Icon(Icons.keyboard_arrow_down),
                                                           ],
                                                         ),
                                                       ),
                                                     ),
                                             )
-                                          : Text(
-                                              widget.secondPerson != null ? '${widget.secondPerson!.name} ${widget.secondPerson!.surname}' : 'Wprowadź imię',
-                                              style: squadTextStyle,
+                                          : SizedBox(
+                                            width: screenWidth * 0.5,
+                                            child: Center(
+                                              child: Text(
+                                                  widget.secondPerson != null ? '${widget.secondPerson!.name} ${widget.secondPerson!.surname}' : 'Wprowadź imię',
+                                                  style: squadTextStyle,
+                                                ),
                                             ),
+                                          ),
                                     ],
                                 ),),
                                 Padding(
@@ -443,7 +482,7 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                                         ? Expanded(
                                           child: Row(
                                             children: [
-                                              const Icon(Icons.fire_extinguisher),
+                                               Icon(Icons.fire_extinguisher, size: screenWidth * 0.1,),
                                                 Text(
                                                     '${widget.firstPerson!=null?widget.firstPerson!.name:""} ${widget.firstPerson!.surname}',
                                                     style: squadTextStyle,
@@ -761,7 +800,7 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                                   child: Text(widget.text,
                                       style: TextStyle(
                                           color: Colors.black.withOpacity(0.3),
-                                          fontSize: 65,
+                                          fontSize: MediaQuery.of(context).size.width * 0.15,
                                           fontWeight: FontWeight.bold)),
                                 ),
                               ),
@@ -880,7 +919,7 @@ void didUpdateWidget(covariant SquadPage oldWidget) {
                             }
                             final parse = await checkListDialog(context, 
                                 (oxygenValue! ~/ 10 - 1) * 10, 0,
-                                "Wprowadź nowy pomiar");
+                                "Wprowadź nowy pomiar", unitText: "bar");
                             if (parse == null) return;
                             final valid = parse.toDouble();
                             setState(() {

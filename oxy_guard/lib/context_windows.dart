@@ -4,15 +4,15 @@ import 'package:oxy_guard/models/personnel/worker.dart';
 
 
 
-Future<int?> checkListDialog(BuildContext context, int oxygenMaximum, int oxygenMinimum, String title_text) => showDialog<int>(
+Future<int?> checkListDialog(BuildContext context, int oxygenMaximum, int oxygenMinimum, String tileText, {String? unitText}) => showDialog<int>(
   context: context,
   builder: (context) {
     FixedExtentScrollController checkController = FixedExtentScrollController();
-
     return Dialog(
+      backgroundColor: const Color(0xfffcfcfc),
       child: SizedBox(
-        height: 500,
-        width: 600,
+        height: MediaQuery.of(context).size.height * 0.6,
+        width: MediaQuery.of(context).size.width * 0.9,
         child: Padding(
           padding: const EdgeInsets.all(15.0),
           child: Column(
@@ -20,19 +20,30 @@ Future<int?> checkListDialog(BuildContext context, int oxygenMaximum, int oxygen
             children: [
               Expanded(
                 flex: 2,
-                child: Text(
-                  title_text,
-                  style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                  ),
+                child: Column(
+                  children: [
+                    Text(
+                      tileText,
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.width * 0.06,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    if(unitText != null)Text(
+                      "($unitText)",
+                      style: TextStyle(
+                                  fontSize:
+                                      MediaQuery.of(context).size.width * 0.04,
+                                  fontWeight: FontWeight.normal),
+                    ),
+                  ],
                 ),
               ),
               Expanded(
-                flex: 6,
+                flex: 8,
                 child: ListWheelScrollView.useDelegate(
                   controller: checkController,
-                  itemExtent: 50,
+                  itemExtent: MediaQuery.of(context).size.width * 0.14,
                   perspective: 0.005,
                   overAndUnderCenterOpacity: 0.6,
                   squeeze: 1,
@@ -41,12 +52,17 @@ Future<int?> checkListDialog(BuildContext context, int oxygenMaximum, int oxygen
                   physics: const FixedExtentScrollPhysics(),
                   childDelegate: ListWheelChildBuilderDelegate(
                     childCount: (oxygenMaximum - oxygenMinimum + 10) ~/ 10,
-                    builder: (context, index) => Center(
-                      child: Text(
-                        "${oxygenMaximum - 10 * index}",
-                        style: const TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
+                    builder: (context, index) => Card(
+                      color: Colors.white,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * .01, horizontal: MediaQuery.of(context).size.width * .04),
+                        child: Text(
+                          "${oxygenMaximum - 10 * index}",
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColorDark,
+                            fontSize: MediaQuery.of(context).size.width * 0.06,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
@@ -55,12 +71,29 @@ Future<int?> checkListDialog(BuildContext context, int oxygenMaximum, int oxygen
               ),
               Expanded(
                 flex: 2,
-                child: TextButton(
-                  onPressed: () {
-                    print(oxygenMaximum - 10 * checkController.selectedItem);
-                    Navigator.of(context).pop(oxygenMaximum - 10 * checkController.selectedItem);
-                  },
-                  child: const Text("Wprowadź"),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      style: ButtonStyle(
+                                      fixedSize: WidgetStatePropertyAll(Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.07)),
+                                        elevation: const WidgetStatePropertyAll(5),
+                                        shape: const WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10)))),
+                                        backgroundColor:
+                                            const WidgetStatePropertyAll(Colors.white),
+                                        foregroundColor: WidgetStatePropertyAll(
+                                            Theme.of(context).primaryColorDark),
+                                        textStyle: WidgetStatePropertyAll(TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize:
+                                              MediaQuery.of(context).size.width * 0.05,
+                                        ))),
+                      onPressed: () {
+                        Navigator.of(context).pop(oxygenMaximum - 10 * checkController.selectedItem);
+                      },
+                      child: const Text("Wprowadź"),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -95,13 +128,13 @@ Future<int?> timeDialog(BuildContext context, String titleText) {
                     children: [
                       Text(
                         titleText,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 25,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(width: 5), // Adjust spacing as needed
-                      Text(
+                      const SizedBox(width: 5), // Adjust spacing as needed
+                      const Text(
                         "(min)",
                         style: TextStyle(
                           fontSize: 16,
@@ -216,7 +249,7 @@ Future<int?> timeDialog(BuildContext context, String titleText) {
                 Center(
                 child: Text(
                   warningText,
-                  style: TextStyle(fontSize: 17), // Zmieniony rozmiar czcionki treści
+                  style: const TextStyle(fontSize: 17), // Zmieniony rozmiar czcionki treści
                 ),
               ),
               ],
@@ -248,7 +281,7 @@ Future<int?> timeDialog(BuildContext context, String titleText) {
                 Center(
                 child: Text(
                   warningText,
-                  style: TextStyle(fontSize: 17), // Zmieniony rozmiar czcionki treści
+                  style: const TextStyle(fontSize: 17), // Zmieniony rozmiar czcionki treści
                 ),
               ),
               ],
@@ -268,15 +301,16 @@ Future<int?> timeDialog(BuildContext context, String titleText) {
   }
 
 Future<String?> selectFromList(BuildContext context, List<String> items) async {
-final TextEditingController _locationController = TextEditingController();
+final TextEditingController locationController = TextEditingController();
   return showDialog<String?>(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('Wybierz pole'),
-        content: Container(
-          constraints: BoxConstraints(maxHeight: 300.0),
-          width: double.maxFinite,
+        backgroundColor: const Color(0xfffcfcfc),
+        title: const Text('Wybierz pole'),
+        content: SizedBox(
+          height: MediaQuery.of(context).size.height * 0.6,
+          width: MediaQuery.of(context).size.width * 0.9,
           child: ListView(
             shrinkWrap: true,
             children: [
@@ -284,8 +318,8 @@ final TextEditingController _locationController = TextEditingController();
                 children: [
                   Expanded(
                     child: TextField(
-                      controller: _locationController,
-                      decoration: InputDecoration(labelText: 'Wprowadź'),
+                      controller: locationController,
+                      decoration: InputDecoration(labelText: 'Wprowadź', labelStyle: TextStyle(color:Theme.of(context).primaryColorDark), focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Theme.of(context).primaryColorDark))),
                     ),
                   ),
 
@@ -293,25 +327,28 @@ final TextEditingController _locationController = TextEditingController();
                     alignment: Alignment.center,
                     child: ElevatedButton(
                       onPressed: (){
-                        if (_locationController.text.trim().isNotEmpty ) {
-                          Navigator.of(context).pop(_locationController.text.trim());
+                        if (locationController.text.trim().isNotEmpty ) {
+                          Navigator.of(context).pop(locationController.text.trim());
                         } else {
                           warningDialog(context, "Wprowadź dane");
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        shape: CircleBorder(),
+                        backgroundColor: Colors.white,
+                        elevation: 5,
+                        shape: const CircleBorder(),
                       ),
-                      child: Icon(Icons.add),
+                      child: Icon(Icons.add, color: Theme.of(context).primaryColorDark,),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 10.0),
+              const SizedBox(height: 10.0),
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: List.generate(items.length, (index) {
                   return ListTile(
+                    leading: const Icon(Icons.location_pin),
                     title: Text(items[index]),
                     onTap: () {
                       String selectedItem = items[index];
@@ -324,8 +361,14 @@ final TextEditingController _locationController = TextEditingController();
           ),
         ),
         actions: <Widget>[
-          TextButton(
-            child: Text('Anuluj'),
+          ElevatedButton(
+            style: const ButtonStyle(
+              backgroundColor: WidgetStatePropertyAll(Colors.red),
+              foregroundColor: WidgetStatePropertyAll(Colors.white),
+              shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10)))),
+              elevation: WidgetStatePropertyAll(5),
+            ),
+            child: const Text('Anuluj'),
             onPressed: () {
               Navigator.of(context).pop(); 
             },
@@ -337,58 +380,65 @@ final TextEditingController _locationController = TextEditingController();
 }
 
 Future<Worker?> selectWorkerFromList(BuildContext context) async {
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
 
   return showDialog<Worker?>(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('Wybierz pole'),
-        content: Container(
-          constraints: BoxConstraints(maxHeight: 300.0),
-          width: double.maxFinite,
+        backgroundColor: const Color(0xfffcfcfc),
+        title: const Text('Wybierz pole'),
+        content: SizedBox(
+          height: MediaQuery.of(context).size.height * 0.6,
+          width: MediaQuery.of(context).size.width * 0.9,
           child: Column(
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Expanded(
                     child: TextField(
-                      controller: _firstNameController,
-                      decoration: InputDecoration(labelText: 'Imię'),
+                      cursorColor: Theme.of(context).primaryColorDark,
+                      controller: firstNameController,
+                      decoration: InputDecoration(labelText: 'Imię', labelStyle: TextStyle(color:Theme.of(context).primaryColorDark), focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Theme.of(context).primaryColorDark))),
                     ),
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: TextField(
-                      controller: _lastNameController,
-                      decoration: InputDecoration(labelText: 'Nazwisko'),
+                      cursorColor: Theme.of(context).primaryColorDark,
+                      controller: lastNameController,
+                      decoration: InputDecoration(labelText: 'Nazwisko', labelStyle: TextStyle(color:Theme.of(context).primaryColorDark), focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Theme.of(context).primaryColorDark))),
                     ),
                   ),
                   Container(
                     alignment: Alignment.center,
                     child: ElevatedButton(
                       onPressed: (){
-                        if (_firstNameController.text.trim().isNotEmpty && _lastNameController.text.trim().isNotEmpty) {
-                          Navigator.of(context).pop(Worker(name: _firstNameController.text.trim(), surname: _lastNameController.text.trim()));
+                        if (firstNameController.text.trim().isNotEmpty && lastNameController.text.trim().isNotEmpty) {
+                          Navigator.of(context).pop(Worker(name: firstNameController.text.trim(), surname: lastNameController.text.trim()));
                         } else {
                           warningDialog(context, "Wprowadź imię oraz nazwisko");
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        shape: CircleBorder(),
+                        backgroundColor: Colors.white,
+                        elevation: 5,
+                        shape: const CircleBorder(),
                       ),
-                      child: Icon(Icons.add),
+                      child: Icon(Icons.add, color: Theme.of(context).primaryColorDark,),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 10.0),
+              const SizedBox(height: 10.0),
               Expanded(
                 child: ListView(
                   shrinkWrap: true,
                   children: GlobalService.currentPersonnel.team
                       .map((worker) => ListTile(
+                            leading: const Icon(Icons.person),
                             title: Text('${worker.name} ${worker.surname}'),
                             onTap: () {
                               Navigator.of(context).pop(worker);
@@ -401,8 +451,14 @@ Future<Worker?> selectWorkerFromList(BuildContext context) async {
           ),
         ),
         actions: <Widget>[
-          TextButton(
-            child: Text('Anuluj'),
+          ElevatedButton(
+            style: const ButtonStyle(
+              backgroundColor: WidgetStatePropertyAll(Colors.red),
+              foregroundColor: WidgetStatePropertyAll(Colors.white),
+              shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10)))),
+              elevation: WidgetStatePropertyAll(5),
+            ),
+            child: const Text('Anuluj'),
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -414,7 +470,7 @@ Future<Worker?> selectWorkerFromList(BuildContext context) async {
 }
 
 Future<String?> textInputDialog(BuildContext context, String title, String label) async {
-  final TextEditingController _textController = TextEditingController();
+  final TextEditingController textController = TextEditingController();
 
   return showDialog<String?>(
     context: context,
@@ -422,13 +478,13 @@ Future<String?> textInputDialog(BuildContext context, String title, String label
       return AlertDialog(
         title: Text(title),
         content: Container(
-          constraints: BoxConstraints(maxHeight: 300.0),
+          constraints: const BoxConstraints(maxHeight: 300.0),
           width: double.maxFinite,
           child: Column(
             children: [
               Expanded(
                 child: TextField(
-                  controller: _textController,
+                  controller: textController,
                   decoration: InputDecoration(labelText: label),
                 ),
               ),
@@ -437,9 +493,9 @@ Future<String?> textInputDialog(BuildContext context, String title, String label
         ),
         actions: <Widget>[
           TextButton(
-            child: Text('OK'),
+            child: const Text('OK'),
             onPressed: () {
-              if(_textController.text.isNotEmpty) Navigator.of(context).pop(_textController.text.trim());
+              if(textController.text.isNotEmpty) Navigator.of(context).pop(textController.text.trim());
               warningDialog(context, "Akcja bez GPS musi być nazwana");
             },
           ),

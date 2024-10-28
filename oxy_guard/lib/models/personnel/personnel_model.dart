@@ -43,8 +43,8 @@ class PersonnelModel extends ChangeNotifier{
     notifyListeners();
     GlobalService.databaseSevice.updatePersonnel(this);
   }
-  void subWorker(Worker Worker){
-    team.remove(Worker);
+  void subWorker(Worker worker){
+    team.remove(worker);
     notifyListeners();
     GlobalService.databaseSevice.updatePersonnel(this);
   }

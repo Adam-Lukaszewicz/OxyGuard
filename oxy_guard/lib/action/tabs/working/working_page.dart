@@ -95,7 +95,7 @@ class _WorkingPageState extends State<WorkingPage>
     return Column(
       children: [
         SizedBox(
-          height: screenHeight * 0.15,
+          height: screenHeight * 0.1,
           child: TabBar(
             tabs: Provider.of<SquadModel>(context, listen: false)
                 .tabs
@@ -103,12 +103,14 @@ class _WorkingPageState extends State<WorkingPage>
                 .toList(),
             controller: _tabController,
             indicatorColor: Colors.black,
-            indicatorPadding: const EdgeInsets.only(bottom: 10),
-            indicatorSize: TabBarIndicatorSize.label,
-            indicator: const UnderlineTabIndicator(
-              borderRadius: BorderRadius.all(Radius.circular(5)),
-              borderSide: BorderSide(color: Colors.black, width: 5),
+            unselectedLabelColor: Theme.of(context).primaryColorDark,
+            labelColor: Colors.white,
+            labelPadding: EdgeInsets.all(0),
+            indicator: BoxDecoration(
+              color: Theme.of(context).primaryColorDark
             ),
+            dividerHeight: 2.0,
+            dividerColor: Colors.grey,
           ),
         ),
         SizedBox(

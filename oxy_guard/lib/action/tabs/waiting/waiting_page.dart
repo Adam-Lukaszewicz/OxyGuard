@@ -46,17 +46,20 @@ class _WaitingPageState extends State<WaitingPage> with AutomaticKeepAliveClient
     return Column(
       children: [
         SizedBox(
-          height: screenHeight * 0.15,
+          height: screenHeight * 0.1,
           child: TabBar(
             tabs: [WaitingTab(text: "R1", index: 0), WaitingTab(text: "R2", index: 0),WaitingTab(text: "R3", index: 0),],
             controller: _tabController,
             indicatorColor: Colors.black,
-            indicatorPadding: const EdgeInsets.only(bottom: 10),
             indicatorSize: TabBarIndicatorSize.label,
-            indicator: const UnderlineTabIndicator(
-              borderRadius: BorderRadius.all(Radius.circular(5)),
-              borderSide: BorderSide(color: Color.fromARGB(255, 0, 0, 0), width: 5),
+            indicator: BoxDecoration(
+              color: Theme.of(context).primaryColorDark
             ),
+            labelColor: Colors.white,
+            unselectedLabelColor: Theme.of(context).primaryColorDark,
+            labelPadding: EdgeInsets.all(0),
+            dividerHeight: 2.0,
+            dividerColor: Colors.grey,
           ),
         ),
         SizedBox(

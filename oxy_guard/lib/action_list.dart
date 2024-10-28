@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart';
@@ -24,7 +23,6 @@ class _ActionListState extends State<ActionList> {
       placemark = placemarkFromCoordinates(latitude, longitude);
       return placemark;
     } on PlatformException catch (err) {
-      print("Caught the odd one");
       return Future.error(err);
     } catch (err) {
       return Future.error(err);

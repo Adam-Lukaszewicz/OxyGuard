@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:oxy_guard/firebase_options.dart';
 import 'package:oxy_guard/home_page.dart';
 import 'package:oxy_guard/login_page.dart';
