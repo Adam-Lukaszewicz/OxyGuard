@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:oxy_guard/global_service.dart';
+import 'package:oxy_guard/services/global_service.dart';
 import 'package:oxy_guard/models/personnel/worker.dart';
 
 
@@ -106,131 +106,179 @@ Future<int?> checkListDialog(BuildContext context, int oxygenMaximum, int oxygen
 
 
 Future<int?> timeDialog(BuildContext context, String titleText) {
-  FixedExtentScrollController seconds = FixedExtentScrollController();
-  FixedExtentScrollController minutes = FixedExtentScrollController();
+  FixedExtentScrollController secondsController = FixedExtentScrollController();
+  FixedExtentScrollController minuteController = FixedExtentScrollController();
 
   return showDialog<int>(
-    context: context,
-    builder: (context) {
-      return Dialog(
-        child: SizedBox(
-          height: 500,
-          width: 600,
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        titleText,
-                        style: const TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(width: 5), // Adjust spacing as needed
-                      const Text(
-                        "(min)",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  flex: 6,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 100,
-                        child: ListWheelScrollView.useDelegate(
-                          controller: minutes,
-                          itemExtent: 50,
-                          perspective: 0.005,
-                          overAndUnderCenterOpacity: 0.6,
-                          squeeze: 1,
-                          magnification: 1.1,
-                          diameterRatio: 1.5,
-                          physics: const FixedExtentScrollPhysics(),
-                          childDelegate: ListWheelChildBuilderDelegate(
-                            childCount: 16,
-                            builder: (context, index) => Center(
-                              child: Text(
-                                "$index",
-                                style: const TextStyle(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+      context: context,
+      builder: (context) => Dialog(
+            backgroundColor: const Color(0xfffcfcfc),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.6,
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                        flex: 2,
+                        child: Column(
+                          children: [
+                            Text(
+                              titleText,
+                              style: TextStyle(
+                                  fontSize:
+                                      MediaQuery.of(context).size.width * 0.06,
+                                  fontWeight: FontWeight.bold),
                             ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: 10,
-                        padding: const EdgeInsets.only(bottom: 18),
-                        child: const Text(
-                          ":",
-                          style: TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 100,
-                        child: ListWheelScrollView.useDelegate(
-                          controller: seconds,
-                          itemExtent: 50,
-                          perspective: 0.005,
-                          overAndUnderCenterOpacity: 0.6,
-                          squeeze: 1,
-                          magnification: 1.1,
-                          diameterRatio: 1.5,
-                          physics: const FixedExtentScrollPhysics(),
-                          childDelegate: ListWheelChildBuilderDelegate(
-                            childCount: 4,
-                            builder: (context, index) => Center(
-                              child: Text(
-                                "${index * 15}",
-                                style: const TextStyle(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                            Text(
+                              "(min:sek)",
+                              style: TextStyle(
+                                  fontSize:
+                                      MediaQuery.of(context).size.width * 0.04,
+                                  fontWeight: FontWeight.normal),
                             ),
+                          ],
+                        )),
+                    Expanded(
+                      flex: 6,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.2,
+                            child: ListWheelScrollView.useDelegate(
+                                controller: minuteController,
+                                itemExtent:
+                                    MediaQuery.of(context).size.width * 0.14,
+                                perspective: 0.005,
+                                overAndUnderCenterOpacity: 0.6,
+                                squeeze: 1,
+                                magnification: 1.1,
+                                diameterRatio: 1.5,
+                                physics: const FixedExtentScrollPhysics(),
+                                childDelegate: ListWheelChildBuilderDelegate(
+                                  childCount: 16,
+                                  builder: (context, index) => Card(
+                                    color: Colors.white,
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              .01,
+                                          horizontal: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              .04),
+                                      child: Text("$index",
+                                          style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .primaryColorDark,
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.06,
+                                              fontWeight: FontWeight.bold)),
+                                    ),
+                                  ),
+                                )),
                           ),
-                        ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.03,
+                            child: Text(":",
+                                style: TextStyle(
+                                    color: Theme.of(context).primaryColorDark,
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            0.06,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.25,
+                            child: ListWheelScrollView.useDelegate(
+                                controller: secondsController,
+                                itemExtent:
+                                    MediaQuery.of(context).size.width * 0.14,
+                                perspective: 0.005,
+                                overAndUnderCenterOpacity: 0.6,
+                                squeeze: 1,
+                                magnification: 1.1,
+                                diameterRatio: 1.5,
+                                physics: const FixedExtentScrollPhysics(),
+                                childDelegate: ListWheelChildBuilderDelegate(
+                                  childCount: 4,
+                                  builder: (context, index) => Card(
+                                    color: Colors.white,
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              .01,
+                                          horizontal: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              .04),
+                                      child: Text("${index * 15}",
+                                          //To powoduje, że Card zawierający 0 sekund jest mniejszy niż 15/30/45. Brzydkie, ale nie widzę szybkiej poprawki na to.
+                                          style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .primaryColorDark,
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.06,
+                                              fontWeight: FontWeight.bold)),
+                                    ),
+                                  ),
+                                )),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                    Expanded(
+                        flex: 2,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton(
+                                style: ButtonStyle(
+                                    fixedSize: WidgetStatePropertyAll(Size(
+                                        MediaQuery.of(context).size.width * 0.5,
+                                        MediaQuery.of(context).size.height *
+                                            0.07)),
+                                    elevation: const WidgetStatePropertyAll(5),
+                                    shape: const WidgetStatePropertyAll(
+                                        RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10)))),
+                                    backgroundColor:
+                                        const WidgetStatePropertyAll(
+                                            Colors.white),
+                                    foregroundColor: WidgetStatePropertyAll(
+                                        Theme.of(context).primaryColorDark),
+                                    textStyle: WidgetStatePropertyAll(TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                              0.05,
+                                    ))),
+                                onPressed: () {
+                                  Navigator.of(context).pop(
+                                      15 * secondsController.selectedItem +
+                                          60 * minuteController.selectedItem);
+                                },
+                                child: const Text("Wprowadź")),
+                          ],
+                        ))
+                  ],
                 ),
-                Expanded(
-                  flex: 2,
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop(
-                        15 * seconds.selectedItem + 60 * minutes.selectedItem,
-                      );
-                    },
-                    child: const Text("Wprowadź"),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
-      );
-    },
-  );
+          ));
 }
 
 

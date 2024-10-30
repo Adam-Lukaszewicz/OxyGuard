@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:oxy_guard/action/tabs/waiting/setup_page.dart';
 import 'package:oxy_guard/action/tabs/waiting/waiting_tab.dart';
 
-import '../../../global_service.dart';
+import '../../../services/global_service.dart';
 
 class WaitingPage extends StatefulWidget {
   const WaitingPage({super.key});

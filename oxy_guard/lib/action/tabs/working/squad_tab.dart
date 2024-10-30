@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/squad_model.dart';
-import '../../../global_service.dart';
+import '../../../services/global_service.dart';
 
 class SquadTab extends StatefulWidget {
   var text = "R";

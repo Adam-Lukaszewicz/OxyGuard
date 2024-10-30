@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:oxy_guard/global_service.dart';
+import 'package:oxy_guard/services/global_service.dart';
 import 'package:oxy_guard/models/personnel/worker.dart';
 
 class PersonnelPage extends StatefulWidget{

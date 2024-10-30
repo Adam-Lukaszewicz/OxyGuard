@@ -8,7 +8,7 @@ import 'package:oxy_guard/context_windows.dart';
 import 'package:oxy_guard/models/ended_model.dart';
 import 'package:oxy_guard/models/squad_model.dart';
 
-import '../global_service.dart';
+import '../services/global_service.dart';
 
 class ActionModel{
   int internalIndex;

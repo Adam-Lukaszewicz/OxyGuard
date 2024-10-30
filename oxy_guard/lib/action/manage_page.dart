@@ -5,7 +5,7 @@ import 'package:oxy_guard/action/tabs/waiting/waiting_page.dart';
 import 'package:provider/provider.dart';
 
 import '../models/squad_model.dart';
-import '../global_service.dart';
+import '../services/global_service.dart';
 import 'tabs/working/working_page.dart';
 
 class ManagePage extends StatefulWidget {

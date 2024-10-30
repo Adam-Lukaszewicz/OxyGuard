@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:oxy_guard/global_service.dart';
-import 'package:oxy_guard/home_page.dart';
+import 'package:oxy_guard/services/global_service.dart';
+import 'package:oxy_guard/home/home_page.dart';
 import 'package:oxy_guard/models/squad_model.dart';
 import 'package:provider/provider.dart';
 
@@ -34,6 +34,7 @@ class FinishedPage extends StatelessWidget {
       );
     }
     return Scaffold(
+      backgroundColor: const Color(0xfffcfcfc),
       floatingActionButton: FloatingActionButton.extended(
         label: const Center(child: Text("Zakończ akcję")),
         onPressed: () {
@@ -45,18 +46,27 @@ class FinishedPage extends StatelessWidget {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: SafeArea(
-        child: ListView(
-          children: Provider.of<SquadModel>(context, listen: false)
-              .finishedSquads
-              .values
-              .toList()
-              .map((fin) => Card(
-                    child: ListTile(
-                      leading: Text(fin.name),
-                      title: Text(fin.averageUse.toString()),
-                    ),
-                  ))
-              .toList(),
+        child: Center(
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.9,
+            child: ListView(
+              children: Provider.of<SquadModel>(context, listen: false)
+                  .finishedSquads
+                  .values
+                  .toList()
+                  .map((fin) => Card(
+                    color: Colors.white,
+                        child: ListTile(
+                          leading: Text(fin.name,
+                          style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.width * 0.08
+                          ),),
+                          title: Text(fin.averageUse.toString()),
+                        ),
+                      ))
+                  .toList(),
+            ),
+          ),
         ),
       ),
     );

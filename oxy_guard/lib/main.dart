@@ -3,10 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:oxy_guard/firebase_options.dart';
-import 'package:oxy_guard/home_page.dart';
-import 'package:oxy_guard/login_page.dart';
+import 'package:oxy_guard/home/home_page.dart';
+import 'package:oxy_guard/login/login_page.dart';
 
-import 'global_service.dart';
+import 'services/global_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

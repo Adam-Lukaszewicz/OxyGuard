@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:oxy_guard/action/manage_page.dart';
-import 'package:oxy_guard/global_service.dart';
-import 'package:oxy_guard/home_page.dart';
+import 'package:oxy_guard/services/global_service.dart';
+import 'package:oxy_guard/home/home_page.dart';
 import 'package:oxy_guard/models/squad_model.dart';
 
 class SquadChoice extends StatefulWidget {

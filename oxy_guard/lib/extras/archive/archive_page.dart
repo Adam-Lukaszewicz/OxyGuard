@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:oxy_guard/global_service.dart';
+import 'package:oxy_guard/services/global_service.dart';
 import 'package:oxy_guard/models/ended_model.dart';
 
 class ArchivePage extends StatelessWidget{

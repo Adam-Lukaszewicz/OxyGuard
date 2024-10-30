@@ -8,7 +8,7 @@ import 'package:oxy_guard/action/tabs/working/squad_page.dart';
 import 'package:oxy_guard/action/tabs/working/squad_tab.dart';
 import 'package:oxy_guard/models/personnel/worker.dart';
 
-import '../global_service.dart';
+import '../services/global_service.dart';
 
 class SquadModel extends ChangeNotifier {
   Map<String, double> oxygenValues;
