@@ -57,7 +57,7 @@ class _WaitingPageState extends State<WaitingPage> with AutomaticKeepAliveClient
             ),
             labelColor: Colors.white,
             unselectedLabelColor: Theme.of(context).primaryColorDark,
-            labelPadding: EdgeInsets.all(0),
+            labelPadding: const EdgeInsets.all(0),
             dividerHeight: 2.0,
             dividerColor: Colors.grey,
           ),

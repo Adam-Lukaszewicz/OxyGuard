@@ -290,6 +290,7 @@ Future<int?> timeDialog(BuildContext context, String titleText) {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Theme.of(context).colorScheme.surface,
           title: const Text('OSTRZEŻENIE'),
           content: SingleChildScrollView(
             child: ListBody(
@@ -322,6 +323,7 @@ Future<int?> timeDialog(BuildContext context, String titleText) {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Theme.of(context).colorScheme.surface,
           title: const Text('SUKCES'),
           content: SingleChildScrollView(
             child: ListBody(
@@ -524,6 +526,7 @@ Future<String?> textInputDialog(BuildContext context, String title, String label
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
+          backgroundColor: Theme.of(context).colorScheme.surface,
         title: Text(title),
         content: Container(
           constraints: const BoxConstraints(maxHeight: 300.0),

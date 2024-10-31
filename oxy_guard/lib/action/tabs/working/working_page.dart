@@ -105,7 +105,7 @@ class _WorkingPageState extends State<WorkingPage>
             indicatorColor: Colors.black,
             unselectedLabelColor: Theme.of(context).primaryColorDark,
             labelColor: Colors.white,
-            labelPadding: EdgeInsets.all(0),
+            labelPadding: const EdgeInsets.all(0),
             indicator: BoxDecoration(
               color: Theme.of(context).primaryColorDark
             ),

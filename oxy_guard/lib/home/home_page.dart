@@ -1,15 +1,12 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:oxy_guard/action/squad_choice.dart';
 import 'package:oxy_guard/home/sub/action_list.dart';
-import 'package:oxy_guard/extras/archive/archive_page.dart';
 import 'package:oxy_guard/context_windows.dart';
 import 'package:oxy_guard/services/global_service.dart';
-import 'package:oxy_guard/login/login_page.dart';
 import 'package:oxy_guard/models/action_model.dart';
 import 'package:oxy_guard/models/squad_model.dart';
 import 'package:oxy_guard/extras/extras_page.dart';
-import 'package:oxy_guard/extras/personnel/shift_squad_choice.dart';
+import 'package:oxy_guard/settings/settings_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:volume_controller/volume_controller.dart';
@@ -253,29 +250,63 @@ class _HomePageState extends State<HomePage> {
                             color: Theme.of(context).primaryColorDark),
                       ))),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const ExtrasPage()));
-                      },
-                      style: ButtonStyle(
-                          fixedSize: WidgetStateProperty.all(Size(
-                              MediaQuery.of(context).size.width * 0.7,
-                              MediaQuery.of(context).size.height * 0.07)),
-                          shape: WidgetStateProperty.all(
-                              const RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(15)),
-                                  side: BorderSide(width: 0.1))),
-                          backgroundColor:
-                              const WidgetStatePropertyAll(Colors.white),
-                          elevation: const WidgetStatePropertyAll(5)),
-                      child: Center(
-                          child: Text(
-                        "Dodatkowe",
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Theme.of(context).primaryColorDark),
-                      ))),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const ExtrasPage()));
+                          },
+                          style: ButtonStyle(
+                              fixedSize: WidgetStateProperty.all(Size(
+                                  MediaQuery.of(context).size.width * 0.325,
+                                  MediaQuery.of(context).size.height * 0.07)),
+                              shape: WidgetStateProperty.all(
+                                  const RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(15)),
+                                      side: BorderSide(width: 0.1))),
+                              backgroundColor:
+                                  const WidgetStatePropertyAll(Colors.white),
+                              elevation: const WidgetStatePropertyAll(5)),
+                          child: Center(
+                              child: Text(
+                            "Dodatkowe",
+                            style: TextStyle(
+                                fontSize: 15,
+                                color: Theme.of(context).primaryColorDark),
+                          ))),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.05,
+                          ),
+                          ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SettingsPage()));
+                          },                         
+                          style: ButtonStyle(
+                              fixedSize: WidgetStateProperty.all(Size(
+                                  MediaQuery.of(context).size.width * 0.325,
+                                  MediaQuery.of(context).size.height * 0.07)),
+                              shape: WidgetStateProperty.all(
+                                  const RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(15)),
+                                      side: BorderSide(width: 0.1))),
+                              backgroundColor:
+                                  const WidgetStatePropertyAll(Colors.white),
+                              elevation: const WidgetStatePropertyAll(5)),
+                          child: Center(
+                              child: Text(
+                            "Ustawienia",
+                            style: TextStyle(
+                                fontSize: 15,
+                                color: Theme.of(context).primaryColorDark),
+                          ))),
+                    ],
+                  ),
                 ],
               ),
             ],

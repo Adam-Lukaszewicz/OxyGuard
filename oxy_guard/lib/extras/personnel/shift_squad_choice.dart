@@ -73,7 +73,7 @@ class _ShiftSquadChoicePageState extends State<ShiftSquadChoicePage> {
               margin: const EdgeInsets.all(20.0),
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(12.0),
                 boxShadow: [
                   BoxShadow(

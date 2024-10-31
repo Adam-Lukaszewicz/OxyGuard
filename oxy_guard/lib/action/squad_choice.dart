@@ -42,6 +42,7 @@ class _SquadChoiceState extends State<SquadChoice> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
           backgroundColor: Theme.of(context).primaryColorDark,
           foregroundColor: Colors.white,

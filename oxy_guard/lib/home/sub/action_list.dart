@@ -32,6 +32,7 @@ class _ActionListState extends State<ActionList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         title: const Text("Dołącz do trwającej akcji"),
         centerTitle: true,

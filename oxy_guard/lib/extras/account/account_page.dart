@@ -1,8 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:oxy_guard/extras/archive/archive_page.dart';
-import 'package:oxy_guard/extras/personnel/shift_squad_choice.dart';
-import 'package:oxy_guard/extras/settings/settings_page.dart';
 import 'package:oxy_guard/login/login_page.dart';
 import 'package:oxy_guard/services/global_service.dart';
 
