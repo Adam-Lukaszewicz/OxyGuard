@@ -96,7 +96,7 @@ class ActionModel{
     if(GlobalService.permission == LocationPermission.always || GlobalService.permission == LocationPermission.whileInUse){
       actionLocation = await Geolocator.getCurrentPosition();
     }else{
-      String? input = await textInputDialog(context, "Podaj nazwę akcji", "Nazwa akcji");
+      String? input = await textInputDialog(context, "Podaj nazwę akcji", "Nazwa akcji", "Akcja bez GPS musi być nazwana");
       if(input != null) actionName = input;
     }
     GlobalService.databaseSevice.addAction(this).then((value) => listenToChanges());

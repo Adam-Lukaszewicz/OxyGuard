@@ -85,8 +85,9 @@ class _HomePageState extends State<HomePage> {
     return Stack(children: [
       Scaffold(
         backgroundColor: Theme.of(context).colorScheme.surface,
-        appBar:
-            AppBar(centerTitle: true, backgroundColor: Theme.of(context).colorScheme.surface),
+        appBar: AppBar(
+            centerTitle: true,
+            backgroundColor: Theme.of(context).colorScheme.surface),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -255,7 +256,10 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       ElevatedButton(
                           onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const ExtrasPage()));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const ExtrasPage()));
                           },
                           style: ButtonStyle(
                               fixedSize: WidgetStateProperty.all(Size(
@@ -276,16 +280,17 @@ class _HomePageState extends State<HomePage> {
                                 fontSize: 15,
                                 color: Theme.of(context).primaryColorDark),
                           ))),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.05,
-                          ),
-                          ElevatedButton(
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.05,
+                      ),
+                      ElevatedButton(
                           onPressed: () {
                             Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const SettingsPage()));
-                          },                         
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const SettingsPage()));
+                          },
                           style: ButtonStyle(
                               fixedSize: WidgetStateProperty.all(Size(
                                   MediaQuery.of(context).size.width * 0.325,

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:oxy_guard/extras/account/account_page.dart';
 import 'package:oxy_guard/extras/archive/archive_page.dart';
+import 'package:oxy_guard/extras/atests/atests_page.dart';
 import 'package:oxy_guard/extras/personnel/shift_squad_choice.dart';
-import 'package:oxy_guard/settings/settings_page.dart';
 
 class ExtrasPage extends StatelessWidget {
   const ExtrasPage({super.key});
@@ -61,7 +61,11 @@ class ExtrasPage extends StatelessWidget {
                   elevation: 5,
                   child: InkWell(
                     onTap: () {
-                      //TODO: Inżynierka - atesty
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const AtestsPage()),
+                      );
                     },
                     child: ListTile(
                       leading: Icon(

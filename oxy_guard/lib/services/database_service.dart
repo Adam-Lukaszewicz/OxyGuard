@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:oxy_guard/models/extinguisher_model.dart';
 import 'package:oxy_guard/services/global_service.dart';
 import 'package:oxy_guard/models/action_model.dart';
 import 'package:oxy_guard/models/ended_model.dart';
@@ -11,6 +12,7 @@ class DatabaseSevice{
   final _firestore = FirebaseFirestore.instance;
   late CollectionReference _actionsRef;
   late CollectionReference _endedRef;
+  late CollectionReference _atestsRef; //W przypadku innych atestów niż tych dla gaśnic to będzie kolekcja kolekcji, teraz atests=gaśnice
   late DocumentReference _personnelRef;
   late String actionId;
   DatabaseSevice(){
@@ -21,6 +23,7 @@ class DatabaseSevice{
     if(FirebaseAuth.instance.currentUser != null){
       _personnelRef = _firestore.collection("user_data").doc(FirebaseAuth.instance.currentUser!.uid).withConverter<PersonnelModel>(fromFirestore: (snapshots, _) => PersonnelModel.fromJson(snapshots.data()!), toFirestore: (personnelModel, _) => personnelModel.toJson());  
       _endedRef = _firestore.collection("user_data").doc(FirebaseAuth.instance.currentUser!.uid).collection("archive").withConverter<EndedModel>(fromFirestore: (snapshots, _) => EndedModel.fromJson(snapshots.data()!), toFirestore: (endedModel, _) => endedModel.toJson());
+      _atestsRef = _firestore.collection("user_data").doc(FirebaseAuth.instance.currentUser!.uid).collection("atests").withConverter<ExtinguisherModel>(fromFirestore: (snapshots, _) => ExtinguisherModel.fromJson(snapshots.data()!), toFirestore: (extinguisherModel, _) => extinguisherModel.toJson());
     }
     DocumentSnapshot personnel = await getPersonnel();
     if(personnel.exists){
@@ -45,6 +48,23 @@ class DatabaseSevice{
 
   Stream<QuerySnapshot> getArchive(){
     return _endedRef.snapshots();
+  }
+
+  Stream<QuerySnapshot> getAtests(){
+    return _atestsRef.snapshots();
+  }
+
+  void addAtest(ExtinguisherModel newAtest) async{
+    DocumentReference doc = await _atestsRef.add(newAtest);
+    newAtest.setId(doc.id);
+  }
+
+  void updateAtest(ExtinguisherModel atest){
+    _atestsRef.doc(atest.id).update(atest.toJson());
+  }
+
+  void removeAtest(ExtinguisherModel atest){
+    _atestsRef.doc(atest.id).delete();
   }
 
   Future<void> addAction(ActionModel actionModel) async {
