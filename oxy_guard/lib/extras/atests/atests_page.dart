@@ -12,7 +12,7 @@ class AtestsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
-    var serialTextStyle = TextStyle(fontSize: screenWidth * 0.04);
+    var serialTextStyle = TextStyle(fontSize: screenWidth * 0.06);
     var dateTextStyle = TextStyle(fontSize: screenWidth * 0.05);
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -91,41 +91,49 @@ class AtestsPage extends StatelessWidget {
                             extinguisher.data() as ExtinguisherModel;
                         return Card(
                           color: Colors.white,
-                          child: InkWell(
-                            child: ListTile(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+                            child: InkWell(
                               onTap: () async {
-                                DateTime? newExpirationDate =
-                                    await showDatePicker(
-                                        context: context,
-                                        firstDate: DateTime.now().subtract(
-                                            const Duration(days: 730)),
-                                        lastDate: DateTime.now()
-                                            .add(const Duration(days: 730)));
-                                if (newExpirationDate != null) {
-                                  model.updateDate(newExpirationDate);
-                                }
-                              },
-                              trailing: ElevatedButton(
-                                onPressed: () {
-                                  model.remove();
+                                  DateTime? newExpirationDate =
+                                      await showDatePicker(
+                                          context: context,
+                                          firstDate: DateTime.now().subtract(
+                                              const Duration(days: 730)),
+                                          lastDate: DateTime.now()
+                                              .add(const Duration(days: 730)));
+                                  if (newExpirationDate != null) {
+                                    model.updateDate(newExpirationDate);
+                                  }
                                 },
-                                style: ButtonStyle(
-                                  shape: WidgetStatePropertyAll(CircleBorder()),
-                                  backgroundColor:
-                                      WidgetStatePropertyAll(Colors.red[300]),
-                                ),
-                                child: const Icon(
-                                  Icons.delete,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              leading: Text(
-                                model.serial,
-                                style: serialTextStyle,
-                              ),
-                              title: Text(
-                                "${model.expirationDate.day}.${model.expirationDate.month}.${model.expirationDate.year}",
-                                style: dateTextStyle,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(width: screenWidth * 0.02,),
+                                  Text(
+                                      model.serial,
+                                      style: serialTextStyle,
+                                    ),
+                                  SizedBox(width: screenWidth * 0.05,),
+                                  Text(
+                                      "${model.expirationDate.day}.${model.expirationDate.month}.${model.expirationDate.year}",
+                                      style: dateTextStyle,
+                                    ),
+                                  ElevatedButton(
+                                      onPressed: () {
+                                        model.remove();
+                                      },
+                                      style: const ButtonStyle(
+                                        shape: WidgetStatePropertyAll(CircleBorder()),
+                                        backgroundColor:
+                                            WidgetStatePropertyAll(Colors.red),
+                                      ),
+                                      child: const Icon(
+                                        Icons.delete,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                ],
                               ),
                             ),
                           ),
