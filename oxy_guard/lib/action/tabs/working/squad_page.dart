@@ -167,7 +167,7 @@ class _SquadPageState extends State<SquadPage>
   int entryPressureLabel = 0;
   double _usageRate = 0.0;
   double _returnPressure = 0;
-  AudioPlayer _audioPlayer = AudioPlayer();
+  final _audioPlayer = AudioPlayer();
   bool _isInForeground = true;
   bool isCheckAllertInactive = true;
   bool isExitAllertInactive = true;
@@ -634,7 +634,7 @@ class _SquadPageState extends State<SquadPage>
                                         child: Text(
                                           "Bezp. czas.",
                                           style: infoTextStyle,
-                                        ), //TODO: Rozszerzanie zależnie od szerokości kontenera
+                                        ),
                                       ),
                                       Expanded(
                                           flex: 3,
@@ -775,7 +775,7 @@ class _SquadPageState extends State<SquadPage>
                                                   style: infoTextStyle),
                                             ),
                                           ],
-                                        ), //TODO: Rozszerzanie zależnie od szerokości kontenera
+                                        ),
                                       ),
                                       Expanded(
                                         flex: 3,
@@ -822,7 +822,7 @@ class _SquadPageState extends State<SquadPage>
                                                   style: infoTextStyle),
                                             ),
                                           ],
-                                        ), //TODO: Rozszerzanie zależnie od szerokości kontenera
+                                        ),
                                       ),
                                       Expanded(
                                         flex: 3,
@@ -1257,21 +1257,26 @@ class _SquadPageState extends State<SquadPage>
                           physics: const FixedExtentScrollPhysics(),
                           childDelegate: ListWheelChildBuilderDelegate(
                             childCount: (330 - 150) ~/ 10,
-                            builder: (context, index) =>
-                                Card(
-                                  color: Colors.white,
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * .01, horizontal: MediaQuery.of(context).size.width * .04),
-                                    child: Text("${330 - 10 * index}",
-                                        style: TextStyle(
-                                          color: Theme.of(context).primaryColorDark,
-                                          fontSize:
-                                              MediaQuery.of(context).size.width *
-                                                  0.07,
-                                          fontWeight: FontWeight.bold,
-                                        )),
-                                  ),
-                                ),
+                            builder: (context, index) => Card(
+                              color: Colors.white,
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical:
+                                        MediaQuery.of(context).size.height *
+                                            .01,
+                                    horizontal:
+                                        MediaQuery.of(context).size.width *
+                                            .04),
+                                child: Text("${330 - 10 * index}",
+                                    style: TextStyle(
+                                      color: Theme.of(context).primaryColorDark,
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                              0.07,
+                                      fontWeight: FontWeight.bold,
+                                    )),
+                              ),
+                            ),
                           )),
                     ),
                     Expanded(
@@ -1280,20 +1285,23 @@ class _SquadPageState extends State<SquadPage>
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             ElevatedButton(
-                              style: ButtonStyle(
-                                      backgroundColor:
-                                          const WidgetStatePropertyAll(Colors.white),
-                                      foregroundColor:
-                                          WidgetStatePropertyAll(Theme.of(context).primaryColorDark),
-                                      shape: const WidgetStatePropertyAll(
-                                          RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(10)))),
-                                      elevation: const WidgetStatePropertyAll(5),
-                                    ),
+                                style: ButtonStyle(
+                                  backgroundColor: const WidgetStatePropertyAll(
+                                      Colors.white),
+                                  foregroundColor: WidgetStatePropertyAll(
+                                      Theme.of(context).primaryColorDark),
+                                  shape: const WidgetStatePropertyAll(
+                                      RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10)))),
+                                  elevation: const WidgetStatePropertyAll(5),
+                                ),
                                 onPressed: () {
                                   Navigator.of(context).pop([
-                                    (330 - 10 * lastCheckController.selectedItem)
+                                    (330 -
+                                            10 *
+                                                lastCheckController
+                                                    .selectedItem)
                                         .toDouble()
                                   ]);
                                 },
@@ -1385,14 +1393,24 @@ class _SquadPageState extends State<SquadPage>
                                   builder: (context, index) => Card(
                                     color: Colors.white,
                                     child: Padding(
-                                      padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * .01, horizontal: MediaQuery.of(context).size.width * .04),
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              .01,
+                                          horizontal: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              .04),
                                       child: Text(
                                           "${(widget.checks.length < 3 ? 330 : widget.checks[widget.checks.length - 3].toInt()) - 10 * index}",
                                           style: TextStyle(
-                                            color: Theme.of(context).primaryColorDark,
-                                            fontSize:
-                                                MediaQuery.of(context).size.width *
-                                                    0.07,
+                                            color: Theme.of(context)
+                                                .primaryColorDark,
+                                            fontSize: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.07,
                                             fontWeight: FontWeight.bold,
                                           )),
                                     ),
@@ -1418,14 +1436,24 @@ class _SquadPageState extends State<SquadPage>
                                   builder: (context, index) => Card(
                                     color: Colors.white,
                                     child: Padding(
-                                      padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * .01, horizontal: MediaQuery.of(context).size.width * .04),
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              .01,
+                                          horizontal: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              .04),
                                       child: Text(
                                           "${(widget.checks[widget.checks.length - 2] - 10).toInt() - 10 * index}",
                                           style: TextStyle(
-                                            color: Theme.of(context).primaryColorDark,
-                                            fontSize:
-                                                MediaQuery.of(context).size.width *
-                                                    0.07,
+                                            color: Theme.of(context)
+                                                .primaryColorDark,
+                                            fontSize: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.07,
                                             fontWeight: FontWeight.bold,
                                           )),
                                     ),
@@ -1442,10 +1470,10 @@ class _SquadPageState extends State<SquadPage>
                           children: [
                             ElevatedButton(
                                 style: ButtonStyle(
-                                  backgroundColor:
-                                      const WidgetStatePropertyAll(Colors.white),
-                                  foregroundColor:
-                                      WidgetStatePropertyAll(Theme.of(context).primaryColorDark),
+                                  backgroundColor: const WidgetStatePropertyAll(
+                                      Colors.white),
+                                  foregroundColor: WidgetStatePropertyAll(
+                                      Theme.of(context).primaryColorDark),
                                   shape: const WidgetStatePropertyAll(
                                       RoundedRectangleBorder(
                                           borderRadius: BorderRadius.all(
@@ -1455,20 +1483,23 @@ class _SquadPageState extends State<SquadPage>
                                 onPressed: () {
                                   if (((widget.checks.length < 3
                                               ? 330
-                                              : widget
-                                                  .checks[widget.checks.length - 3]
+                                              : widget.checks[
+                                                      widget.checks.length - 3]
                                                   .toInt()) -
                                           10 *
                                               secondLastCheckController
                                                   .selectedItem) >
                                       (widget.checks[widget.checks.length - 2] -
                                           10 -
-                                          10 * lastCheckController.selectedItem)) {
+                                          10 *
+                                              lastCheckController
+                                                  .selectedItem)) {
                                     Navigator.of(context).pop([
                                       ((widget.checks.length < 3
                                                   ? 330
                                                   : widget.checks[
-                                                          widget.checks.length - 3]
+                                                          widget.checks.length -
+                                                              3]
                                                       .toInt()) -
                                               10 *
                                                   secondLastCheckController
@@ -1476,7 +1507,9 @@ class _SquadPageState extends State<SquadPage>
                                           .toDouble(),
                                       (widget.checks[widget.checks.length - 2] -
                                               10 -
-                                              10 * lastCheckController.selectedItem)
+                                              10 *
+                                                  lastCheckController
+                                                      .selectedItem)
                                           .toDouble()
                                     ]);
                                   } else {
@@ -1513,9 +1546,11 @@ class _SquadPageState extends State<SquadPage>
         await _audioPlayer.play();
         if (isCheckAllertInactive) {
           isCheckAllertInactive = false;
-          isCheckAllertInactive = await warningDialog(context,
-                  "Wprowadź nowy pomiar ciśnienia dla roty ${widget.text}") ??
-              false;
+          if (context.mounted) {
+            isCheckAllertInactive = await warningDialog(context,
+                    "Wprowadź nowy pomiar ciśnienia dla roty ${widget.text}") ??
+                false;
+          }
         }
       }
     }

@@ -50,8 +50,10 @@ class _LoginPageState extends State<LoginPage> {
               Image.asset(
                 'media_files/logo_no_fire.png',
                 width: MediaQuery.of(context).size.width * 0.8,
-                ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.13,),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.13,
+              ),
               TextField(
                 controller: emailController,
                 decoration: const InputDecoration(
@@ -59,7 +61,9 @@ class _LoginPageState extends State<LoginPage> {
                   hintText: 'Wprowadź e-mail',
                 ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.05,),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.05,
+              ),
               TextField(
                 controller: passwordController,
                 decoration: InputDecoration(
@@ -76,7 +80,9 @@ class _LoginPageState extends State<LoginPage> {
                             : const Icon(Icons.remove_red_eye))),
                 obscureText: !passwordShowing,
               ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.07,),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.07,
+              ),
               ElevatedButton(
                   onPressed: () async {
                     try {
@@ -92,43 +98,66 @@ class _LoginPageState extends State<LoginPage> {
                         throw Exception(
                             "Adres e-mail musi być zweryfikowany, aby się zalogować");
                       }
-                      GlobalService.databaseSevice.assignTeam(GlobalService.currentPersonnel);
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const HomePage()),
-                      );
+                      GlobalService.databaseSevice
+                          .assignTeam(GlobalService.currentPersonnel);
+                      if (context.mounted) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const HomePage()),
+                        );
+                      }
                     } on FirebaseAuthException catch (e) {
                       switch (e.code) {
                         case 'invalid-credential':
-                          warningDialog(context,
-                              "Nieprawidłowe hasło lub login e-mail. Spróbuj ponownie.");
+                          if (context.mounted) {
+                            warningDialog(context,
+                                "Nieprawidłowe hasło lub login e-mail. Spróbuj ponownie.");
+                          }
+
                           break;
                         case 'user-disabled':
-                          warningDialog(context,
-                              "Konto zostało zablokowane. Skontaktuj się z obsługą.");
+                          if (context.mounted) {
+                            warningDialog(context,
+                                "Konto zostało zablokowane. Skontaktuj się z obsługą.");
+                          }
+
                           break;
                         case 'too-many-requests':
-                          warningDialog(
-                              context, "Zbyt wiele nieudanych prób.");
+                          if (context.mounted) {
+                            warningDialog(
+                                context, "Zbyt wiele nieudanych prób.");
+                          }
+
                           break;
                         case 'invalid-email':
-                          warningDialog(
-                              context, "Błędny format adresu email.");
+                          if (context.mounted) {
+                            warningDialog(
+                                context, "Błędny format adresu email.");
+                          }
+
                           break;
                         case 'network-request-failed':
-                          warningDialog(
-                              context, "Brak połączenia sieciowego.");
+                          if (context.mounted) {
+                            warningDialog(
+                                context, "Brak połączenia sieciowego.");
+                          }
+
                           break;
                         case 'channel-error':
-                          warningDialog(context, "Wprowadź dane logowania.");
+                          if (context.mounted) {
+                            warningDialog(context, "Wprowadź dane logowania.");
+                          }
+
                           break;
                         default:
                           warningDialog(context,
                               "Wystąpił nieznany błąd: ${e.code} ${e.message} Spróbuj ponownie później.");
                       }
                     } catch (e) {
-                      warningDialog(context, e.toString());
+                      if (context.mounted) {
+                        warningDialog(context, e.toString());
+                      }
                     }
                   },
                   style: ButtonStyle(
@@ -137,19 +166,22 @@ class _LoginPageState extends State<LoginPage> {
                           MediaQuery.of(context).size.height * 0.07)),
                       elevation: WidgetStateProperty.all(5),
                       shape: WidgetStateProperty.all(
-                        const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10)), side: BorderSide(width: 0.1))
-                      ),
-                      backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColorDark)
-                    ),
+                          const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              side: BorderSide(width: 0.1))),
+                      backgroundColor: WidgetStateProperty.all(
+                          Theme.of(context).primaryColorDark)),
                   child: Center(
                       child: Text(
                     "Zaloguj się",
                     style: TextStyle(
-                      fontSize: 24,
-                      color: Theme.of(context).colorScheme.onPrimary
-                    ),
+                        fontSize: 24,
+                        color: Theme.of(context).colorScheme.onPrimary),
                   ))),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.03,),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.03,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -162,22 +194,24 @@ class _LoginPageState extends State<LoginPage> {
                         );
                       },
                       style: ButtonStyle(
-                      fixedSize: WidgetStateProperty.all(Size(
-                          MediaQuery.of(context).size.width * 0.42,
-                          MediaQuery.of(context).size.height * 0.07)),
-                      shape: WidgetStateProperty.all(
-                        const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10)), side: BorderSide(width: 0.1))
+                        fixedSize: WidgetStateProperty.all(Size(
+                            MediaQuery.of(context).size.width * 0.42,
+                            MediaQuery.of(context).size.height * 0.07)),
+                        shape: WidgetStateProperty.all(
+                            const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                side: BorderSide(width: 0.1))),
+                        elevation: const WidgetStatePropertyAll(5),
+                        backgroundColor:
+                            const WidgetStatePropertyAll(Colors.white),
                       ),
-                      elevation: const WidgetStatePropertyAll(5),
-                      backgroundColor: const WidgetStatePropertyAll(Colors.white),
-                    ),
                       child: Center(
                           child: Text(
                         "Zarejestruj się",
                         style: TextStyle(
-                          fontSize: 18,
-                          color: Theme.of(context).primaryColorDark
-                        ),
+                            fontSize: 18,
+                            color: Theme.of(context).primaryColorDark),
                       ))),
                   SizedBox(width: MediaQuery.of(context).size.width * 0.06),
                   ElevatedButton(
@@ -185,27 +219,28 @@ class _LoginPageState extends State<LoginPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  const ResetPasswordPage()),
+                              builder: (context) => const ResetPasswordPage()),
                         );
                       },
                       style: ButtonStyle(
-                      fixedSize: WidgetStateProperty.all(Size(
-                          MediaQuery.of(context).size.width * 0.42,
-                          MediaQuery.of(context).size.height * 0.07)),
-                      shape: WidgetStateProperty.all(
-                        const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10)), side: BorderSide(width: 0.1))
+                        fixedSize: WidgetStateProperty.all(Size(
+                            MediaQuery.of(context).size.width * 0.42,
+                            MediaQuery.of(context).size.height * 0.07)),
+                        shape: WidgetStateProperty.all(
+                            const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                side: BorderSide(width: 0.1))),
+                        elevation: const WidgetStatePropertyAll(5),
+                        backgroundColor:
+                            const WidgetStatePropertyAll(Colors.white),
                       ),
-                      elevation: const WidgetStatePropertyAll(5),
-                      backgroundColor: const WidgetStatePropertyAll(Colors.white),
-                    ),
                       child: Center(
                           child: Text(
                         "Odzyskaj hasło",
                         style: TextStyle(
-                          fontSize: 16,
-                          color: Theme.of(context).primaryColorDark
-                        ),
+                            fontSize: 16,
+                            color: Theme.of(context).primaryColorDark),
                       ))),
                 ],
               ),

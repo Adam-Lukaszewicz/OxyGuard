@@ -20,9 +20,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _extremePressure = 0;
-  int _startingPressure = 0;
-  int _timePeriod = 0;
   bool _isLoading = false;
 
   @override
@@ -30,54 +27,6 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     checkAndRequestPermission();
     checkVolumeStatus();
-    _loadExtremePresssure();
-    _loadStartingPresssure();
-    _loadTimePeriod();
-  }
-
-  Future<void> _loadExtremePresssure() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _extremePressure = (prefs.getInt('extremePressure') ?? 0);
-    });
-  }
-
-  Future<void> _loadTimePeriod() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _timePeriod = (prefs.getInt('timePeriod') ?? 0);
-    });
-  }
-
-  Future<void> _loadStartingPresssure() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _startingPressure = (prefs.getInt('startingPressure') ?? 0);
-    });
-  }
-
-  Future<void> _setExtremePresssure(int value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _extremePressure = value;
-      prefs.setInt('extremePressure', value);
-    });
-  }
-
-  Future<void> _setTimePeriod(int value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _timePeriod = value;
-      prefs.setInt('timePeriod', value);
-    });
-  }
-
-  Future<void> _setStartingPresssure(int value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _startingPressure = value;
-      prefs.setInt('startingPressure', value);
-    });
   }
 
   @override
@@ -144,20 +93,24 @@ class _HomePageState extends State<HomePage> {
                               null,
                               true);
                           GlobalService.currentAction = preparedAction;
-                          GlobalService.currentAction
-                              .setActionLocation(context)
-                              .then((none) {
-                            setState(() {
-                              _isLoading = false;
+                          if (context.mounted) {
+                            GlobalService.currentAction
+                                .setActionLocation(context)
+                                .then((none) {
+                              setState(() {
+                                _isLoading = false;
+                              });
+                              if (context.mounted) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SquadChoice(
+                                            quickStart: true,
+                                          )),
+                                );
+                              }
                             });
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SquadChoice(
-                                        quickStart: true,
-                                      )),
-                            );
-                          });
+                          }
                         });
                         setState(() {
                           _isLoading = true;
@@ -221,11 +174,13 @@ class _HomePageState extends State<HomePage> {
                           setState(() {
                             _isLoading = false;
                           });
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SquadChoice()),
-                          );
+                          if (context.mounted) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SquadChoice()),
+                            );
+                          }
                         });
                         setState(() {
                           _isLoading = true;
@@ -344,30 +299,40 @@ class _HomePageState extends State<HomePage> {
   void checkVolumeStatus() async {
     double volume = await VolumeController().getVolume();
     if (volume < 0.4) {
-      warningDialog(context,
-          "Poziom głośności multimediów jest poniżej 40%.\nWażne powiadomienia mogą być niesłyszalne!");
+      if (mounted) {
+        warningDialog(context,
+            "Poziom głośności multimediów jest poniżej 40%.\nWażne powiadomienia mogą być niesłyszalne!");
+      }
     }
     double notificationVolume =
         (await RealVolume.getCurrentVol(StreamType.NOTIFICATION)) ?? 0.0;
     if (notificationVolume < 0.4) {
-      warningDialog(context,
-          "Poziom głośności powiadomień jest poniżej 40%.\nWażne powiadomienia mogą być niesłyszalne!");
+      if (mounted) {
+        warningDialog(context,
+            "Poziom głośności powiadomień jest poniżej 40%.\nWażne powiadomienia mogą być niesłyszalne!");
+      }
     }
     double ringVolume =
         (await RealVolume.getCurrentVol(StreamType.RING)) ?? 0.0;
     if (ringVolume < 0.4) {
-      warningDialog(context,
-          "Poziom głośności dzwonka jest poniżej 40%.\nWażne powiadomienia mogą być niesłyszalne!");
+      if (mounted) {
+        warningDialog(context,
+            "Poziom głośności dzwonka jest poniżej 40%.\nWażne powiadomienia mogą być niesłyszalne!");
+      }
     }
     var status = await Permission.locationWhenInUse.status;
     if (status.isDenied) {
-      warningDialog(context,
-          "Brak uprawnień do lokalizacji.\nFunkcjonalnoś aplikacji jest ograniczona!");
+      if (mounted) {
+        warningDialog(context,
+            "Brak uprawnień do lokalizacji.\nFunkcjonalnoś aplikacji jest ograniczona!");
+      }
     }
     status = await Permission.notification.status;
     if (status.isDenied) {
-      warningDialog(context,
-          "Brak uprawnień do wyświetlania powiadomień.\nFunkcjonalnoś aplikacji jest ograniczona!");
+      if (mounted) {
+        warningDialog(context,
+            "Brak uprawnień do wyświetlania powiadomień.\nFunkcjonalnoś aplikacji jest ograniczona!");
+      }
     }
   }
 }

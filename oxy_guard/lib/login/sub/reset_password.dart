@@ -11,9 +11,7 @@ class ResetPasswordPage extends StatefulWidget {
 }
 
 class _ResetPasswordPageState extends State<ResetPasswordPage> {
-
   TextEditingController emailController = TextEditingController();
-
 
   @override
   void dispose() {
@@ -38,10 +36,12 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Image.asset(
-                  'media_files/logo_no_fire.png',
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.13,),
+                'media_files/logo_no_fire.png',
+                width: MediaQuery.of(context).size.width * 0.8,
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.13,
+              ),
               TextField(
                 controller: emailController,
                 decoration: const InputDecoration(
@@ -52,51 +52,66 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               const SizedBox(height: 50),
               ElevatedButton(
                   onPressed: () async {
-                      try {
-                        final credential = await FirebaseAuth.instance
-                            .sendPasswordResetEmail(
-                          email: emailController.text,
-                        );
-                        Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const LoginPage()),
+                    try {
+                      await FirebaseAuth.instance.sendPasswordResetEmail(
+                        email: emailController.text,
                       );
-                      
-                            succesDialog(context, "Na twój adres email został wysłany link resetujący hasło. Otwórz go w celu zmiany hasła.");
-                      } on FirebaseAuthException catch (e) {
-                        switch (e.code) {
-                          case 'invalid-email':
-                            warningDialog(context, "Błędny format adresu email.");
-                            break;
-                          case 'network-request-failed':
-                            warningDialog(context, "Brak połączenia sieciowego.");
-                            break;
-                          case 'channel-error':
+                      if (context.mounted) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const LoginPage()),
+                        );
+                      }
+                      if (context.mounted) {
+                        succesDialog(context,
+                            "Na twój adres email został wysłany link resetujący hasło. Otwórz go w celu zmiany hasła.");
+                      }
+                    } on FirebaseAuthException catch (e) {
+                      switch (e.code) {
+                        case 'invalid-email':
+                          if (context.mounted) {
+                            warningDialog(
+                                context, "Błędny format adresu email.");
+                          }
+                          break;
+                        case 'network-request-failed':
+                          if (context.mounted) {
+                            warningDialog(
+                                context, "Brak połączenia sieciowego.");
+                          }
+                          break;
+                        case 'channel-error':
+                          if (context.mounted) {
                             warningDialog(context, "Wprowadź adres email.");
-                            break;
-                          default:
-                            warningDialog(context, "Wystąpił nieznany błąd: ${e.code} ${e.message} Spróbuj ponownie później.");
-                        } 
+                          }
+                          break;
+                        default:
+                          if (context.mounted) {
+                            warningDialog(context,
+                                "Wystąpił nieznany błąd: ${e.code} ${e.message} Spróbuj ponownie później.");
+                          }
+                      }
                     }
                   },
                   style: ButtonStyle(
-                        fixedSize: WidgetStateProperty.all(Size(
-                            MediaQuery.of(context).size.width * 0.9,
-                            MediaQuery.of(context).size.height * 0.07)),
-                        elevation: WidgetStateProperty.all(5),
-                        shape: WidgetStateProperty.all(
-                          const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10)), side: BorderSide(width: 0.1))
-                        ),
-                        backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColorDark)
-                      ),
+                      fixedSize: WidgetStateProperty.all(Size(
+                          MediaQuery.of(context).size.width * 0.9,
+                          MediaQuery.of(context).size.height * 0.07)),
+                      elevation: WidgetStateProperty.all(5),
+                      shape: WidgetStateProperty.all(
+                          const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              side: BorderSide(width: 0.1))),
+                      backgroundColor: WidgetStateProperty.all(
+                          Theme.of(context).primaryColorDark)),
                   child: Center(
                       child: Text(
                     "Zresetuj hasło",
                     style: TextStyle(
-                      fontSize: 20,
-                      color: Theme.of(context).colorScheme.onPrimary
-                    ),
+                        fontSize: 20,
+                        color: Theme.of(context).colorScheme.onPrimary),
                   ))),
             ],
           ),

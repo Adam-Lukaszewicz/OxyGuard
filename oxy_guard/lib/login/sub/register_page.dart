@@ -41,10 +41,12 @@ class _RegisterPageState extends State<RegisterPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Image.asset(
-                  'media_files/logo_no_fire.png',
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.13,),
+                'media_files/logo_no_fire.png',
+                width: MediaQuery.of(context).size.width * 0.8,
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.13,
+              ),
               TextField(
                 controller: emailController,
                 decoration: const InputDecoration(
@@ -89,7 +91,7 @@ class _RegisterPageState extends State<RegisterPage> {
               const SizedBox(height: 50),
               ElevatedButton(
                   onPressed: () async {
-                    if(passwordController.text == verifyController.text){
+                    if (passwordController.text == verifyController.text) {
                       try {
                         final credential = await FirebaseAuth.instance
                             .createUserWithEmailAndPassword(
@@ -97,56 +99,77 @@ class _RegisterPageState extends State<RegisterPage> {
                           password: passwordController.text,
                         );
                         await credential.user?.sendEmailVerification();
-                        Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const LoginPage()),
-                      );
-                      
-                            succesDialog(context, "Na twój adres email został wysłany link aktywujący konto. Otwórz go w celu aktywacji konta.");
-                            
+                        if (context.mounted) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const LoginPage()),
+                          );
+                        }
+
+                        if (context.mounted) {
+                          succesDialog(context,
+                              "Na twój adres email został wysłany link aktywujący konto. Otwórz go w celu aktywacji konta.");
+                        }
                       } on FirebaseAuthException catch (e) {
                         switch (e.code) {
                           case 'email-already-in-use':
-                            warningDialog(context, "Istnieje już konto związane z podanym adresem email. Podaj inny adres.");
+                            if (context.mounted) {
+                              warningDialog(context,
+                                  "Istnieje już konto związane z podanym adresem email. Podaj inny adres.");
+                            }
                             break;
                           case 'weak-password':
-                            warningDialog(context, "Hasło jest za krótkie. Hasło powinno składać się z min. sześciu znaków");
+                            if (context.mounted) {
+                              warningDialog(context,
+                                  "Hasło jest za krótkie. Hasło powinno składać się z min. sześciu znaków");
+                            }
                             break;
                           case 'invalid-email':
-                            warningDialog(context, "Błędny format adresu email.");
+                            if (context.mounted) {
+                              warningDialog(
+                                  context, "Błędny format adresu email.");
+                            }
                             break;
                           case 'network-request-failed':
-                            warningDialog(context, "Brak połączenia sieciowego.");
+                            if (context.mounted) {
+                              warningDialog(
+                                  context, "Brak połączenia sieciowego.");
+                            }
                             break;
                           case 'channel-error':
-                            warningDialog(context, "Wprowadź dane logowania.");
+                            if (context.mounted) {
+                              warningDialog(
+                                  context, "Wprowadź dane logowania.");
+                            }
                             break;
                           default:
-                            warningDialog(context, "Wystąpił nieznany błąd: ${e.code} ${e.message} Spróbuj ponownie później.");
-                        } 
-                    }
-                    }else{
+                            warningDialog(context,
+                                "Wystąpił nieznany błąd: ${e.code} ${e.message} Spróbuj ponownie później.");
+                        }
+                      }
+                    } else {
                       warningDialog(context, "Hasła muszą być takie same");
                     }
                   },
                   style: ButtonStyle(
-                        fixedSize: WidgetStateProperty.all(Size(
-                            MediaQuery.of(context).size.width * 0.9,
-                            MediaQuery.of(context).size.height * 0.07)),
-                        elevation: WidgetStateProperty.all(5),
-                        shape: WidgetStateProperty.all(
-                          const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10)), side: BorderSide(width: 0.1))
-                        ),
-                        backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColorDark)
-                      ),
+                      fixedSize: WidgetStateProperty.all(Size(
+                          MediaQuery.of(context).size.width * 0.9,
+                          MediaQuery.of(context).size.height * 0.07)),
+                      elevation: WidgetStateProperty.all(5),
+                      shape: WidgetStateProperty.all(
+                          const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              side: BorderSide(width: 0.1))),
+                      backgroundColor: WidgetStateProperty.all(
+                          Theme.of(context).primaryColorDark)),
                   child: Center(
                       child: Text(
                     "Zarejestruj się",
                     style: TextStyle(
-                      fontSize: 20,
-                      color: Theme.of(context).colorScheme.onPrimary
-                    ),
+                        fontSize: 20,
+                        color: Theme.of(context).colorScheme.onPrimary),
                   ))),
             ],
           ),

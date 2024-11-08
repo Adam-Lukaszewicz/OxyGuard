@@ -161,13 +161,15 @@ class _SquadChoiceState extends State<SquadChoice> {
                             .currentAction.squads[chosenSquadIndex]!);
                         GlobalService.currentAction.squads[chosenSquadIndex] =
                             rebuild;
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ManagePage(
-                                    chosenAction: rebuild,
-                                  )),
-                        );
+                        if (context.mounted) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ManagePage(
+                                      chosenAction: rebuild,
+                                    )),
+                          );
+                        }
                       }
                     },
                     child: Text(
@@ -240,23 +242,26 @@ class _SquadChoiceState extends State<SquadChoice> {
   Future<String?> chooseExistingSquadDialog() => showDialog<String>(
       context: context,
       builder: (context) => Dialog(
-            backgroundColor: const Color(0xfffcfcfc),
-            child: LayoutBuilder(builder: (context, constraints){
-              return Padding(
+          backgroundColor: const Color(0xfffcfcfc),
+          child: LayoutBuilder(builder: (context, constraints) {
+            return Padding(
               padding: EdgeInsets.symmetric(
-                vertical: constraints.maxHeight * 0.05,
-                horizontal: constraints.maxWidth * 0.1
-                ),
+                  vertical: constraints.maxHeight * 0.05,
+                  horizontal: constraints.maxWidth * 0.1),
               child: Column(
                 children: [
-                  const Center(child: Text(
-                    "Odcinki w akcji",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
+                  const Center(
+                    child: Text(
+                      "Odcinki w akcji",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                      ),
                     ),
-                    ),),
-                  SizedBox(height: constraints.maxHeight * 0.05,),
+                  ),
+                  SizedBox(
+                    height: constraints.maxHeight * 0.05,
+                  ),
                   SizedBox(
                     height: constraints.maxHeight * 0.8,
                     child: ListView(
@@ -264,22 +269,21 @@ class _SquadChoiceState extends State<SquadChoice> {
                           .toList()
                           .map((squad) {
                         return Card(
-                          color: Colors.white,
-                          elevation: 5,
+                            color: Colors.white,
+                            elevation: 5,
                             child: InkWell(
-                          child: ListTile(
-                            title: Text(squad.key),
-                          ),
-                          onTap: () {
-                            Navigator.of(context).pop(squad.key);
-                          },
-                        ));
+                              child: ListTile(
+                                title: Text(squad.key),
+                              ),
+                              onTap: () {
+                                Navigator.of(context).pop(squad.key);
+                              },
+                            ));
                       }).toList(),
                     ),
                   ),
                 ],
               ),
             );
-            }))
-          );
+          })));
 }

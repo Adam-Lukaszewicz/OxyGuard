@@ -44,17 +44,16 @@ class _WorkingPageState extends State<WorkingPage>
   Widget build(BuildContext context) {
     super.build(context);
     var screenHeight =
-        MediaQuery.of(GlobalService.navigatorKey.currentContext!)
-                .size
-                .height -
+        MediaQuery.of(GlobalService.navigatorKey.currentContext!).size.height -
             MediaQuery.of(GlobalService.navigatorKey.currentContext!)
                 .viewPadding
                 .vertical;
 
     if (Provider.of<SquadModel>(context, listen: false)
-                  .workingSquads
-                  .values
-                  .toList().isEmpty) {
+        .workingSquads
+        .values
+        .toList()
+        .isEmpty) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -74,16 +73,19 @@ class _WorkingPageState extends State<WorkingPage>
               ElevatedButton(
                 onPressed: () async {
                   final prefs = await SharedPreferences.getInstance();
-                  Provider.of<SquadModel>(context, listen: false).startSquadWork(
-                    (prefs.getInt('startingPressure')) ?? 330, 
-                    (prefs.getInt('extremePressure')) ?? 60, 
-                    (prefs.getInt('timePeriod')) ?? 300, 
-                    "", 
-                    null, 
-                    null, 
-                    null,
-                    false,
-                  );
+                  if (context.mounted) {
+                    Provider.of<SquadModel>(context, listen: false)
+                        .startSquadWork(
+                      (prefs.getInt('startingPressure')) ?? 330,
+                      (prefs.getInt('extremePressure')) ?? 60,
+                      (prefs.getInt('timePeriod')) ?? 300,
+                      "",
+                      null,
+                      null,
+                      null,
+                      false,
+                    );
+                  }
                 },
                 child: const Text("Rozpocznij pracę roty"),
               ),
@@ -106,9 +108,7 @@ class _WorkingPageState extends State<WorkingPage>
             unselectedLabelColor: Theme.of(context).primaryColorDark,
             labelColor: Colors.white,
             labelPadding: const EdgeInsets.all(0),
-            indicator: BoxDecoration(
-              color: Theme.of(context).primaryColorDark
-            ),
+            indicator: BoxDecoration(color: Theme.of(context).primaryColorDark),
             dividerHeight: 2.0,
             dividerColor: Colors.grey,
           ),
