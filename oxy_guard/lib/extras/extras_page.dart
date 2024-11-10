@@ -3,10 +3,16 @@ import 'package:oxy_guard/extras/account/account_page.dart';
 import 'package:oxy_guard/extras/archive/archive_page.dart';
 import 'package:oxy_guard/extras/atests/atests_page.dart';
 import 'package:oxy_guard/extras/personnel/shift_squad_choice.dart';
+import 'package:oxy_guard/services/global_service.dart';
 
-class ExtrasPage extends StatelessWidget {
+class ExtrasPage extends StatefulWidget {
   const ExtrasPage({super.key});
 
+  @override
+  State<ExtrasPage> createState() => _ExtrasPageState();
+}
+
+class _ExtrasPageState extends State<ExtrasPage> {
   @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
@@ -65,22 +71,34 @@ class ExtrasPage extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) => const AtestsPage()),
-                      );
+                      ).then((onValue) {
+                        setState(() {});
+                      });
                     },
-                    child: ListTile(
-                      leading: Icon(
-                        Icons.fire_extinguisher,
-                        size: screenWidth * 0.08,
+                    child: Stack(children: [
+                      ListTile(
+                        leading: Icon(
+                          Icons.fire_extinguisher,
+                          size: screenWidth * 0.08,
+                        ),
+                        title: Text(
+                          "Atesty",
+                          style: titleCategoryTextStyle,
+                        ),
+                        subtitle: Text(
+                          "Kontroluj ważności gaśnic",
+                          style: subtitleCategoryTextStyle,
+                        ),
                       ),
-                      title: Text(
-                        "Atesty",
-                        style: titleCategoryTextStyle,
-                      ),
-                      subtitle: Text(
-                        "Kontroluj ważności gaśnic",
-                        style: subtitleCategoryTextStyle,
-                      ),
-                    ),
+                      if (GlobalService.databaseSevice.closeToExpiring)
+                        const Positioned(
+                            top: 0,
+                            right: 0,
+                            child: Icon(
+                              Icons.error,
+                              color: Colors.red,
+                            )),
+                    ]),
                   ),
                 ),
                 Card(
@@ -88,7 +106,10 @@ class ExtrasPage extends StatelessWidget {
                   elevation: 5,
                   child: InkWell(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const AccountPage()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const AccountPage()));
                     },
                     child: ListTile(
                       leading: Icon(

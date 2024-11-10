@@ -7,7 +7,7 @@ import 'package:oxy_guard/services/database_service.dart';
 class GlobalService { 
   static GlobalKey<NavigatorState> navigatorKey = 
   GlobalKey<NavigatorState>();
-  static DatabaseSevice databaseSevice = DatabaseSevice();
+  static DatabaseService databaseSevice = DatabaseService();
   static bool serviceEnabled = false;
   static LocationPermission permission = LocationPermission.denied;
   static late ActionModel currentAction;

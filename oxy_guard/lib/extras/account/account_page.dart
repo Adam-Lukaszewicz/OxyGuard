@@ -12,7 +12,7 @@ class AccountPage extends StatelessWidget {
     var screenWidth = MediaQuery.of(context).size.width;
     var titleCategoryTextStyle =
         TextStyle(fontWeight: FontWeight.w500, fontSize: screenWidth * 0.05);
-    var subtitleCategoryTextStyle = TextStyle(fontSize: screenWidth * 0.04);
+    //var subtitleCategoryTextStyle = TextStyle(fontSize: screenWidth * 0.04);
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(

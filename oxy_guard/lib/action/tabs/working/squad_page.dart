@@ -1546,11 +1546,9 @@ class _SquadPageState extends State<SquadPage>
         await _audioPlayer.play();
         if (isCheckAllertInactive) {
           isCheckAllertInactive = false;
-          if (context.mounted) {
-            isCheckAllertInactive = await warningDialog(context,
-                    "Wprowadź nowy pomiar ciśnienia dla roty ${widget.text}") ??
-                false;
-          }
+          isCheckAllertInactive = await warningDialog(context,
+                  "Wprowadź nowy pomiar ciśnienia dla roty ${widget.text}") ??
+              false;
         }
       }
     }

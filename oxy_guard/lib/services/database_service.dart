@@ -2,13 +2,14 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:oxy_guard/models/extinguisher_model.dart';
 import 'package:oxy_guard/services/global_service.dart';
 import 'package:oxy_guard/models/action_model.dart';
 import 'package:oxy_guard/models/ended_model.dart';
 import 'package:oxy_guard/models/personnel/personnel_model.dart';
 
-class DatabaseSevice {
+class DatabaseService extends ChangeNotifier {
   final _firestore = FirebaseFirestore.instance;
   late CollectionReference _actionsRef;
   late CollectionReference _endedRef;
@@ -16,7 +17,13 @@ class DatabaseSevice {
       _atestsRef; //W przypadku innych atestów niż tych dla gaśnic to będzie kolekcja kolekcji, teraz atests=gaśnice
   late DocumentReference _personnelRef;
   late String actionId;
-  DatabaseSevice() {
+  bool get closeToExpiring => _closeToExpiring;
+  bool _closeToExpiring = false;
+  set closeToExpiring(bool value){
+    _closeToExpiring = value;
+    notifyListeners();
+  }
+  DatabaseService() {
     _actionsRef = _firestore.collection("actions").withConverter<ActionModel>(
         fromFirestore: (snapshots, _) =>
             ActionModel.fromJson(snapshots.data()!),
@@ -50,6 +57,7 @@ class DatabaseSevice {
               toFirestore: (extinguisherModel, _) =>
                   extinguisherModel.toJson());
     }
+    checkForExpiring();
     DocumentSnapshot personnel = await getPersonnel();
     if (personnel.exists) {
       GlobalService.currentPersonnel = personnel.data() as PersonnelModel;
@@ -57,6 +65,21 @@ class DatabaseSevice {
       _personnelRef.set(personnelModel);
     }
     GlobalService.currentPersonnel.listenToChanges();
+  }
+
+  Future<void> checkForExpiring() async {
+    bool found = false;
+    await getAtests().first.then((snapshot) {
+      for (var doc in snapshot.docs) {
+        ExtinguisherModel model = doc.data() as ExtinguisherModel;
+        if (model.expirationDate.difference(DateTime.now()).inDays <= 7) {
+          found = true;
+          break;
+        }
+      }
+    });
+    print("Updated closeToExpiring to: $found");
+    closeToExpiring = found;
   }
 
   Stream<QuerySnapshot> getActions() {
@@ -81,9 +104,14 @@ class DatabaseSevice {
 
   void addAtest(ExtinguisherModel newAtest) async {
     _atestsRef.add(newAtest);
+    if (!closeToExpiring) {
+      if (newAtest.expirationDate.difference(DateTime.now()).inDays <= 7) {
+        closeToExpiring = true;
+      }
+    }
   }
 
-  Future<String?> getAtestIdBySerial(String serial) async {
+  Future<String?> getTestIdBySerial(String serial) async {
     String? id;
     await _atestsRef.get().then((QuerySnapshot docs) {
       var it = docs.docs.iterator;
@@ -99,10 +127,20 @@ class DatabaseSevice {
 
   void updateAtest(ExtinguisherModel atest, String id) {
     _atestsRef.doc(id).update(atest.toJson());
+    if (!closeToExpiring) {
+      if (atest.expirationDate.difference(DateTime.now()).inDays <= 7) {
+        closeToExpiring = true;
+      }
+    } else {
+      checkForExpiring();
+    }
   }
 
   void removeAtest(ExtinguisherModel atest, String id) {
     _atestsRef.doc(id).delete();
+    if (atest.expirationDate.difference(DateTime.now()).inDays <= 7) {
+      checkForExpiring();
+    }
   }
 
   Future<void> addAction(ActionModel actionModel) async {

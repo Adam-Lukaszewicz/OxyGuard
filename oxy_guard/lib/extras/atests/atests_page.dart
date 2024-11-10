@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:oxy_guard/context_windows.dart';
 import 'package:oxy_guard/models/extinguisher_model.dart';
@@ -29,10 +27,14 @@ class AtestsPage extends StatelessWidget {
               "Wprowadź numer seryjny",
               "Numer seryjny gaśnicy",
               "Numer seryjny nie może być pusty");
-          DateTime? expirationDate = await showDatePicker(
-              context: context,
-              firstDate: DateTime.now().subtract(const Duration(days: 730)),
-              lastDate: DateTime.now().add(const Duration(days: 730)));
+          DateTime? expirationDate;
+          if (context.mounted) {
+            expirationDate = await showDatePicker(
+                context: context,
+                firstDate: DateTime.now().subtract(const Duration(days: 730)),
+                lastDate: DateTime.now().add(const Duration(days: 730)));
+          }
+
           if (serial != null && expirationDate != null) {
             ExtinguisherModel newExtinguisher = ExtinguisherModel(
                 serial: serial, expirationDate: expirationDate);
@@ -92,39 +94,47 @@ class AtestsPage extends StatelessWidget {
                         return Card(
                           color: Colors.white,
                           child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+                            padding: EdgeInsets.symmetric(
+                                vertical: screenHeight * 0.01),
                             child: InkWell(
                               onTap: () async {
-                                  DateTime? newExpirationDate =
-                                      await showDatePicker(
-                                          context: context,
-                                          firstDate: DateTime.now().subtract(
-                                              const Duration(days: 730)),
-                                          lastDate: DateTime.now()
-                                              .add(const Duration(days: 730)));
-                                  if (newExpirationDate != null) {
-                                    model.updateDate(newExpirationDate);
-                                  }
-                                },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  SizedBox(width: screenWidth * 0.02,),
-                                  Text(
+                                DateTime? newExpirationDate =
+                                    await showDatePicker(
+                                        context: context,
+                                        firstDate: DateTime.now().subtract(
+                                            const Duration(days: 730)),
+                                        lastDate: DateTime.now()
+                                            .add(const Duration(days: 730)));
+                                if (newExpirationDate != null) {
+                                  model.updateDate(newExpirationDate);
+                                }
+                              },
+                              child: Stack(
+                                children: [Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      width: screenWidth * 0.02,
+                                    ),
+                                    Text(
                                       model.serial,
                                       style: serialTextStyle,
                                     ),
-                                  SizedBox(width: screenWidth * 0.05,),
-                                  Text(
+                                    SizedBox(
+                                      width: screenWidth * 0.05,
+                                    ),
+                                    Text(
                                       "${model.expirationDate.day}.${model.expirationDate.month}.${model.expirationDate.year}",
                                       style: dateTextStyle,
                                     ),
-                                  ElevatedButton(
+                                    ElevatedButton(
                                       onPressed: () {
                                         model.remove();
                                       },
                                       style: const ButtonStyle(
-                                        shape: WidgetStatePropertyAll(CircleBorder()),
+                                        shape: WidgetStatePropertyAll(
+                                            CircleBorder()),
                                         backgroundColor:
                                             WidgetStatePropertyAll(Colors.red),
                                       ),
@@ -133,7 +143,16 @@ class AtestsPage extends StatelessWidget {
                                         color: Colors.white,
                                       ),
                                     ),
-                                ],
+                                  ],
+                                ),
+                                if(model.expirationDate.difference(DateTime.now()).inDays < 7) const Positioned(
+                                  top: 0,
+                                  right: 0,
+                                  child: Icon(
+                                    Icons.error,
+                                    color: Colors.red,
+                                  ))
+                                ]
                               ),
                             ),
                           ),
