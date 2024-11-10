@@ -52,7 +52,9 @@ class _SquadTabState extends State<SquadTab> {
           children: [
             Center(
               child: Consumer<SquadModel>(builder: (context, cat, child) {
-                var tabText = '${cat.getTimeRemaining(widget.index) ~/ 60}:${cat.getTimeRemaining(widget.index) % 60 < 10 ? "0${cat.getTimeRemaining(widget.index) % 60}" : "${cat.getTimeRemaining(widget.index) % 60}"}';
+                int timeRemaining;
+                cat.workingSquads[widget.index.toString()]!.inCrisis? timeRemaining = cat.getTimeRemainingInCrisis(widget.index) : timeRemaining = cat.getTimeRemaining(widget.index);
+                var tabText = '${timeRemaining ~/ 60}:${timeRemaining % 60 < 10 ? "0${timeRemaining % 60}" : "${timeRemaining % 60}"}';
                 return Stack(
                   children: [
                     Text(

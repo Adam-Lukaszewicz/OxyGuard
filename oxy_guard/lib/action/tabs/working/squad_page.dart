@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:oxy_guard/models/personnel/worker.dart';
@@ -16,6 +17,7 @@ final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
 class SquadPage extends StatefulWidget {
+  bool inCrisis;
   double usageRate;
   double entryPressure;
   int exitPressure;
@@ -41,6 +43,7 @@ class SquadPage extends StatefulWidget {
       double? usageRate,
       double? returnPressure,
       double? plannedReturnPressure,
+      bool? inCrisis,
       List<double>? checks,
       List<DateTime>? checkTimes,
       bool? working,
@@ -55,7 +58,8 @@ class SquadPage extends StatefulWidget {
             plannedReturnPressure ?? exitPressure.toDouble(),
         checks = checks ?? <double>[entryPressure],
         checkTimes = checkTimes ?? <DateTime>[],
-        working = working ?? false;
+        working = working ?? false,
+        inCrisis = inCrisis ?? false;
 
   SquadPage.fromJson(Map<String, dynamic> json)
       : this(
@@ -65,6 +69,7 @@ class SquadPage extends StatefulWidget {
           text: json["Text"]! as String,
           returnPressure: json["ReturnPressure"]! as double,
           plannedReturnPressure: json["PlannedReturnPressure"]! as double,
+          inCrisis: json["InCrisis"] as bool,
           exitTime: json["ExitTime"]! as int,
           interval: json["Interval"]! as int,
           index: json["Index"]! as int,
@@ -100,6 +105,7 @@ class SquadPage extends StatefulWidget {
     List<double>? checks,
     List<DateTime>? checkTimes,
     bool? working,
+    bool? inCrisis,
     String localization = "",
     Worker? firstPerson,
     Worker? secondPerson,
@@ -119,6 +125,7 @@ class SquadPage extends StatefulWidget {
         exitPressure: exitPressure ?? this.exitPressure,
         text: text ?? this.text,
         working: working ?? this.working,
+        inCrisis: inCrisis ?? this.inCrisis,
         localization: localization,
         firstPerson: firstPerson ?? this.firstPerson,
         secondPerson: secondPerson ?? this.secondPerson,
@@ -144,6 +151,7 @@ class SquadPage extends StatefulWidget {
             : throw UnsupportedError('Cannot convert to JSON: $nonEncodable'),
       ),
       "Working": working,
+      "InCrisis": inCrisis,
       "Localization": localization,
       "FirstPerson": jsonEncode(firstPerson),
       "SecondPerson": jsonEncode(secondPerson),
@@ -594,410 +602,550 @@ class _SquadPageState extends State<SquadPage>
                               left: 8,
                               right: 8,
                             ),
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 2),
-                                  child: Row(
+                            child: widget.inCrisis
+                                ? Column(
                                     children: [
-                                      Expanded(
-                                        flex: 7,
-                                        child: Text("Intensywność",
-                                            style: infoTextStyle),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 2),
+                                        child: Text("TRYB ALARMOWY",
+                                            style: infoTextStyle.copyWith(
+                                                color: Colors.red,
+                                                fontWeight: FontWeight.bold)),
                                       ),
-                                      Expanded(
-                                        flex: 3,
-                                        child: Container(
-                                          height: 20,
-                                          decoration: BoxDecoration(
-                                              color: widget.usageRate * 60 < 10
-                                                  ? widget.usageRate * 60 < 5
-                                                      ? Colors.blue
-                                                      : Colors.yellow
-                                                  : Colors.red,
-                                              borderRadius:
-                                                  const BorderRadius.all(
-                                                      Radius.circular(5))),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 2),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              flex: 7,
+                                              child: Text(
+                                                "Pozostały czas",
+                                                style: infoTextStyle,
+                                              ),
+                                            ),
+                                            Expanded(
+                                                flex: 3,
+                                                child: Center(
+                                                  child: Consumer<SquadModel>(
+                                                      builder: (context, cat,
+                                                          child) {
+                                                    return Row(
+                                                      children: [
+                                                        Text(
+                                                          widget.checks
+                                                                  .isNotEmpty
+                                                              ? "${cat.getTimeRemainingInCrisis(widget.index) ~/ 60}:${cat.getTimeRemainingInCrisis(widget.index) % 60 < 10 ? "0${(cat.getTimeRemainingInCrisis(widget.index) % 60).toInt()}" : (cat.getTimeRemainingInCrisis(widget.index) % 60).toInt()}"
+                                                              : "NaN",
+                                                          style: varTextStyle.apply(
+                                                              color: HSVColor.lerp(
+                                                                      HSVColor.fromColor(
+                                                                          Colors
+                                                                              .green),
+                                                                      HSVColor.fromColor(
+                                                                          Colors
+                                                                              .red),
+                                                                      1 -
+                                                                          (cat.getOxygenRemaining(widget.index) - 60) /
+                                                                              270)!
+                                                                  .toColor()),
+                                                        ),
+                                                        Text("min",
+                                                            style: unitTextStyle.apply(
+                                                                color: HSVColor.lerp(
+                                                                        HSVColor.fromColor(Colors
+                                                                            .green),
+                                                                        HSVColor.fromColor(Colors
+                                                                            .red),
+                                                                        1 -
+                                                                            (cat.getOxygenRemaining(widget.index) - 60) /
+                                                                                270)!
+                                                                    .toColor()))
+                                                      ],
+                                                    );
+                                                  }),
+                                                )),
+                                          ],
                                         ),
                                       ),
                                     ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 2),
-                                  child: Row(
+                                  )
+                                : Column(
                                     children: [
-                                      Expanded(
-                                        flex: 7,
-                                        child: Text(
-                                          "Bezp. czas.",
-                                          style: infoTextStyle,
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 2),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              flex: 7,
+                                              child: Text("Intensywność",
+                                                  style: infoTextStyle),
+                                            ),
+                                            Expanded(
+                                              flex: 3,
+                                              child: Container(
+                                                height: 20,
+                                                decoration: BoxDecoration(
+                                                    color:
+                                                        widget.usageRate * 60 <
+                                                                10
+                                                            ? widget.usageRate *
+                                                                        60 <
+                                                                    5
+                                                                ? Colors.blue
+                                                                : Colors.yellow
+                                                            : Colors.red,
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                            Radius.circular(
+                                                                5))),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                      Expanded(
-                                          flex: 3,
-                                          child: Center(
-                                            child: Consumer<SquadModel>(
-                                                builder: (context, cat, child) {
-                                              return Row(
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 2),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              flex: 7,
+                                              child: Text(
+                                                "Bezp. czas.",
+                                                style: infoTextStyle,
+                                              ),
+                                            ),
+                                            Expanded(
+                                                flex: 3,
+                                                child: Center(
+                                                  child: Consumer<SquadModel>(
+                                                      builder: (context, cat,
+                                                          child) {
+                                                    return Row(
+                                                      children: [
+                                                        Text(
+                                                          widget.checks
+                                                                  .isNotEmpty
+                                                              ? "${cat.getTimeRemaining(widget.index) ~/ 60}:${cat.getTimeRemaining(widget.index) % 60 < 10 ? "0${(cat.getTimeRemaining(widget.index) % 60).toInt()}" : (cat.getTimeRemaining(widget.index) % 60).toInt()}"
+                                                              : "NaN",
+                                                          style: varTextStyle.apply(
+                                                              color: HSVColor.lerp(
+                                                                      HSVColor.fromColor(
+                                                                          Colors
+                                                                              .green),
+                                                                      HSVColor.fromColor(
+                                                                          Colors
+                                                                              .red),
+                                                                      1 -
+                                                                          (cat.getOxygenRemaining(widget.index) - 60) /
+                                                                              270)!
+                                                                  .toColor()),
+                                                        ),
+                                                        Text("min",
+                                                            style: unitTextStyle.apply(
+                                                                color: HSVColor.lerp(
+                                                                        HSVColor.fromColor(Colors
+                                                                            .green),
+                                                                        HSVColor.fromColor(Colors
+                                                                            .red),
+                                                                        1 -
+                                                                            (cat.getOxygenRemaining(widget.index) - 60) /
+                                                                                270)!
+                                                                    .toColor()))
+                                                      ],
+                                                    );
+                                                  }),
+                                                )),
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 2),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              flex: 7,
+                                              child: Text("Ostatni pomiar",
+                                                  style: infoTextStyle),
+                                            ),
+                                            Expanded(
+                                              flex: 3,
+                                              child: Center(
+                                                  child: Row(
+                                                children: [
+                                                  lastCheck == null
+                                                      ? Text(
+                                                          "0:00",
+                                                          style: varTextStyle,
+                                                        )
+                                                      : Text(
+                                                          "${DateTime.now().difference(lastCheck!).inMinutes}:${DateTime.now().difference(lastCheck!).inSeconds % 60 < 10 ? "0${DateTime.now().difference(lastCheck!).inSeconds % 60}" : "${DateTime.now().difference(lastCheck!).inSeconds % 60}"}",
+                                                          style: varTextStyle),
+                                                  Text("min",
+                                                      style: unitTextStyle)
+                                                ],
+                                              )),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 2.0),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              flex: 7,
+                                              child: Text("Punkt pracy",
+                                                  style: infoTextStyle),
+                                            ),
+                                            Expanded(
+                                              flex: 3,
+                                              child: Center(
+                                                  child: Row(
                                                 children: [
                                                   Text(
-                                                    widget.checks.isNotEmpty
-                                                        ? "${cat.getTimeRemaining(widget.index) ~/ 60}:${cat.getTimeRemaining(widget.index) % 60 < 10 ? "0${(cat.getTimeRemaining(widget.index) % 60).toInt()}" : (cat.getTimeRemaining(widget.index) % 60).toInt()}"
-                                                        : "NaN",
-                                                    style: varTextStyle.apply(
-                                                        color: HSVColor.lerp(
-                                                                HSVColor.fromColor(
-                                                                    Colors
-                                                                        .green),
-                                                                HSVColor
-                                                                    .fromColor(
-                                                                        Colors
-                                                                            .red),
-                                                                1 -
-                                                                    (cat.getOxygenRemaining(widget.index) -
-                                                                            60) /
-                                                                        270)!
-                                                            .toColor()),
-                                                  ),
-                                                  Text("min",
-                                                      style: unitTextStyle.apply(
-                                                          color: HSVColor.lerp(
-                                                                  HSVColor.fromColor(
-                                                                      Colors
-                                                                          .green),
-                                                                  HSVColor.fromColor(
-                                                                      Colors
-                                                                          .red),
-                                                                  1 -
-                                                                      (cat.getOxygenRemaining(widget.index) -
-                                                                              60) /
-                                                                          270)!
-                                                              .toColor()))
+                                                      widget.exitTime == 0
+                                                          ? "BRAK"
+                                                          : "${widget.exitTime ~/ 60}:${widget.exitTime % 60 < 10 ? "0${(widget.exitTime % 60).toInt()}" : (widget.exitTime % 60).toInt()}",
+                                                      style: varTextStyle),
+                                                  Text(
+                                                      widget.exitTime == 0
+                                                          ? ""
+                                                          : "min",
+                                                      style: unitTextStyle)
                                                 ],
-                                              );
-                                            }),
-                                          )),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 2),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        flex: 7,
-                                        child: Text("Ostatni pomiar",
-                                            style: infoTextStyle),
-                                      ),
-                                      Expanded(
-                                        flex: 3,
-                                        child: Center(
-                                            child: Row(
-                                          children: [
-                                            lastCheck == null
-                                                ? Text(
-                                                    "0:00",
-                                                    style: varTextStyle,
-                                                  )
-                                                : Text(
-                                                    "${DateTime.now().difference(lastCheck!).inMinutes}:${DateTime.now().difference(lastCheck!).inSeconds % 60 < 10 ? "0${DateTime.now().difference(lastCheck!).inSeconds % 60}" : "${DateTime.now().difference(lastCheck!).inSeconds % 60}"}",
-                                                    style: varTextStyle),
-                                            Text("min", style: unitTextStyle)
-                                          ],
-                                        )),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 2.0),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        flex: 7,
-                                        child: Text("Punkt pracy",
-                                            style: infoTextStyle),
-                                      ),
-                                      Expanded(
-                                        flex: 3,
-                                        child: Center(
-                                            child: Row(
-                                          children: [
-                                            Text(
-                                                widget.exitTime == 0
-                                                    ? "BRAK"
-                                                    : "${widget.exitTime ~/ 60}:${widget.exitTime % 60 < 10 ? "0${(widget.exitTime % 60).toInt()}" : (widget.exitTime % 60).toInt()}",
-                                                style: varTextStyle),
-                                            Text(
-                                                widget.exitTime == 0
-                                                    ? ""
-                                                    : "min",
-                                                style: unitTextStyle)
-                                          ],
-                                        )),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 2.0),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        flex: 7,
-                                        child: Row(
-                                          children: [
-                                            Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 0.5,
-                                                      horizontal: 3),
-                                              decoration: const BoxDecoration(
-                                                color: Colors.grey,
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(5)),
-                                              ),
-                                              child: const Text("BAR",
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 5),
-                                              child: Text("bezp. powrót",
-                                                  style: infoTextStyle),
+                                              )),
                                             ),
                                           ],
                                         ),
                                       ),
-                                      Expanded(
-                                        flex: 3,
-                                        child: Center(
-                                            child: Row(
-                                          children: [
-                                            Text("${_returnPressure.toInt()}",
-                                                style: varTextStyle),
-                                            Text("BAR", style: unitTextStyle)
-                                          ],
-                                        )),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 2.0),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        flex: 7,
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 2.0),
                                         child: Row(
                                           children: [
-                                            Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 0.5,
-                                                      horizontal: 3),
-                                              decoration: const BoxDecoration(
-                                                color: Colors.blueAccent,
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(5)),
+                                            Expanded(
+                                              flex: 7,
+                                              child: Row(
+                                                children: [
+                                                  Container(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 0.5,
+                                                        horizontal: 3),
+                                                    decoration:
+                                                        const BoxDecoration(
+                                                      color: Colors.grey,
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  5)),
+                                                    ),
+                                                    child: const Text("BAR",
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 5),
+                                                    child: Text("bezp. powrót",
+                                                        style: infoTextStyle),
+                                                  ),
+                                                ],
                                               ),
-                                              child: const Text("BAR",
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold)),
                                             ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 5.0),
-                                              child: Text("zał. wyjście",
-                                                  style: infoTextStyle),
+                                            Expanded(
+                                              flex: 3,
+                                              child: Center(
+                                                  child: Row(
+                                                children: [
+                                                  Text(
+                                                      "${_returnPressure.toInt()}",
+                                                      style: varTextStyle),
+                                                  Text("BAR",
+                                                      style: unitTextStyle)
+                                                ],
+                                              )),
                                             ),
                                           ],
                                         ),
                                       ),
-                                      Expanded(
-                                        flex: 3,
-                                        child: Center(
-                                            child: Row(
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 2.0),
+                                        child: Row(
                                           children: [
-                                            Text(
-                                                "${(widget.exitTime * widget.usageRate).toInt() + widget.exitPressure}",
-                                                style: varTextStyle),
-                                            Text("BAR", style: unitTextStyle)
+                                            Expanded(
+                                              flex: 7,
+                                              child: Row(
+                                                children: [
+                                                  Container(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 0.5,
+                                                        horizontal: 3),
+                                                    decoration:
+                                                        const BoxDecoration(
+                                                      color: Colors.blueAccent,
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  5)),
+                                                    ),
+                                                    child: const Text("BAR",
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 5.0),
+                                                    child: Text("zał. wyjście",
+                                                        style: infoTextStyle),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Expanded(
+                                              flex: 3,
+                                              child: Center(
+                                                  child: Row(
+                                                children: [
+                                                  Text(
+                                                      "${(widget.exitTime * widget.usageRate).toInt() + widget.exitPressure}",
+                                                      style: varTextStyle),
+                                                  Text("BAR",
+                                                      style: unitTextStyle)
+                                                ],
+                                              )),
+                                            ),
                                           ],
-                                        )),
+                                        ),
                                       ),
                                     ],
                                   ),
-                                ),
-                              ],
-                            ),
                           ))
                     ],
                   )),
               Expanded(
                   flex: 32,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                        vertical: screenHeight * 0.025,
-                        horizontal: screenWidth * 0.042),
-                    child: Container(
-                      height: screenHeight * 0.7,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            color: Colors.blueGrey.withOpacity(0.8), width: 7),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(20)),
-                        gradient: const LinearGradient(
-                          colors: [Colors.green, Colors.red],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                widget.inCrisis = !widget.inCrisis;
+                                var currentOxygen = Provider.of<SquadModel>(
+                                        context,
+                                        listen: false)
+                                    .getOxygenRemaining(widget.index);
+                                Provider.of<SquadModel>(context, listen: false)
+                                    .addCheck(currentOxygen, 10,
+                                        DateTime.now(), widget.index);
+                              });
+                            }, //TODO: Tryb alarmowy
+                            icon: const Icon(IconData(0xf3e1,
+                                fontFamily: CupertinoIcons.iconFont,
+                                fontPackage: CupertinoIcons.iconFontPackage)),
+                            style: const ButtonStyle(
+                                backgroundColor:
+                                    WidgetStatePropertyAll(Colors.red),
+                                foregroundColor:
+                                    WidgetStatePropertyAll(Colors.white),
+                                shape: WidgetStatePropertyAll(
+                                    RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10)))))),
                       ),
-                      child: LayoutBuilder(
-                        builder:
-                            (BuildContext context, BoxConstraints constraints) {
-                          return Stack(
-                            clipBehavior: Clip.none,
-                            children: [
-                              Positioned(
-                                top: 20,
-                                left: 0,
-                                right: 0,
-                                child: Center(
-                                  child: Text(entryPressureLabel.toString(),
-                                      style: varTextStyle),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 20,
-                                left: 0,
-                                right: 0,
-                                child: Center(
-                                  child: Text(widget.exitPressure.toString(),
-                                      style: varTextStyle),
-                                ),
-                              ),
-                              Positioned(
-                                top: 0,
-                                bottom: 0,
-                                right: 0,
-                                left: 0,
-                                child: Center(
-                                  child: Text(widget.text,
-                                      style: TextStyle(
-                                          color: Colors.black.withOpacity(0.3),
-                                          fontSize: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.15,
-                                          fontWeight: FontWeight.bold)),
-                                ),
-                              ),
-                              Consumer<SquadModel>(
-                                builder: (context, cat, child) {
-                                  return Positioned(
-                                    top: cat.getOxygenRemaining(widget.index) >=
-                                            widget.exitPressure
-                                        ? 14 +
-                                            ((constraints.maxHeight - 69) /
-                                                (widget.checks.first -
-                                                    widget.exitPressure) *
-                                                (widget.checks.first -
-                                                    cat.getOxygenRemaining(
-                                                        widget.index)))
-                                        : 14 +
-                                            ((constraints.maxHeight - 69) /
-                                                (widget.checks.first -
-                                                    widget.exitPressure) *
-                                                (widget.checks.first -
-                                                    widget.exitPressure)),
-                                    left: 1,
-                                    right: 1,
-                                    child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 6),
-                                        decoration: const BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(20)),
-                                        ),
-                                        child: Align(
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              cat.getOxygenRemaining(
-                                                          widget.index) >=
-                                                      0
-                                                  ? cat
-                                                      .getOxygenRemaining(
-                                                          widget.index)
-                                                      .toInt()
-                                                      .toString()
-                                                  : "0",
-                                              style: varTextStyle,
-                                            ))),
-                                  );
-                                },
-                              ),
-                              Positioned(
-                                  top: 24.5 +
-                                      ((constraints.maxHeight - 69) /
-                                          (widget.checks.first -
-                                              widget.exitPressure) *
-                                          (widget.checks.first -
-                                              (_returnPressure <
-                                                      widget.checks.first
-                                                  ? _returnPressure
-                                                  : widget.checks.first))),
-                                  left: -3,
-                                  child: ClipPath(
-                                    clipper: LeftTriangle(),
-                                    child: Container(
-                                      color: Colors.grey,
-                                      height: 20,
-                                      width: 20,
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                            vertical: screenHeight * 0.025,
+                            horizontal: screenWidth * 0.042),
+                        child: Container(
+                          height: screenHeight * 0.45,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                color: Colors.blueGrey.withOpacity(0.8),
+                                width: 7),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(20)),
+                            gradient: const LinearGradient(
+                              colors: [Colors.green, Colors.red],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            ),
+                          ),
+                          child: LayoutBuilder(
+                            builder: (BuildContext context,
+                                BoxConstraints constraints) {
+                              return Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  Positioned(
+                                    top: 20,
+                                    left: 0,
+                                    right: 0,
+                                    child: Center(
+                                      child: Text(entryPressureLabel.toString(),
+                                          style: varTextStyle),
                                     ),
-                                  )),
-                              Positioned(
-                                  top: 24.5 +
-                                      ((constraints.maxHeight - 69) /
-                                          (widget.checks.first -
-                                              widget.exitPressure) *
-                                          (widget.checks.first -
-                                              (((widget.exitTime *
+                                  ),
+                                  Positioned(
+                                    bottom: 20,
+                                    left: 0,
+                                    right: 0,
+                                    child: Center(
+                                      child: Text(
+                                          widget.inCrisis
+                                              ? "0"
+                                              : widget.exitPressure.toString(),
+                                          style: varTextStyle),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: 0,
+                                    bottom: 0,
+                                    right: 0,
+                                    left: 0,
+                                    child: Center(
+                                      child: Text(widget.text,
+                                          style: TextStyle(
+                                              color:
+                                                  Colors.black.withOpacity(0.3),
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.15,
+                                              fontWeight: FontWeight.bold)),
+                                    ),
+                                  ),
+                                  Consumer<SquadModel>(
+                                    builder: (context, cat, child) {
+                                      return Positioned(
+                                        top: widget.inCrisis
+                                            ? cat.getOxygenRemaining(
+                                                        widget.index) >=
+                                                    0
+                                                ? 14 +
+                                                    ((constraints.maxHeight - 69) /
+                                                        (widget.checks.first) *
+                                                        (widget.checks.first -
+                                                            cat.getOxygenRemaining(
+                                                                widget.index)))
+                                                : 14 +
+                                                    ((constraints.maxHeight - 69))
+                                            : cat.getOxygenRemaining(
+                                                        widget.index) >=
+                                                    widget.exitPressure
+                                                ? 14 +
+                                                    ((constraints.maxHeight - 69) /
+                                                        (widget.checks.first -
+                                                            widget
+                                                                .exitPressure) *
+                                                        (widget.checks.first -
+                                                            cat.getOxygenRemaining(
+                                                                widget.index)))
+                                                : 14 +
+                                                    ((constraints.maxHeight -
+                                                            69) /
+                                                        (widget.checks.first -
+                                                            widget
+                                                                .exitPressure) *
+                                                        (widget.checks.first -
+                                                            widget.exitPressure)),
+                                        left: 1,
+                                        right: 1,
+                                        child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 6),
+                                            decoration: const BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(20)),
+                                            ),
+                                            child: Align(
+                                                alignment: Alignment.center,
+                                                child: Text(
+                                                  cat.getOxygenRemaining(
+                                                              widget.index) >=
+                                                          0
+                                                      ? cat
+                                                          .getOxygenRemaining(
+                                                              widget.index)
+                                                          .toInt()
+                                                          .toString()
+                                                      : "0",
+                                                  style: varTextStyle,
+                                                ))),
+                                      );
+                                    },
+                                  ),
+                                  Positioned(
+                                      top: 24.5 +
+                                          ((constraints.maxHeight - 69) /
+                                              (widget.checks.first -
+                                                  widget.exitPressure) *
+                                              (widget.checks.first -
+                                                  (_returnPressure <
+                                                          widget.checks.first
+                                                      ? _returnPressure
+                                                      : widget.checks.first))),
+                                      left: -3,
+                                      child: ClipPath(
+                                        clipper: LeftTriangle(),
+                                        child: Container(
+                                          color: Colors.grey,
+                                          height: 20,
+                                          width: 20,
+                                        ),
+                                      )),
+                                  Positioned(
+                                      top: 24.5 +
+                                          ((constraints.maxHeight - 69) /
+                                              (widget.checks.first -
+                                                  widget.exitPressure) *
+                                              (widget.checks.first -
+                                                  (((widget.exitTime *
+                                                                      widget
+                                                                          .usageRate)
+                                                                  .toInt() +
+                                                              widget
+                                                                  .exitPressure) <
+                                                          widget.checks.first
+                                                      ? ((widget.exitTime *
                                                                   widget
                                                                       .usageRate)
                                                               .toInt() +
-                                                          widget.exitPressure) <
-                                                      widget.checks.first
-                                                  ? ((widget.exitTime *
-                                                              widget.usageRate)
-                                                          .toInt() +
-                                                      widget.exitPressure)
-                                                  : widget.checks.first))),
-                                  right: -3,
-                                  child: ClipPath(
-                                    clipper: RightTriangle(),
-                                    child: Container(
-                                      color: Colors.blue,
-                                      height: 20,
-                                      width: 20,
-                                    ),
-                                  )),
-                            ],
-                          );
-                        },
+                                                          widget.exitPressure)
+                                                      : widget.checks.first))),
+                                      right: -3,
+                                      child: ClipPath(
+                                        clipper: RightTriangle(),
+                                        child: Container(
+                                          color: Colors.blue,
+                                          height: 20,
+                                          width: 20,
+                                        ),
+                                      )),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   )),
             ],
           ),
@@ -1069,8 +1217,6 @@ class _SquadPageState extends State<SquadPage>
                             if (parse == null) return;
                             final valid = parse.toDouble();
                             setState(() {
-                              //if (valid < oxygenValue) { //ten if nie ma sensu bo zmieniłem menu wyboru tlenu - teraz nie da się wprowadzić większego pomiaru :D
-                              //widget.entryPressure = valid;//to jest jakiś dzikie - przypisywanie ostatniego pomiaru do entryPressure. Zostawiam komentaż bo obstawiam że takie podejście miało swoje źródło
                               DateTime timestamp = DateTime.now();
                               if (widget.checks.isNotEmpty) {
                                 widget.usageRate =
@@ -1086,7 +1232,6 @@ class _SquadPageState extends State<SquadPage>
                                   .addCheck(valid, widget.usageRate, timestamp,
                                       widget.index);
                               lastCheck = timestamp;
-                              //}
                             });
                           },
                           style: bottomButtonStyle,

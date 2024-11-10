@@ -78,23 +78,6 @@ class _ManagePageState extends State<ManagePage>
                           tabs: categories,
                         ),
                       ),
-                      actions: [
-                        const Text("KRG 1"),
-                        IconButton(
-                            onPressed: () {}, //TODO: Tryb alarmowy
-                            icon: const Icon(IconData(0xf3e1,
-                                fontFamily: CupertinoIcons.iconFont,
-                                fontPackage: CupertinoIcons.iconFontPackage)),
-                            style: const ButtonStyle(
-                                backgroundColor:
-                                    WidgetStatePropertyAll(Colors.red),
-                                foregroundColor:
-                                    WidgetStatePropertyAll(Colors.white),
-                                shape: WidgetStatePropertyAll(
-                                    RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10))))))
-                      ],
                     ),
                   ),
                 ),

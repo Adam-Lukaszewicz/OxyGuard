@@ -58,6 +58,16 @@ class SquadModel extends ChangeNotifier {
     }
   }
 
+  int getTimeRemainingInCrisis(int index){
+        int remainingTime =
+        (getOxygenRemaining(index)) ~/ (10);
+    if (remainingTime > 0) {
+      return remainingTime;
+    } else {
+      return 0;
+    }
+  }
+
   void update(){
     GlobalService.currentAction.update();
   }
