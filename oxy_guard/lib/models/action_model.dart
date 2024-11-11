@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:oxy_guard/action/tabs/finished/finished_squad.dart';
 import 'package:oxy_guard/context_windows.dart';
 import 'package:oxy_guard/models/ended_model.dart';
 import 'package:oxy_guard/models/squad_model.dart';
@@ -60,14 +61,12 @@ class ActionModel{
   EndedModel archivize(){
     double averageUse = 0;
     int divider = 0;
-    squads.forEach((key, squad){
-      squad.finishedSquads.forEach((key, value) {
-        averageUse += value.averageUse;
-        divider++;
-      });
+    Map<String, List<FinishedSquad>> endedSqauds = <String, List<FinishedSquad>>{};
+    squads.forEach((sqkey, squad){
+      endedSqauds.addAll({sqkey : squad.finishedSquads.values.toList()});
     });
     averageUse /= divider;
-    return EndedModel(actionLocation: actionLocation, averageUse: averageUse, endTime: DateTime.now());
+    return EndedModel(actionLocation: actionLocation, squads: endedSqauds, endTime: DateTime.now());
   }
 
   void listenToChanges() {

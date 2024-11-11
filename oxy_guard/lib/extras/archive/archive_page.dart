@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:oxy_guard/action/tabs/finished/finished_squad.dart';
 import 'package:oxy_guard/services/global_service.dart';
 import 'package:oxy_guard/models/ended_model.dart';
 
@@ -117,9 +118,9 @@ class ArchivePage extends StatelessWidget {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
     var labelTextStyle =
-        TextStyle(fontSize: screenWidth * 0.04, fontWeight: FontWeight.w300);
-    var detailsTextStyle =
         TextStyle(fontSize: screenWidth * 0.04, fontWeight: FontWeight.w500);
+    var detailsTextStyle =
+        TextStyle(fontSize: screenWidth * 0.04, fontWeight: FontWeight.w300);
     return showDialog<void>(
         context: context,
         builder: (context) {
@@ -141,24 +142,32 @@ class ArchivePage extends StatelessWidget {
                     SizedBox(height: screenHeight * 0.05),
                     SizedBox(
                       height: screenHeight * 0.60,
-                      child: Column(
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Text(
-                                "Przeciętne zużycie tlenu:",
-                                style: labelTextStyle,
-                              ),
-                              Text(
-                                entry.averageUse.toStringAsFixed(2),
-                                style: detailsTextStyle,
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
+                      child: ListView.builder(
+                          itemCount: entry.squads.length,
+                          itemBuilder: (context, int index) {
+                            String squadIndex =
+                                entry.squads.entries.toList()[index].key;
+                            List<FinishedSquad> finishedSquads =
+                                entry.squads.entries.toList()[index].value;
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text("Odcinek $squadIndex", style: labelTextStyle,),
+                                for (var finishedSquad in finishedSquads)
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                    Text("Rota: ${finishedSquad.name}", style: detailsTextStyle,),
+                                    Text("Strażacy:", style: labelTextStyle,),
+                                    for(var worker in finishedSquad.workers)
+                                      if(worker != null) Text("${worker.name} ${worker.surname}", style: detailsTextStyle,),
+                                    Text("Przeciętne zużycie: ${finishedSquad.averageUse.ceil().toString()} bar/min", style: detailsTextStyle,),
+                                    SizedBox(height: screenHeight * 0.01,),
+                                SizedBox(height: screenHeight * 0.015,),
+                                  ],)
+                              ],
+                            );
+                          }),
                     ),
                     ElevatedButton(
                         style: ButtonStyle(

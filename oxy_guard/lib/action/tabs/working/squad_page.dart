@@ -955,7 +955,7 @@ class _SquadPageState extends State<SquadPage>
                                     .addCheck(currentOxygen, 10,
                                         DateTime.now(), widget.index);
                               });
-                            }, //TODO: Tryb alarmowy
+                            },
                             icon: const Icon(IconData(0xf3e1,
                                 fontFamily: CupertinoIcons.iconFont,
                                 fontPackage: CupertinoIcons.iconFontPackage)),

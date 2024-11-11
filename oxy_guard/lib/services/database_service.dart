@@ -78,7 +78,6 @@ class DatabaseService extends ChangeNotifier {
         }
       }
     });
-    print("Updated closeToExpiring to: $found");
     closeToExpiring = found;
   }
 

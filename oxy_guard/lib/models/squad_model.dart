@@ -125,7 +125,7 @@ class SquadModel extends ChangeNotifier {
     SquadPage? ending = workingSquads[index.toString()];
     if(ending == null) return;
     double averageUse = ending.checks.first - getOxygenRemaining(index)/(DateTime.now().difference(ending.checkTimes.first)).inSeconds;
-    finishedSquads.addAll({index.toString():FinishedSquad(name: ending.text, index: index, averageUse: averageUse)});
+    finishedSquads.addAll({index.toString():FinishedSquad(name: ending.text, index: index, averageUse: averageUse, workers: [ending.firstPerson, ending.secondPerson, ending.thirdPerson])});
     workingSquads.remove(index.toString());
     tabs.remove(index.toString());
     notifyListeners();
