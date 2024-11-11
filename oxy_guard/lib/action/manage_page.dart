@@ -23,38 +23,36 @@ class _ManagePageState extends State<ManagePage>
     const Tab(text: "Zakończone"),
   ];
 
-  int executeQuickStart(){
-    if(widget.quickStart){
+  int executeQuickStart() {
+    if (widget.quickStart) {
       widget.quickStart = false;
       return 1;
-    }else {
+    } else {
       return 0;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    SquadModel newActionModel;
+    if (widget.chosenAction == null) {
+      newActionModel = SquadModel();
+      GlobalService.currentAction.addSquad(newActionModel);
+    } else {
+      newActionModel = widget.chosenAction!;
+      widget.chosenAction = null;
+    }
     var screenHeight = MediaQuery.of(context).size.height -
         MediaQuery.of(context).viewPadding.vertical;
-    return ChangeNotifierProvider(
-      create: (context) {
-        SquadModel newActionModel;
-        if (widget.chosenAction == null) {
-          newActionModel = SquadModel();
-          GlobalService.currentAction.addSquad(newActionModel);
-        } else {
-          newActionModel = widget.chosenAction!;
-          widget.chosenAction = null;
-        }
-        return newActionModel;
-      },
+    return ChangeNotifierProvider.value(
+      value: newActionModel,
       builder: (context, child) {
         return MaterialApp(
           home: DefaultTabController(
             length: categories.length,
             initialIndex: executeQuickStart(),
             child: Scaffold(
-              backgroundColor: const Color(0xfffcfcfc),
+                backgroundColor: const Color(0xfffcfcfc),
                 appBar: PreferredSize(
                   preferredSize: Size.fromHeight(screenHeight * 0.1),
                   child: SafeArea(
@@ -67,7 +65,8 @@ class _ManagePageState extends State<ManagePage>
                           Navigator.pop(context);
                         },
                       ),
-                      title: const Text("Odcinek bojowy X"), //Zamiast X faktycznie nazwa tego odcinka
+                      title: const Text(
+                          "Odcinek bojowy X"), //Zamiast X faktycznie nazwa tego odcinka
                       centerTitle: true,
                       bottom: PreferredSize(
                         preferredSize: Size.fromHeight(screenHeight * 0.05),
