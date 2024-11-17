@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:oxy_guard/services/database_service.dart';
 import 'package:oxy_guard/services/global_service.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:oxy_guard/context_windows.dart';
 import 'package:oxy_guard/models/personnel/worker.dart';
+import 'package:watch_it/watch_it.dart';
 
 import '../../../models/squad_model.dart';
 
@@ -57,7 +59,7 @@ class _SetupPage2State extends State<SetupPage>
   void initState() {
     super.initState();
 
-    workerList.addAll(GlobalService.currentPersonnel.team);
+    workerList.addAll(GetIt.I.get<DatabaseService>().currentPersonnel.team);
 
     _loadStartingPresssure();
     _loadTimePeriod();

@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:oxy_guard/firebase_options.dart';
 import 'package:oxy_guard/home/home_page.dart';
 import 'package:oxy_guard/login/login_page.dart';
+import 'package:oxy_guard/services/database_service.dart';
+import 'package:watch_it/watch_it.dart';
 
 import 'services/global_service.dart';
 
@@ -16,6 +18,7 @@ void main() async {
   FirebaseFirestore.instance.settings = const Settings(
     persistenceEnabled: true,
   );
+  GetIt.I.registerSingleton<DatabaseService>(DatabaseService());
   runApp(const OxyGuard());
   GlobalService.checkGPSPermission();
 }
@@ -38,11 +41,12 @@ class OxyGuard extends StatelessWidget {
   }
 
   Widget _getLandingPage() {
+  var dbService = GetIt.I.get<DatabaseService>();
   return StreamBuilder<User?>(
     stream: FirebaseAuth.instance.authStateChanges(),
     builder: (BuildContext context, snapshot) {
       if (snapshot.hasData) {
-        GlobalService.databaseSevice.assignTeam(GlobalService.currentPersonnel);
+        dbService.assignTeam(dbService.currentPersonnel);
         return const HomePage();
       } else {
         return const LoginPage();

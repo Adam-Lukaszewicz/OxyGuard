@@ -6,6 +6,8 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:oxy_guard/action/squad_choice.dart';
 import 'package:oxy_guard/models/action_model.dart';
+import 'package:oxy_guard/services/database_service.dart';
+import 'package:watch_it/watch_it.dart';
 
 import '../../services/global_service.dart';
 
@@ -31,6 +33,7 @@ class _ActionListState extends State<ActionList> {
 
   @override
   Widget build(BuildContext context) {
+  var dbService = GetIt.I.get<DatabaseService>();
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
@@ -48,7 +51,7 @@ class _ActionListState extends State<ActionList> {
             children: [
               Expanded(
                 child: StreamBuilder(
-                    stream: GlobalService.databaseSevice.getActions(),
+                    stream: dbService.getActions(),
                     builder: (context, snapshot) {
                       if (snapshot.hasError) {
                         return const Text('Something went wrong');
@@ -115,11 +118,11 @@ class _ActionListState extends State<ActionList> {
                                       },
                                     ),
                             onTap: () {
-                              GlobalService.databaseSevice
+                              dbService
                                   .joinAction(action.id);
-                              GlobalService.currentAction =
+                              dbService.currentAction =
                                   action.data() as ActionModel;
-                              GlobalService.currentAction.listenToChanges();
+                              dbService.currentAction.listenToChanges();
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(

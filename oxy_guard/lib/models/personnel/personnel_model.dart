@@ -3,9 +3,11 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:oxy_guard/services/database_service.dart';
 import 'package:oxy_guard/services/global_service.dart';
 import 'package:oxy_guard/models/personnel/shift.dart';
 import 'package:oxy_guard/models/personnel/worker.dart';
+import 'package:watch_it/watch_it.dart';
 
 class PersonnelModel extends ChangeNotifier{
   List<Worker> team;
@@ -26,7 +28,7 @@ class PersonnelModel extends ChangeNotifier{
   }
 
   void listenToChanges() {
-    _listener = GlobalService.databaseSevice.getPersonnelRef().listen((event) {
+    _listener = GetIt.I.get<DatabaseService>().getPersonnelRef().listen((event) {
       PersonnelModel newData = event.data() as PersonnelModel;
       team = newData.team;
       shifts = newData.shifts;
@@ -41,11 +43,11 @@ class PersonnelModel extends ChangeNotifier{
   void addWorker(Worker newWorker){
     team.insert(0, newWorker);
     notifyListeners();
-    GlobalService.databaseSevice.updatePersonnel(this);
+    GetIt.I.get<DatabaseService>().updatePersonnel(this);
   }
   void subWorker(Worker worker){
     team.remove(worker);
     notifyListeners();
-    GlobalService.databaseSevice.updatePersonnel(this);
+    GetIt.I.get<DatabaseService>().updatePersonnel(this);
   }
 }

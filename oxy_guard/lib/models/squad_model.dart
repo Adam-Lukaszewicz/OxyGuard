@@ -7,6 +7,8 @@ import 'package:oxy_guard/action/tabs/finished/finished_squad.dart';
 import 'package:oxy_guard/action/tabs/working/squad_page.dart';
 import 'package:oxy_guard/action/tabs/working/squad_tab.dart';
 import 'package:oxy_guard/models/personnel/worker.dart';
+import 'package:oxy_guard/services/database_service.dart';
+import 'package:watch_it/watch_it.dart';
 
 import '../services/global_service.dart';
 
@@ -69,13 +71,13 @@ class SquadModel extends ChangeNotifier {
   }
 
   void update(){
-    GlobalService.currentAction.update();
+    GetIt.I.get<DatabaseService>().currentAction.update();
   }
 
   void setWorkTimestamp(int index, DateTime newTime) {
     newestCheckTimes[index.toString()] = newTime;
     notifyListeners();
-    GlobalService.currentAction.update();
+    GetIt.I.get<DatabaseService>().currentAction.update();
   }
 
   void addCheck(double newOxygen, double usageRate, DateTime newTime, int index) {
@@ -83,13 +85,13 @@ class SquadModel extends ChangeNotifier {
     usageRates[index.toString()] = usageRate;
     newestCheckTimes[index.toString()] = newTime;
     notifyListeners();
-    GlobalService.currentAction.update();
+    GetIt.I.get<DatabaseService>().currentAction.update();
   }
 
   void changeStarting(double newOxygen, int index) {
     oxygenValues[index.toString()] = newOxygen;
     notifyListeners();
-    GlobalService.currentAction.update();
+    GetIt.I.get<DatabaseService>().currentAction.update();
   }
 
   void startSquadWork(int entryPressure, int exitPressure, int interval, String localization, Worker? firstPerson, Worker? secondPerson, Worker? thirdPerson, bool quick) {
@@ -117,7 +119,7 @@ class SquadModel extends ChangeNotifier {
     });
     if(!quick){
     notifyListeners();
-    GlobalService.currentAction.update();
+    GetIt.I.get<DatabaseService>().currentAction.update();
     }
   }
 
@@ -129,7 +131,7 @@ class SquadModel extends ChangeNotifier {
     workingSquads.remove(index.toString());
     tabs.remove(index.toString());
     notifyListeners();
-    GlobalService.currentAction.update();
+    GetIt.I.get<DatabaseService>().currentAction.update();
   }
 
   Map<String, dynamic> toJson() {

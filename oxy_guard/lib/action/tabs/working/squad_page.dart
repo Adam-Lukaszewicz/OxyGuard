@@ -5,8 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:oxy_guard/models/personnel/worker.dart';
+import 'package:oxy_guard/services/database_service.dart';
 import 'package:provider/provider.dart';
 import 'package:oxy_guard/context_windows.dart';
+import 'package:watch_it/watch_it.dart';
 
 import '../../../models/squad_model.dart';
 import '../../../services/global_service.dart';
@@ -287,6 +289,7 @@ class _SquadPageState extends State<SquadPage>
         (widget.exitTime * 1 ~/ 2 + widget.exitPressure).toDouble();
     var oxygenValue = Provider.of<SquadModel>(context, listen: false)
         .oxygenValues[widget.index.toString()];
+    var dbService = GetIt.I.get<DatabaseService>();
     return Column(
       children: [
         Expanded(
@@ -1175,7 +1178,7 @@ class _SquadPageState extends State<SquadPage>
                                 widget.exitTime = DateTime.now()
                                     .difference(widget.checkTimes.first)
                                     .inSeconds;
-                                GlobalService.currentAction.update();
+                                dbService.currentAction.update();
                               });
                             } else {
                               setState(() {
@@ -1303,7 +1306,7 @@ class _SquadPageState extends State<SquadPage>
                                               .difference(
                                                   widget.checkTimes.last)
                                               .inSeconds);
-                                  GlobalService.currentAction.update();
+                                  dbService.currentAction.update();
                                 }
                               });
                             }

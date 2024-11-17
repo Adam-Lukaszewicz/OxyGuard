@@ -1,4 +1,6 @@
+import 'package:oxy_guard/services/database_service.dart';
 import 'package:oxy_guard/services/global_service.dart';
+import 'package:watch_it/watch_it.dart';
 
 class ExtinguisherModel {
   String serial;
@@ -17,16 +19,16 @@ class ExtinguisherModel {
 
   void updateDate(DateTime newDate) async {
     expirationDate = newDate;
-    String? id = await GlobalService.databaseSevice.getTestIdBySerial(serial);
+    String? id = await GetIt.I.get<DatabaseService>().getTestIdBySerial(serial);
     if(id != null){
-      GlobalService.databaseSevice.updateAtest(this, id);
+      GetIt.I.get<DatabaseService>().updateAtest(this, id);
     }
   }
 
   void remove() async {
-    String? id = await GlobalService.databaseSevice.getTestIdBySerial(serial);
+    String? id = await GetIt.I.get<DatabaseService>().getTestIdBySerial(serial);
     if(id != null){
-    GlobalService.databaseSevice.removeAtest(this, id);
+    GetIt.I.get<DatabaseService>().removeAtest(this, id);
     }
   }
 }

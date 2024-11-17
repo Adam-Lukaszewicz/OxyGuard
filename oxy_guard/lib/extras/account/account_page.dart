@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:oxy_guard/login/login_page.dart';
+import 'package:oxy_guard/services/database_service.dart';
 import 'package:oxy_guard/services/global_service.dart';
+import 'package:watch_it/watch_it.dart';
 
 class AccountPage extends StatelessWidget {
   const AccountPage({super.key});
@@ -33,7 +35,7 @@ class AccountPage extends StatelessWidget {
                   elevation: 5,
                   child: InkWell(
                     onTap: () async {
-                      GlobalService.currentPersonnel.finishListening();
+                      GetIt.I.get<DatabaseService>().currentPersonnel.finishListening();
                       FirebaseAuth.instance.signOut();
                       Navigator.pushReplacement(
                         context,

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:oxy_guard/context_windows.dart';
 import 'package:oxy_guard/models/extinguisher_model.dart';
+import 'package:oxy_guard/services/database_service.dart';
 import 'package:oxy_guard/services/global_service.dart';
+import 'package:watch_it/watch_it.dart';
 
 class AtestsPage extends StatelessWidget {
   const AtestsPage({super.key});
@@ -12,6 +14,7 @@ class AtestsPage extends StatelessWidget {
     var screenWidth = MediaQuery.of(context).size.width;
     var serialTextStyle = TextStyle(fontSize: screenWidth * 0.06);
     var dateTextStyle = TextStyle(fontSize: screenWidth * 0.05);
+    var dbService = GetIt.I.get<DatabaseService>();
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
@@ -38,7 +41,7 @@ class AtestsPage extends StatelessWidget {
           if (serial != null && expirationDate != null) {
             ExtinguisherModel newExtinguisher = ExtinguisherModel(
                 serial: serial, expirationDate: expirationDate);
-            GlobalService.databaseSevice.addAtest(newExtinguisher);
+            dbService.addAtest(newExtinguisher);
           }
         },
         foregroundColor: Colors.white,
@@ -51,7 +54,7 @@ class AtestsPage extends StatelessWidget {
           child: SizedBox(
             width: screenWidth * 0.9,
             child: StreamBuilder(
-                stream: GlobalService.databaseSevice.getAtests(),
+                stream: dbService.getAtests(),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
                     return const Center(child: Text('Something went wrong'));

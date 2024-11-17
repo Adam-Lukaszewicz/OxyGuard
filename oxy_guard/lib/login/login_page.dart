@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:oxy_guard/context_windows.dart';
+import 'package:oxy_guard/services/database_service.dart';
 import 'package:oxy_guard/services/global_service.dart';
 import 'package:oxy_guard/login/sub/register_page.dart';
 import 'package:oxy_guard/login/sub/reset_password.dart';
+import 'package:watch_it/watch_it.dart';
 
 import '../home/home_page.dart';
 
@@ -33,6 +35,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    var dbService = GetIt.I.get<DatabaseService>();
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: true,
@@ -98,8 +101,8 @@ class _LoginPageState extends State<LoginPage> {
                         throw Exception(
                             "Adres e-mail musi być zweryfikowany, aby się zalogować");
                       }
-                      GlobalService.databaseSevice
-                          .assignTeam(GlobalService.currentPersonnel);
+                      dbService
+                          .assignTeam(dbService.currentPersonnel);
                       if (context.mounted) {
                         Navigator.pushReplacement(
                           context,

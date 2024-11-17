@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:oxy_guard/models/action_model.dart';
-import 'package:oxy_guard/models/personnel/personnel_model.dart';
-import 'package:oxy_guard/services/database_service.dart';
 
 class GlobalService { 
   static GlobalKey<NavigatorState> navigatorKey = 
   GlobalKey<NavigatorState>();
-  static DatabaseService databaseSevice = DatabaseService();
   static bool serviceEnabled = false;
   static LocationPermission permission = LocationPermission.denied;
-  static late ActionModel currentAction;
-  static PersonnelModel currentPersonnel = PersonnelModel();
 
   static void checkGPSPermission() async {
 

@@ -17,6 +17,8 @@ class DatabaseService extends ChangeNotifier {
       _atestsRef; //W przypadku innych atestów niż tych dla gaśnic to będzie kolekcja kolekcji, teraz atests=gaśnice
   late DocumentReference _personnelRef;
   late String actionId;
+  PersonnelModel currentPersonnel = PersonnelModel();
+  late ActionModel currentAction;
   bool get closeToExpiring => _closeToExpiring;
   bool _closeToExpiring = false;
   set closeToExpiring(bool value){
@@ -60,11 +62,11 @@ class DatabaseService extends ChangeNotifier {
     checkForExpiring();
     DocumentSnapshot personnel = await getPersonnel();
     if (personnel.exists) {
-      GlobalService.currentPersonnel = personnel.data() as PersonnelModel;
+      currentPersonnel = personnel.data() as PersonnelModel;
     } else {
       _personnelRef.set(personnelModel);
     }
-    GlobalService.currentPersonnel.listenToChanges();
+    currentPersonnel.listenToChanges();
   }
 
   Future<void> checkForExpiring() async {

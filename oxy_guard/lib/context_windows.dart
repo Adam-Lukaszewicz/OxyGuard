@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:oxy_guard/services/database_service.dart';
 import 'package:oxy_guard/services/global_service.dart';
 import 'package:oxy_guard/models/personnel/worker.dart';
+import 'package:watch_it/watch_it.dart';
 
 Future<int?> checkListDialog(BuildContext context, int oxygenMaximum,
         int oxygenMinimum, String tileText,
@@ -526,7 +528,7 @@ Future<Worker?> selectWorkerFromList(BuildContext context) async {
               Expanded(
                 child: ListView(
                   shrinkWrap: true,
-                  children: GlobalService.currentPersonnel.team
+                  children: GetIt.I.get<DatabaseService>().currentPersonnel.team
                       .map((worker) => ListTile(
                             leading: const Icon(Icons.person),
                             title: Text('${worker.name} ${worker.surname}'),

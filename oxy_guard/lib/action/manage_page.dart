@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:oxy_guard/action/tabs/finished/finished_page.dart';
 import 'package:oxy_guard/action/tabs/waiting/waiting_page.dart';
+import 'package:oxy_guard/services/database_service.dart';
 import 'package:provider/provider.dart';
+import 'package:watch_it/watch_it.dart';
 
 import '../models/squad_model.dart';
-import '../services/global_service.dart';
 import 'tabs/working/working_page.dart';
 
 class ManagePage extends StatefulWidget {
@@ -37,7 +38,7 @@ class _ManagePageState extends State<ManagePage>
     SquadModel newActionModel;
     if (widget.chosenAction == null) {
       newActionModel = SquadModel();
-      GlobalService.currentAction.addSquad(newActionModel);
+      GetIt.I.get<DatabaseService>().currentAction.addSquad(newActionModel);
     } else {
       newActionModel = widget.chosenAction!;
       widget.chosenAction = null;

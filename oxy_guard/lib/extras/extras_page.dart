@@ -3,9 +3,10 @@ import 'package:oxy_guard/extras/account/account_page.dart';
 import 'package:oxy_guard/extras/archive/archive_page.dart';
 import 'package:oxy_guard/extras/atests/atests_page.dart';
 import 'package:oxy_guard/extras/personnel/shift_squad_choice.dart';
-import 'package:oxy_guard/services/global_service.dart';
+import 'package:oxy_guard/services/database_service.dart';
+import 'package:watch_it/watch_it.dart';
 
-class ExtrasPage extends StatefulWidget {
+class ExtrasPage extends WatchingStatefulWidget {
   const ExtrasPage({super.key});
 
   @override
@@ -90,14 +91,15 @@ class _ExtrasPageState extends State<ExtrasPage> {
                           style: subtitleCategoryTextStyle,
                         ),
                       ),
-                      if (GlobalService.databaseSevice.closeToExpiring)
-                        const Positioned(
-                            top: 0,
-                            right: 0,
-                            child: Icon(
-                              Icons.error,
-                              color: Colors.red,
-                            )),
+                      if (watchPropertyValue(
+                            (DatabaseService db) => db.closeToExpiring))
+                          const Positioned(
+                              top: 0,
+                              right: 0,
+                              child: Icon(
+                                Icons.error,
+                                color: Colors.red,
+                              )),
                     ]),
                   ),
                 ),

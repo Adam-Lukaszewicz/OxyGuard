@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:oxy_guard/action/manage_page.dart';
-import 'package:oxy_guard/services/global_service.dart';
+import 'package:oxy_guard/services/database_service.dart';
 import 'package:oxy_guard/home/home_page.dart';
 import 'package:oxy_guard/models/squad_model.dart';
+import 'package:watch_it/watch_it.dart';
 
 class SquadChoice extends StatefulWidget {
   bool quickStart;
@@ -24,12 +25,21 @@ class _SquadChoiceState extends State<SquadChoice> {
           context,
           MaterialPageRoute(
               builder: (context) => ManagePage(
-                    chosenAction: GlobalService.currentAction.squads["0"],
+                    chosenAction: GetIt.I
+                        .get<DatabaseService>()
+                        .currentAction
+                        .squads["0"],
                     quickStart: true,
                   )),
         );
       });
-    } else if (GlobalService.currentAction.squads.entries.toList().isEmpty) {
+    } else if (GetIt.I
+        .get<DatabaseService>()
+        .currentAction
+        .squads
+        .entries
+        .toList()
+        .isEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.push(
           context,
@@ -41,6 +51,7 @@ class _SquadChoiceState extends State<SquadChoice> {
 
   @override
   Widget build(BuildContext context) {
+    var dbService = GetIt.I.get<DatabaseService>();
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
@@ -83,9 +94,8 @@ class _SquadChoiceState extends State<SquadChoice> {
                           ),
                           FutureBuilder(
                             future: placemarkFromCoordinates(
-                                GlobalService
-                                    .currentAction.actionLocation.latitude,
-                                GlobalService
+                                dbService.currentAction.actionLocation.latitude,
+                                dbService
                                     .currentAction.actionLocation.longitude),
                             builder: (context, snap) {
                               if (snap.connectionState ==
@@ -157,9 +167,9 @@ class _SquadChoiceState extends State<SquadChoice> {
                           await chooseExistingSquadDialog();
                       if (chosenSquadIndex != null) {
                         SquadModel rebuild = SquadModel();
-                        rebuild.copyFrom(GlobalService
-                            .currentAction.squads[chosenSquadIndex]!);
-                        GlobalService.currentAction.squads[chosenSquadIndex] =
+                        rebuild.copyFrom(
+                            dbService.currentAction.squads[chosenSquadIndex]!);
+                        dbService.currentAction.squads[chosenSquadIndex] =
                             rebuild;
                         if (context.mounted) {
                           Navigator.push(
@@ -220,8 +230,7 @@ class _SquadChoiceState extends State<SquadChoice> {
                       backgroundColor: const WidgetStatePropertyAll(Colors.red),
                     ),
                     onPressed: () {
-                      GlobalService.databaseSevice
-                          .endAction(GlobalService.currentAction);
+                      dbService.endAction(dbService.currentAction);
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -265,7 +274,11 @@ class _SquadChoiceState extends State<SquadChoice> {
                   SizedBox(
                     height: constraints.maxHeight * 0.8,
                     child: ListView(
-                      children: GlobalService.currentAction.squads.entries
+                      children: GetIt.I
+                          .get<DatabaseService>()
+                          .currentAction
+                          .squads
+                          .entries
                           .toList()
                           .map((squad) {
                         return Card(

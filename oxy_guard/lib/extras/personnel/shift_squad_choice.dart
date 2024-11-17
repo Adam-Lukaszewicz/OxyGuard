@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:oxy_guard/context_windows.dart';
-import 'package:oxy_guard/services/global_service.dart';
+import 'package:oxy_guard/services/database_service.dart';
 import 'package:oxy_guard/models/personnel/worker.dart';
+import 'package:watch_it/watch_it.dart';
 
 class ShiftSquadChoicePage extends StatefulWidget {
   const ShiftSquadChoicePage({super.key});
@@ -19,15 +20,19 @@ class _ShiftSquadChoicePageState extends State<ShiftSquadChoicePage> {
     final firstName = _firstNameController.text.trim();
     final lastName = _lastNameController.text.trim();
     if (firstName.isNotEmpty && lastName.isNotEmpty) {
-      if(validCharacters.hasMatch(firstName) && validCharacters.hasMatch(lastName)){
-      setState(() {
-        GlobalService.currentPersonnel.addWorker(Worker(name: firstName, surname: lastName));
-      });
-      _firstNameController.clear();
-      _lastNameController.clear();
-      }
-      else{
-        warningDialog(context, "Tekst nie może zawierać znaków specjalnych (np. %, #, spacja itp.)");
+      if (validCharacters.hasMatch(firstName) &&
+          validCharacters.hasMatch(lastName)) {
+        setState(() {
+          GetIt.I
+              .get<DatabaseService>()
+              .currentPersonnel
+              .addWorker(Worker(name: firstName, surname: lastName));
+        });
+        _firstNameController.clear();
+        _lastNameController.clear();
+      } else {
+        warningDialog(context,
+            "Tekst nie może zawierać znaków specjalnych (np. %, #, spacja itp.)");
       }
     } else {
       warningDialog(context, "Wprowadź imię oraz nazwisko");
@@ -35,8 +40,9 @@ class _ShiftSquadChoicePageState extends State<ShiftSquadChoicePage> {
   }
 
   void _sortWorkers() {
-    GlobalService.currentPersonnel.team.sort((a, b) {
-      int firstNameComparison = a.name.toLowerCase().compareTo(b.name.toLowerCase());
+    GetIt.I.get<DatabaseService>().currentPersonnel.team.sort((a, b) {
+      int firstNameComparison =
+          a.name.toLowerCase().compareTo(b.name.toLowerCase());
       if (firstNameComparison != 0) {
         return firstNameComparison;
       } else {
@@ -55,10 +61,9 @@ class _ShiftSquadChoicePageState extends State<ShiftSquadChoicePage> {
   Widget build(BuildContext context) {
     //var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
-    var guidesTextStyle = TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: screenWidth * 0.05
-    );
+    var guidesTextStyle =
+        TextStyle(fontWeight: FontWeight.bold, fontSize: screenWidth * 0.05);
+    var dbService = GetIt.I.get<DatabaseService>();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColorDark,
@@ -86,10 +91,7 @@ class _ShiftSquadChoicePageState extends State<ShiftSquadChoicePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Dodaj pracownika:',
-                    style: guidesTextStyle
-                  ),
+                  Text('Dodaj pracownika:', style: guidesTextStyle),
                   const SizedBox(height: 10),
                   Row(
                     children: [
@@ -103,7 +105,8 @@ class _ShiftSquadChoicePageState extends State<ShiftSquadChoicePage> {
                       Expanded(
                         child: TextField(
                           controller: _lastNameController,
-                          decoration: const InputDecoration(labelText: 'Nazwisko'),
+                          decoration:
+                              const InputDecoration(labelText: 'Nazwisko'),
                         ),
                       ),
                       Container(
@@ -119,30 +122,29 @@ class _ShiftSquadChoicePageState extends State<ShiftSquadChoicePage> {
                     ],
                   ),
                   const SizedBox(height: 20),
-                  Text(
-                    'Kadra pracownicza:',
-                    style: guidesTextStyle
-                  ),
+                  Text('Kadra pracownicza:', style: guidesTextStyle),
                   const SizedBox(height: 10),
                   Expanded(
                     child: ListenableBuilder(
-                      listenable: GlobalService.currentPersonnel,
+                      listenable: dbService.currentPersonnel,
                       builder: (context, child) {
                         return ListView(
-                        children: GlobalService.currentPersonnel.team
-                            .map((worker) => ListTile(
-                                title: Text('${worker.name} ${worker.surname}'),
-                                trailing: IconButton(
-                                  icon: const Icon(Icons.delete),
-                                  onPressed: () {
-                                    setState(() {
-                                      GlobalService.currentPersonnel.subWorker(worker);
-                                    });
-                                  },
-                                ),
-                              ))
-                            .toList(),
-                      );
+                          children: dbService.currentPersonnel.team
+                              .map((worker) => ListTile(
+                                    title: Text(
+                                        '${worker.name} ${worker.surname}'),
+                                    trailing: IconButton(
+                                      icon: const Icon(Icons.delete),
+                                      onPressed: () {
+                                        setState(() {
+                                          dbService.currentPersonnel
+                                              .subWorker(worker);
+                                        });
+                                      },
+                                    ),
+                                  ))
+                              .toList(),
+                        );
                       },
                     ),
                   ),

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:oxy_guard/action/tabs/finished/finished_squad.dart';
-import 'package:oxy_guard/services/global_service.dart';
+import 'package:oxy_guard/services/database_service.dart';
 import 'package:oxy_guard/models/ended_model.dart';
+import 'package:watch_it/watch_it.dart';
 
 class ArchivePage extends StatelessWidget {
   const ArchivePage({super.key});
@@ -27,7 +28,7 @@ class ArchivePage extends StatelessWidget {
             child: SizedBox(
               width: screenWidth * 0.9,
               child: StreamBuilder(
-                  stream: GlobalService.databaseSevice.getArchive(),
+                  stream: GetIt.I.get<DatabaseService>().getArchive(),
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
                       return const Text('Something went wrong');

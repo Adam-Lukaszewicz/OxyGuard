@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:oxy_guard/services/database_service.dart';
 import 'package:oxy_guard/services/global_service.dart';
 import 'package:oxy_guard/home/home_page.dart';
 import 'package:oxy_guard/models/squad_model.dart';
 import 'package:provider/provider.dart';
+import 'package:watch_it/watch_it.dart';
 
 class FinishedPage extends StatelessWidget {
   const FinishedPage({super.key});
@@ -33,12 +35,13 @@ class FinishedPage extends StatelessWidget {
         ),
       );
     }
+    var dBService = GetIt.I.get<DatabaseService>();
     return Scaffold(
       backgroundColor: const Color(0xfffcfcfc),
       floatingActionButton: FloatingActionButton.extended(
         label: const Center(child: Text("Zakończ akcję")),
         onPressed: () {
-          GlobalService.databaseSevice.endAction(GlobalService.currentAction);
+          dBService.endAction(dBService.currentAction);
           Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
         },
         backgroundColor: Colors.red[400],

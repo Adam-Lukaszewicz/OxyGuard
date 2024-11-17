@@ -8,6 +8,8 @@ import 'package:oxy_guard/action/tabs/finished/finished_squad.dart';
 import 'package:oxy_guard/context_windows.dart';
 import 'package:oxy_guard/models/ended_model.dart';
 import 'package:oxy_guard/models/squad_model.dart';
+import 'package:oxy_guard/services/database_service.dart';
+import 'package:watch_it/watch_it.dart';
 
 import '../services/global_service.dart';
 
@@ -46,7 +48,7 @@ class ActionModel{
   }
 
   void update(){
-    GlobalService.databaseSevice.updateAction(this);
+    GetIt.I.get<DatabaseService>().updateAction(this);
   }
 
   Map<String, dynamic> toJson(){
@@ -70,7 +72,7 @@ class ActionModel{
   }
 
   void listenToChanges() {
-    _listener = GlobalService.databaseSevice.getActionsRef().listen((event) {
+    _listener = GetIt.I.get<DatabaseService>().getActionsRef().listen((event) {
       ActionModel newData = event.data() as ActionModel;
       squads.forEach((key, value) { 
         newData.squads.forEach((nkey, nvalue) {
@@ -98,7 +100,7 @@ class ActionModel{
       String? input = await textInputDialog(context, "Podaj nazwę akcji", "Nazwa akcji", "Akcja bez GPS musi być nazwana");
       if(input != null) actionName = input;
     }
-    GlobalService.databaseSevice.addAction(this).then((value) => listenToChanges());
+    GetIt.I.get<DatabaseService>().addAction(this).then((value) => listenToChanges());
   }
 
   ActionModel.fromJson(Map<String, dynamic> json) : this(

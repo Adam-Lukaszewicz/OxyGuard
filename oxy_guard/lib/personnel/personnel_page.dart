@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:oxy_guard/services/database_service.dart';
 import 'package:oxy_guard/services/global_service.dart';
 import 'package:oxy_guard/models/personnel/worker.dart';
+import 'package:watch_it/watch_it.dart';
 
 class PersonnelPage extends StatefulWidget{
   const PersonnelPage({super.key});
@@ -35,7 +37,7 @@ class _PersonnelPageState extends State<PersonnelPage> {
                 onPressed: () async {
                   (String, String)? newWorkerData = await createWorker();
                   if(newWorkerData != null){
-                    GlobalService.currentPersonnel.addWorker(Worker(name: newWorkerData.$1, surname: newWorkerData.$2));
+                    GetIt.I.get<DatabaseService>().currentPersonnel.addWorker(Worker(name: newWorkerData.$1, surname: newWorkerData.$2));
                   }
                 },
                 child: const Center(child: Text("Dodaj członka załogi"))),
