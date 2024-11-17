@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:oxy_guard/services/database_service.dart';
-import 'package:oxy_guard/services/global_service.dart';
+import 'package:oxy_guard/services/gps_service.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:oxy_guard/context_windows.dart';
@@ -82,8 +82,8 @@ class _SetupPage2State extends State<SetupPage>
     super.build(context);
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight =
-        MediaQuery.of(GlobalService.navigatorKey.currentContext!).size.height -
-            MediaQuery.of(GlobalService.navigatorKey.currentContext!)
+        MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).size.height -
+            MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!)
                 .viewPadding
                 .vertical;
     var baseTextStyle = TextStyle(

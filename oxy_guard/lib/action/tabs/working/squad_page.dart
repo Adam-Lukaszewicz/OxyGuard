@@ -11,7 +11,7 @@ import 'package:oxy_guard/context_windows.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../../models/squad_model.dart';
-import '../../../services/global_service.dart';
+import '../../../services/gps_service.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:oxy_guard/notification.dart';
 
@@ -255,8 +255,8 @@ class _SquadPageState extends State<SquadPage>
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight =
-        MediaQuery.of(GlobalService.navigatorKey.currentContext!).size.height -
-            MediaQuery.of(GlobalService.navigatorKey.currentContext!)
+        MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).size.height -
+            MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!)
                 .viewPadding
                 .vertical;
     var bottomButtonStyle = ButtonStyle(

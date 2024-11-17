@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:oxy_guard/context_windows.dart';
 import 'package:oxy_guard/services/database_service.dart';
-import 'package:oxy_guard/services/global_service.dart';
 import 'package:oxy_guard/login/sub/register_page.dart';
 import 'package:oxy_guard/login/sub/reset_password.dart';
 import 'package:watch_it/watch_it.dart';

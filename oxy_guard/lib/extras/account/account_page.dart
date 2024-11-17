@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:oxy_guard/login/login_page.dart';
 import 'package:oxy_guard/services/database_service.dart';
-import 'package:oxy_guard/services/global_service.dart';
 import 'package:watch_it/watch_it.dart';
 
 class AccountPage extends StatelessWidget {

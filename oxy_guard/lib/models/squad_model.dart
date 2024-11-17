@@ -10,8 +10,6 @@ import 'package:oxy_guard/models/personnel/worker.dart';
 import 'package:oxy_guard/services/database_service.dart';
 import 'package:watch_it/watch_it.dart';
 
-import '../services/global_service.dart';
-
 class SquadModel extends ChangeNotifier {
   Map<String, double> oxygenValues;
   Map<String, DateTime> newestCheckTimes;

@@ -8,7 +8,7 @@ import 'package:oxy_guard/login/login_page.dart';
 import 'package:oxy_guard/services/database_service.dart';
 import 'package:watch_it/watch_it.dart';
 
-import 'services/global_service.dart';
+import 'services/gps_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,8 +19,9 @@ void main() async {
     persistenceEnabled: true,
   );
   GetIt.I.registerSingleton<DatabaseService>(DatabaseService());
+  GetIt.I.registerSingleton<GpsService>(GpsService());
   runApp(const OxyGuard());
-  GlobalService.checkGPSPermission();
+  GetIt.I.get<GpsService>().checkGPSPermission();
 }
 
 class OxyGuard extends StatelessWidget {
@@ -29,7 +30,7 @@ class OxyGuard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      navigatorKey: GlobalService.navigatorKey,
+      navigatorKey: GetIt.I.get<GpsService>().navigatorKey,
       title: 'OxyGuard',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue.shade400, brightness: Brightness.light, contrastLevel: 0.5),

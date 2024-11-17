@@ -2,9 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:watch_it/watch_it.dart';
 
 import '../../../models/squad_model.dart';
-import '../../../services/global_service.dart';
+import '../../../services/gps_service.dart';
 
 class SquadTab extends StatefulWidget {
   var text = "R";
@@ -36,8 +37,8 @@ class _SquadTabState extends State<SquadTab> {
   @override
   Widget build(BuildContext context) {
     var screenHeight =
-        MediaQuery.of(GlobalService.navigatorKey.currentContext!).size.height -
-            MediaQuery.of(GlobalService.navigatorKey.currentContext!)
+        MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).size.height -
+            MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!)
                 .viewPadding
                 .vertical;
     var screenWidth = MediaQuery.of(context).size.width;

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:oxy_guard/context_windows.dart';
 import 'package:oxy_guard/models/extinguisher_model.dart';
 import 'package:oxy_guard/services/database_service.dart';
-import 'package:oxy_guard/services/global_service.dart';
 import 'package:watch_it/watch_it.dart';
 
 class AtestsPage extends StatelessWidget {

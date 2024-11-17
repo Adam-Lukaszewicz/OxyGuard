@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
-class GlobalService { 
-  static GlobalKey<NavigatorState> navigatorKey = 
+class GpsService { 
+  GlobalKey<NavigatorState> navigatorKey = 
   GlobalKey<NavigatorState>();
-  static bool serviceEnabled = false;
-  static LocationPermission permission = LocationPermission.denied;
+  bool serviceEnabled = false;
+  LocationPermission permission = LocationPermission.denied;
 
-  static void checkGPSPermission() async {
+  void checkGPSPermission() async {
 
   // Test if location services are enabled.
   serviceEnabled = await Geolocator.isLocationServiceEnabled();

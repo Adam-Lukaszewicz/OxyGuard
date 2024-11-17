@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:oxy_guard/action/tabs/waiting/setup_page.dart';
 import 'package:oxy_guard/action/tabs/waiting/waiting_tab.dart';
+import 'package:watch_it/watch_it.dart';
 
-import '../../../services/global_service.dart';
+import '../../../services/gps_service.dart';
 
 class WaitingPage extends StatefulWidget {
   const WaitingPage({super.key});
@@ -42,7 +43,7 @@ class _WaitingPageState extends State<WaitingPage> with AutomaticKeepAliveClient
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    var screenHeight = MediaQuery.of(GlobalService.navigatorKey.currentContext!).size.height - MediaQuery.of(GlobalService.navigatorKey.currentContext!).viewPadding.vertical;
+    var screenHeight = MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).size.height - MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).viewPadding.vertical;
     return Column(
       children: [
         SizedBox(

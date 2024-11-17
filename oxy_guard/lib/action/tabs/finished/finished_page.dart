@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:oxy_guard/services/database_service.dart';
-import 'package:oxy_guard/services/global_service.dart';
 import 'package:oxy_guard/home/home_page.dart';
 import 'package:oxy_guard/models/squad_model.dart';
 import 'package:provider/provider.dart';

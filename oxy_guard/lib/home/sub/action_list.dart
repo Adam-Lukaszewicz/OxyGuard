@@ -9,7 +9,7 @@ import 'package:oxy_guard/models/action_model.dart';
 import 'package:oxy_guard/services/database_service.dart';
 import 'package:watch_it/watch_it.dart';
 
-import '../../services/global_service.dart';
+import '../../services/gps_service.dart';
 
 class ActionList extends StatefulWidget {
   const ActionList({super.key});
@@ -131,9 +131,9 @@ class _ActionListState extends State<ActionList> {
                           ))
                         );
                       }).toList();
-                      if (GlobalService.permission ==
+                      if (GetIt.I.get<GpsService>().permission ==
                               LocationPermission.always ||
-                          GlobalService.permission ==
+                          GetIt.I.get<GpsService>().permission ==
                               LocationPermission.whileInUse) {
                         return FutureBuilder(
                           future: Geolocator.getCurrentPosition(),

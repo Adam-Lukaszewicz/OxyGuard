@@ -11,7 +11,7 @@ import 'package:oxy_guard/models/squad_model.dart';
 import 'package:oxy_guard/services/database_service.dart';
 import 'package:watch_it/watch_it.dart';
 
-import '../services/global_service.dart';
+import '../services/gps_service.dart';
 
 class ActionModel{
   int internalIndex;
@@ -61,13 +61,10 @@ class ActionModel{
   }
 
   EndedModel archivize(){
-    double averageUse = 0;
-    int divider = 0;
     Map<String, List<FinishedSquad>> endedSqauds = <String, List<FinishedSquad>>{};
     squads.forEach((sqkey, squad){
       endedSqauds.addAll({sqkey : squad.finishedSquads.values.toList()});
     });
-    averageUse /= divider;
     return EndedModel(actionLocation: actionLocation, squads: endedSqauds, endTime: DateTime.now());
   }
 
@@ -94,7 +91,7 @@ class ActionModel{
   }
 
   Future<void> setActionLocation(BuildContext context) async {
-    if(GlobalService.permission == LocationPermission.always || GlobalService.permission == LocationPermission.whileInUse){
+    if(GetIt.I.get<GpsService>().permission == LocationPermission.always || GetIt.I.get<GpsService>().permission == LocationPermission.whileInUse){
       actionLocation = await Geolocator.getCurrentPosition();
     }else{
       String? input = await textInputDialog(context, "Podaj nazwę akcji", "Nazwa akcji", "Akcja bez GPS musi być nazwana");
