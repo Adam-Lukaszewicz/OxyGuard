@@ -18,14 +18,14 @@ class ExtinguisherModel {
 
   void updateDate(DateTime newDate) async {
     expirationDate = newDate;
-    String? id = await GetIt.I.get<DatabaseService>().getTestIdBySerial(serial);
+    String? id = await GetIt.I.get<DatabaseService>().getAtestIdBySerial(serial);
     if(id != null){
       GetIt.I.get<DatabaseService>().updateAtest(this, id);
     }
   }
 
   void remove() async {
-    String? id = await GetIt.I.get<DatabaseService>().getTestIdBySerial(serial);
+    String? id = await GetIt.I.get<DatabaseService>().getAtestIdBySerial(serial);
     if(id != null){
     GetIt.I.get<DatabaseService>().removeAtest(this, id);
     }

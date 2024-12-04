@@ -6,6 +6,7 @@ import 'package:oxy_guard/services/database_service.dart';
 import 'package:oxy_guard/models/action_model.dart';
 import 'package:oxy_guard/models/squad_model.dart';
 import 'package:oxy_guard/extras/extras_page.dart';
+import 'package:oxy_guard/services/internet_serivce.dart';
 import 'package:oxy_guard/settings/settings_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -26,6 +27,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    checkOfflineActions();
     checkAndRequestPermission();
     checkVolumeStatus();
   }
@@ -287,6 +289,20 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
+      if (GetIt.I.get<InternetService>().offlineMode)
+        Align(
+            alignment: Alignment.topRight,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                top: 40,
+                right: 15,
+              ),
+              child: Icon(
+                Icons.wifi_off_outlined,
+                color: Colors.red,
+                size: MediaQuery.of(context).size.width * 0.15,
+              ),
+            )),
       if (_isLoading)
         const Opacity(
           opacity: 0.8,
@@ -307,6 +323,44 @@ class _HomePageState extends State<HomePage> {
     status = await Permission.notification.status;
     if (status.isDenied) {
       await Permission.notification.request();
+    }
+  }
+
+  void checkOfflineActions() async {
+    var dbService = GetIt.I.get<DatabaseService>();
+    if (await dbService.checkOfflineData()) {
+      bool? result;
+      if (mounted) {
+        result = await showDialog<bool>(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text("Wykryto lokalne dane"),
+                content: const Text(
+                    "Czy chcesz zapisać je w bazie danych? W przeciwnym wypadku zostaną usunięte"),
+                actions: [
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(true);
+                      },
+                      child: const Text("Tak")),
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(false);
+                      },
+                      child: const Text("Nie")),
+                ],
+              );
+            });
+      }
+      if(result != null){
+        if(result){
+          dbService.uploadOfflineData();
+        }else{
+          dbService.deleteOfflineData();
+        }
+      }
     }
   }
 

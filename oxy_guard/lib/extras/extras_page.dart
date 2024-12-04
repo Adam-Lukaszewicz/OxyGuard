@@ -4,6 +4,7 @@ import 'package:oxy_guard/extras/archive/archive_page.dart';
 import 'package:oxy_guard/extras/atests/atests_page.dart';
 import 'package:oxy_guard/extras/personnel/shift_squad_choice.dart';
 import 'package:oxy_guard/services/database_service.dart';
+import 'package:oxy_guard/services/internet_serivce.dart';
 import 'package:watch_it/watch_it.dart';
 
 class ExtrasPage extends WatchingStatefulWidget {
@@ -21,6 +22,7 @@ class _ExtrasPageState extends State<ExtrasPage> {
     var titleCategoryTextStyle =
         TextStyle(fontWeight: FontWeight.w500, fontSize: screenWidth * 0.05);
     var subtitleCategoryTextStyle = TextStyle(fontSize: screenWidth * 0.04);
+    var internetService = GetIt.I.get<InternetService>();
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
@@ -39,120 +41,121 @@ class _ExtrasPageState extends State<ExtrasPage> {
                 Card(
                   color: Colors.white,
                   elevation: 5,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ArchivePage()),
-                      );
-                    },
-                    child: ListTile(
-                      leading: Icon(
-                        Icons.archive,
-                        size: screenWidth * 0.08,
-                      ),
-                      title: Text(
-                        "Archiwum",
-                        style: titleCategoryTextStyle,
-                      ),
-                      subtitle: Text(
-                        "Przejrzyj zapisy archiwalne akcji",
-                        style: subtitleCategoryTextStyle,
-                      ),
+                  child: ListTile(
+                    enabled: !internetService.offlineMode,
+                    onTap: internetService.offlineMode
+                        ? null
+                        : () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const ArchivePage()),
+                            );
+                          },
+                    leading: Icon(
+                      Icons.archive,
+                      size: screenWidth * 0.08,
+                    ),
+                    title: Text(
+                      "Archiwum",
+                      style: titleCategoryTextStyle,
+                    ),
+                    subtitle: Text(
+                      "Przejrzyj zapisy archiwalne akcji",
+                      style: subtitleCategoryTextStyle,
                     ),
                   ),
                 ),
                 Card(
                   color: Colors.white,
                   elevation: 5,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const AtestsPage()),
-                      ).then((onValue) {
-                        setState(() {});
-                      });
-                    },
-                    child: Stack(children: [
-                      ListTile(
-                        leading: Icon(
-                          Icons.fire_extinguisher,
-                          size: screenWidth * 0.08,
-                        ),
-                        title: Text(
-                          "Atesty",
-                          style: titleCategoryTextStyle,
-                        ),
-                        subtitle: Text(
-                          "Kontroluj ważności gaśnic",
-                          style: subtitleCategoryTextStyle,
-                        ),
+                  child: Stack(children: [
+                    ListTile(
+                      enabled: !internetService.offlineMode,
+                      onTap: internetService.offlineMode
+                          ? null
+                          : () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const AtestsPage()),
+                              ).then((onValue) {
+                                setState(() {});
+                              });
+                            },
+                      leading: Icon(
+                        Icons.fire_extinguisher,
+                        size: screenWidth * 0.08,
                       ),
-                      if (watchPropertyValue(
-                            (DatabaseService db) => db.closeToExpiring))
-                          const Positioned(
-                              top: 0,
-                              right: 0,
-                              child: Icon(
-                                Icons.error,
-                                color: Colors.red,
-                              )),
-                    ]),
-                  ),
+                      title: Text(
+                        "Atesty",
+                        style: titleCategoryTextStyle,
+                      ),
+                      subtitle: Text(
+                        "Kontroluj ważności gaśnic",
+                        style: subtitleCategoryTextStyle,
+                      ),
+                    ),
+                    if (watchPropertyValue(
+                        (DatabaseService db) => db.closeToExpiring))
+                      const Positioned(
+                          top: 0,
+                          right: 0,
+                          child: Icon(
+                            Icons.error,
+                            color: Colors.red,
+                          )),
+                  ]),
                 ),
                 Card(
                   color: Colors.white,
                   elevation: 5,
-                  child: InkWell(
+                  child: ListTile(
                     onTap: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => const AccountPage()));
                     },
-                    child: ListTile(
-                      leading: Icon(
-                        Icons.fire_extinguisher,
-                        size: screenWidth * 0.08,
-                      ),
-                      title: Text(
-                        "Konto",
-                        style: titleCategoryTextStyle,
-                      ),
-                      subtitle: Text(
-                        "Zmień konto lub modyfikuj aktualne",
-                        style: subtitleCategoryTextStyle,
-                      ),
+                    leading: Icon(
+                      Icons.fire_extinguisher,
+                      size: screenWidth * 0.08,
+                    ),
+                    title: Text(
+                      "Konto",
+                      style: titleCategoryTextStyle,
+                    ),
+                    subtitle: Text(
+                      "Zmień konto lub modyfikuj aktualne",
+                      style: subtitleCategoryTextStyle,
                     ),
                   ),
                 ),
                 Card(
                   color: Colors.white,
                   elevation: 5,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  const ShiftSquadChoicePage()));
-                    },
-                    child: ListTile(
-                      leading: Icon(
-                        Icons.person,
-                        size: screenWidth * 0.08,
-                      ),
-                      title: Text(
-                        "Personel",
-                        style: titleCategoryTextStyle,
-                      ),
-                      subtitle: Text(
-                        "Modyfikuj dostępną załogę",
-                        style: subtitleCategoryTextStyle,
-                      ),
+                  child: ListTile(
+                    enabled: !internetService.offlineMode,
+                    onTap: internetService.offlineMode
+                        ? null
+                        : () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ShiftSquadChoicePage()));
+                          },
+                    leading: Icon(
+                      Icons.person,
+                      size: screenWidth * 0.08,
+                    ),
+                    title: Text(
+                      "Personel",
+                      style: titleCategoryTextStyle,
+                    ),
+                    subtitle: Text(
+                      "Modyfikuj dostępną załogę",
+                      style: subtitleCategoryTextStyle,
                     ),
                   ),
                 ),

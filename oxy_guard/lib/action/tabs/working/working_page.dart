@@ -32,15 +32,6 @@ class _WorkingPageState extends State<WorkingPage>
     super.dispose();
   }
 
-  void restartTabController() {
-    _tabController.dispose();
-    _tabController = TabController(
-        vsync: this,
-        length: Provider.of<SquadModel>(context, listen: false)
-            .workingSquads
-            .length);
-  }
-
   @override
   Widget build(BuildContext context) {
     super.build(context);

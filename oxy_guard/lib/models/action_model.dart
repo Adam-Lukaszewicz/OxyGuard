@@ -9,24 +9,25 @@ import 'package:oxy_guard/context_windows.dart';
 import 'package:oxy_guard/models/ended_model.dart';
 import 'package:oxy_guard/models/squad_model.dart';
 import 'package:oxy_guard/services/database_service.dart';
+import 'package:oxy_guard/services/internet_serivce.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../services/gps_service.dart';
 
-class ActionModel{
+class ActionModel {
   int internalIndex;
   Map<String, SquadModel> squads;
   Position actionLocation;
   String actionName;
-  ActionModel({
-    int? internalIndex,
-    Map<String, SquadModel>? squads,
-    Position? actionLocation,
-    String? actionName
-  }):
-    internalIndex = internalIndex ?? 0,
-    squads = squads ?? <String, SquadModel>{},
-    actionLocation = actionLocation ?? Position(
+  ActionModel(
+      {int? internalIndex,
+      Map<String, SquadModel>? squads,
+      Position? actionLocation,
+      String? actionName})
+      : internalIndex = internalIndex ?? 0,
+        squads = squads ?? <String, SquadModel>{},
+        actionLocation = actionLocation ??
+            Position(
                 longitude: 0,
                 latitude: 0,
                 timestamp: DateTime.now(),
@@ -36,23 +37,22 @@ class ActionModel{
                 heading: 0,
                 headingAccuracy: 0,
                 speed: 0,
-                speedAccuracy: 0
-                ),
-    actionName = actionName ?? "";
-  
+                speedAccuracy: 0),
+        actionName = actionName ?? "";
+
   late StreamSubscription<DocumentSnapshot<Object?>> _listener;
 
-  void addSquad(SquadModel newSquad){
-    squads.addAll({internalIndex.toString():newSquad});
+  void addSquad(SquadModel newSquad) {
+    squads.addAll({internalIndex.toString(): newSquad});
     internalIndex++;
   }
 
-  void update(){
+  void update() {
     GetIt.I.get<DatabaseService>().updateAction(this);
   }
 
-  Map<String, dynamic> toJson(){
-    return{
+  Map<String, dynamic> toJson() {
+    return {
       "InternalIndex": jsonEncode(internalIndex),
       "Squads": jsonEncode(squads),
       "Location": jsonEncode(actionLocation),
@@ -60,54 +60,68 @@ class ActionModel{
     };
   }
 
-  EndedModel archivize(){
-    Map<String, List<FinishedSquad>> endedSqauds = <String, List<FinishedSquad>>{};
-    squads.forEach((sqkey, squad){
-      endedSqauds.addAll({sqkey : squad.finishedSquads.values.toList()});
+  EndedModel archivize() {
+    Map<String, List<FinishedSquad>> endedSquads =
+        <String, List<FinishedSquad>>{};
+    squads.forEach((sqkey, squad) {
+      endedSquads.addAll({sqkey: squad.finishedSquads.values.toList()});
     });
-    return EndedModel(actionLocation: actionLocation, squads: endedSqauds, endTime: DateTime.now());
+    return EndedModel(
+        actionLocation: actionLocation,
+        squads: endedSquads,
+        endTime: DateTime.now());
   }
 
   void listenToChanges() {
-    _listener = GetIt.I.get<DatabaseService>().getActionsRef().listen((event) {
-      ActionModel newData = event.data() as ActionModel;
-      squads.forEach((key, value) { 
-        newData.squads.forEach((nkey, nvalue) {
-          if(key == nkey){
-            value.copyFrom(nvalue);
-          }
-         });
+    if (!GetIt.I.get<InternetService>().offlineMode) {
+      _listener =
+          GetIt.I.get<DatabaseService>().getActionsRef().listen((event) {
+        ActionModel newData = event.data() as ActionModel;
+        squads.forEach((key, value) {
+          newData.squads.forEach((nkey, nvalue) {
+            if (key == nkey) {
+              value.copyFrom(nvalue);
+            }
+          });
+        });
+        newData.squads.removeWhere(
+            (nkey, value) => squads.keys.any((key) => key == nkey));
+        squads.addAll(newData.squads);
+        internalIndex = newData.internalIndex;
+        actionLocation = newData.actionLocation;
       });
-      newData.squads.removeWhere((nkey, value) => squads.keys.any((key) => key == nkey));
-      squads.addAll(newData.squads);
-      internalIndex = newData.internalIndex;
-      actionLocation = newData.actionLocation;
-    });
+    }
   }
 
-
-  void finishListening(){
+  void finishListening() {
     _listener.cancel();
   }
 
   Future<void> setActionLocation(BuildContext context) async {
-    if(GetIt.I.get<GpsService>().permission == LocationPermission.always || GetIt.I.get<GpsService>().permission == LocationPermission.whileInUse){
+    if (GetIt.I.get<GpsService>().permission == LocationPermission.always ||
+        GetIt.I.get<GpsService>().permission == LocationPermission.whileInUse) {
       actionLocation = await Geolocator.getCurrentPosition();
-    }else{
-      String? input = await textInputDialog(context, "Podaj nazwę akcji", "Nazwa akcji", "Akcja bez GPS musi być nazwana");
-      if(input != null) actionName = input;
+    } else {
+      String? input = await textInputDialog(context, "Podaj nazwę akcji",
+          "Nazwa akcji", "Akcja bez GPS musi być nazwana");
+      if (input != null) actionName = input;
     }
-    GetIt.I.get<DatabaseService>().addAction(this).then((value) => listenToChanges());
+    GetIt.I
+        .get<DatabaseService>()
+        .addAction(this)
+        .then((value) => listenToChanges());
   }
 
-  ActionModel.fromJson(Map<String, dynamic> json) : this(
-    internalIndex: jsonDecode(json["InternalIndex"]),
-    squads: Map.castFrom(jsonDecode(json["Squads"])).map((key, value) => MapEntry(key.toString(), SquadModel.fromJson(value))),
-    actionLocation: Position.fromMap(jsonDecode(json["Location"])),
-    actionName: json["Name"] != null ? json["Name"]! as String : "",
-  );
+  ActionModel.fromJson(Map<String, dynamic> json)
+      : this(
+          internalIndex: jsonDecode(json["InternalIndex"]),
+          squads: Map.castFrom(jsonDecode(json["Squads"])).map((key, value) =>
+              MapEntry(key.toString(), SquadModel.fromJson(value))),
+          actionLocation: Position.fromMap(jsonDecode(json["Location"])),
+          actionName: json["Name"] != null ? json["Name"]! as String : "",
+        );
 
-  void copyFrom(ActionModel other){
+  void copyFrom(ActionModel other) {
     squads = other.squads;
     actionLocation = other.actionLocation;
   }

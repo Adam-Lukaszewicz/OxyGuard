@@ -10,10 +10,11 @@ class FinishedPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-        if (Provider.of<SquadModel>(context, listen: false)
-                  .finishedSquads
-                  .values
-                  .toList().isEmpty) {
+    if (Provider.of<SquadModel>(context, listen: false)
+        .finishedSquads
+        .values
+        .toList()
+        .isEmpty) {
       return const Center(
         child: Padding(
           padding: EdgeInsets.all(16.0),
@@ -41,7 +42,8 @@ class FinishedPage extends StatelessWidget {
         label: const Center(child: Text("Zakończ akcję")),
         onPressed: () {
           dBService.endAction(dBService.currentAction);
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
+          Navigator.pushAndRemoveUntil(context,
+              MaterialPageRoute(builder: (context) => const HomePage()), (route) => false);
         },
         backgroundColor: Colors.red[400],
         foregroundColor: Colors.white,
@@ -57,12 +59,14 @@ class FinishedPage extends StatelessWidget {
                   .values
                   .toList()
                   .map((fin) => Card(
-                    color: Colors.white,
+                        color: Colors.white,
                         child: ListTile(
-                          leading: Text(fin.name,
-                          style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.width * 0.08
-                          ),),
+                          leading: Text(
+                            fin.name,
+                            style: TextStyle(
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.08),
+                          ),
                           title: Text(fin.averageUse.toString()),
                         ),
                       ))

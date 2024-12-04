@@ -4,6 +4,7 @@ import 'package:oxy_guard/context_windows.dart';
 import 'package:oxy_guard/services/database_service.dart';
 import 'package:oxy_guard/login/sub/register_page.dart';
 import 'package:oxy_guard/login/sub/reset_password.dart';
+import 'package:oxy_guard/services/internet_serivce.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../home/home_page.dart';
@@ -101,13 +102,15 @@ class _LoginPageState extends State<LoginPage> {
                             "Adres e-mail musi być zweryfikowany, aby się zalogować");
                       }
                       dbService
-                          .assignTeam(dbService.currentPersonnel);
+                          .assignUserSpecificData();
+                      GetIt.I.get<InternetService>().offlineMode = false;
                       if (context.mounted) {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const HomePage()),
-                        );
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const HomePage(),
+                            ),
+                            (route) => false);
                       }
                     } on FirebaseAuthException catch (e) {
                       switch (e.code) {
@@ -143,6 +146,12 @@ class _LoginPageState extends State<LoginPage> {
                           if (context.mounted) {
                             warningDialog(
                                 context, "Brak połączenia sieciowego.");
+                            GetIt.I.get<InternetService>().offlineMode = true;
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const HomePage()),
+                                (route) => false);
                           }
 
                           break;
