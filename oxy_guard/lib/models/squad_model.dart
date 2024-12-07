@@ -86,6 +86,13 @@ class SquadModel extends ChangeNotifier {
     GetIt.I.get<DatabaseService>().currentAction.update();
   }
 
+  void applyEdits(double correctLastCheck, double usageRate, int index){
+    oxygenValues[index.toString()] = correctLastCheck;
+    usageRates[index.toString()] = usageRate;
+    notifyListeners();
+    GetIt.I.get<DatabaseService>().currentAction.update();
+  }
+
   void changeStarting(double newOxygen, int index) {
     oxygenValues[index.toString()] = newOxygen;
     notifyListeners();
@@ -124,7 +131,7 @@ class SquadModel extends ChangeNotifier {
   void endSquadWork(int index){
     SquadPage? ending = workingSquads[index.toString()];
     if(ending == null) return;
-    double averageUse = ending.checks.first - getOxygenRemaining(index)/(DateTime.now().difference(ending.checkTimes.first)).inSeconds;
+    double averageUse = ((ending.entryPressure - getOxygenRemaining(index))/(DateTime.now().difference(ending.checkTimes.first)).inSeconds) * 60;
     finishedSquads.addAll({index.toString():FinishedSquad(name: ending.text, index: index, averageUse: averageUse, workers: [ending.firstPerson, ending.secondPerson, ending.thirdPerson])});
     workingSquads.remove(index.toString());
     tabs.remove(index.toString());

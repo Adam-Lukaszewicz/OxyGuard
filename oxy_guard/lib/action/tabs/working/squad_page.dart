@@ -254,11 +254,13 @@ class _SquadPageState extends State<SquadPage>
   @override
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
-    var screenHeight =
-        MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).size.height -
-            MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!)
-                .viewPadding
-                .vertical;
+    var screenHeight = MediaQuery.of(
+                GetIt.I.get<GpsService>().navigatorKey.currentContext!)
+            .size
+            .height -
+        MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!)
+            .viewPadding
+            .vertical;
     var bottomButtonStyle = ButtonStyle(
         backgroundColor: const WidgetStatePropertyAll(Colors.white),
         foregroundColor:
@@ -285,8 +287,6 @@ class _SquadPageState extends State<SquadPage>
     );
 
     super.build(context);
-    _returnPressure =
-        (widget.exitTime * 1 ~/ 2 + widget.exitPressure).toDouble();
     var oxygenValue = Provider.of<SquadModel>(context, listen: false)
         .oxygenValues[widget.index.toString()];
     var dbService = GetIt.I.get<DatabaseService>();
@@ -871,7 +871,7 @@ class _SquadPageState extends State<SquadPage>
                                                   child: Row(
                                                 children: [
                                                   Text(
-                                                      "${_returnPressure.toInt()}",
+                                                      "${(widget.exitTime * widget.usageRate).toInt()}",
                                                       style: varTextStyle),
                                                   Text("BAR",
                                                       style: unitTextStyle)
@@ -955,8 +955,8 @@ class _SquadPageState extends State<SquadPage>
                                         listen: false)
                                     .getOxygenRemaining(widget.index);
                                 Provider.of<SquadModel>(context, listen: false)
-                                    .addCheck(currentOxygen, 10,
-                                        DateTime.now(), widget.index);
+                                    .addCheck(currentOxygen, 10, DateTime.now(),
+                                        widget.index);
                               });
                             },
                             icon: const Icon(IconData(0xf3e1,
@@ -1048,12 +1048,14 @@ class _SquadPageState extends State<SquadPage>
                                                             cat.getOxygenRemaining(
                                                                 widget.index)))
                                                 : 14 +
-                                                    ((constraints.maxHeight - 69))
+                                                    ((constraints.maxHeight -
+                                                        69))
                                             : cat.getOxygenRemaining(
                                                         widget.index) >=
                                                     widget.exitPressure
                                                 ? 14 +
-                                                    ((constraints.maxHeight - 69) /
+                                                    ((constraints.maxHeight -
+                                                            69) /
                                                         (widget.checks.first -
                                                             widget
                                                                 .exitPressure) *
@@ -1067,7 +1069,8 @@ class _SquadPageState extends State<SquadPage>
                                                             widget
                                                                 .exitPressure) *
                                                         (widget.checks.first -
-                                                            widget.exitPressure)),
+                                                            widget
+                                                                .exitPressure)),
                                         left: 1,
                                         right: 1,
                                         child: Container(
@@ -1101,9 +1104,28 @@ class _SquadPageState extends State<SquadPage>
                                               (widget.checks.first -
                                                   widget.exitPressure) *
                                               (widget.checks.first -
-                                                  (_returnPressure <
+                                                  ((((widget.exitTime * widget.usageRate)
+                                                                      .toInt()) >
+                                                                  widget
+                                                                      .exitPressure
+                                                              ? ((widget.exitTime *
+                                                                      widget
+                                                                          .usageRate)
+                                                                  .toInt())
+                                                              : widget
+                                                                  .exitPressure) <
                                                           widget.checks.first
-                                                      ? _returnPressure
+                                                      ? (((widget.exitTime *
+                                                                      widget
+                                                                          .usageRate)
+                                                                  .toInt()) >
+                                                              widget
+                                                                  .exitPressure
+                                                          ? ((widget.exitTime *
+                                                                  widget
+                                                                      .usageRate)
+                                                              .toInt())
+                                                          : widget.exitPressure)
                                                       : widget.checks.first))),
                                       left: -3,
                                       child: ClipPath(
@@ -1182,7 +1204,6 @@ class _SquadPageState extends State<SquadPage>
                               });
                             } else {
                               setState(() {
-                                widget.working = false;
                                 Provider.of<SquadModel>(context, listen: false)
                                     .endSquadWork(widget.index);
                               });
@@ -1295,18 +1316,20 @@ class _SquadPageState extends State<SquadPage>
                                       edits.first;
                                   widget.checks[widget.checks.length - 1] =
                                       edits.last;
-                                  recalculateTime();
-                                  //widget.entryPressure = widget.checks.last;
-                                  DateTime timestamp = DateTime.now();
-                                  widget.usageRate =
+                                  double newUsageRate =
                                       (widget.checks[widget.checks.length - 2] -
                                               widget.checks[
                                                   widget.checks.length - 1]) /
-                                          (timestamp
+                                          (widget.checkTimes.last
                                               .difference(
-                                                  widget.checkTimes.last)
+                                                  widget.checkTimes[widget.checkTimes.length-2])
                                               .inSeconds);
-                                  dbService.currentAction.update();
+                                  widget.usageRate = newUsageRate;
+
+                                  Provider.of<SquadModel>(context,
+                                          listen: false)
+                                      .applyEdits(edits.first, newUsageRate,
+                                          widget.index);
                                 }
                               });
                             }
@@ -1350,21 +1373,6 @@ class _SquadPageState extends State<SquadPage>
         ),
       ],
     );
-  }
-
-  void recalculateTime() {
-    var newUsageRate =
-        (widget.checks[widget.checks.length - 2] - widget.checks.last) /
-            (widget.checkTimes.last
-                .difference(widget.checkTimes[widget.checkTimes.length - 2])
-                .inSeconds);
-    setState(() {
-      Provider.of<SquadModel>(context, listen: false).addCheck(
-          widget.checks.last,
-          newUsageRate,
-          widget.checkTimes.last,
-          widget.index);
-    });
   }
 
   Future<List<double>?> editChecksDialog() => showDialog<List<double>>(
