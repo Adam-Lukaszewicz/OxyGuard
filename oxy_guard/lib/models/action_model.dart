@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:OxyGuard/action/tabs/finished/finished_squad.dart';
+import 'package:OxyGuard/context_windows.dart';
+import 'package:OxyGuard/models/ended_model.dart';
+import 'package:OxyGuard/models/squad_model.dart';
+import 'package:OxyGuard/services/database_service.dart';
+import 'package:OxyGuard/services/internet_serivce.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:oxy_guard/action/tabs/finished/finished_squad.dart';
-import 'package:oxy_guard/context_windows.dart';
-import 'package:oxy_guard/models/ended_model.dart';
-import 'package:oxy_guard/models/squad_model.dart';
-import 'package:oxy_guard/services/database_service.dart';
-import 'package:oxy_guard/services/internet_serivce.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../services/gps_service.dart';

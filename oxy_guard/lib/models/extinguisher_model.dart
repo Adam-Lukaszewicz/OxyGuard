@@ -1,4 +1,4 @@
-import 'package:oxy_guard/services/database_service.dart';
+import 'package:OxyGuard/services/database_service.dart';
 import 'package:watch_it/watch_it.dart';
 
 class ExtinguisherModel {

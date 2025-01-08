@@ -1,13 +1,13 @@
 import 'dart:convert';
 
+import 'package:OxyGuard/action/squad_choice.dart';
+import 'package:OxyGuard/models/action_model.dart';
+import 'package:OxyGuard/services/database_service.dart';
+import 'package:OxyGuard/services/internet_serivce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:oxy_guard/action/squad_choice.dart';
-import 'package:oxy_guard/models/action_model.dart';
-import 'package:oxy_guard/services/database_service.dart';
-import 'package:oxy_guard/services/internet_serivce.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../services/gps_service.dart';

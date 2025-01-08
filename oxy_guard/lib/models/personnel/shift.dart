@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:oxy_guard/models/personnel/worker.dart';
+import 'package:OxyGuard/models/personnel/worker.dart';
 
 class Shift{
   int startTime; //8:30 is stored as 830, 10:00 as 1000 etc.

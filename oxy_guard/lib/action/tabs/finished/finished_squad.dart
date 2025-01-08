@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:oxy_guard/models/personnel/worker.dart';
+import 'package:OxyGuard/models/personnel/worker.dart';
 
 class FinishedSquad {
   String name;

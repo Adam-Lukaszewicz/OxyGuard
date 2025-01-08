@@ -1,5 +1,5 @@
+import 'package:OxyGuard/context_windows.dart';
 import 'package:flutter/material.dart';
-import 'package:oxy_guard/context_windows.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {

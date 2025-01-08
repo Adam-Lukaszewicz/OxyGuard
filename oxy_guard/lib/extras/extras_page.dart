@@ -1,10 +1,10 @@
+import 'package:OxyGuard/extras/account/account_page.dart';
+import 'package:OxyGuard/extras/archive/archive_page.dart';
+import 'package:OxyGuard/extras/atests/atests_page.dart';
+import 'package:OxyGuard/extras/personnel/shift_squad_choice.dart';
+import 'package:OxyGuard/services/database_service.dart';
+import 'package:OxyGuard/services/internet_serivce.dart';
 import 'package:flutter/material.dart';
-import 'package:oxy_guard/extras/account/account_page.dart';
-import 'package:oxy_guard/extras/archive/archive_page.dart';
-import 'package:oxy_guard/extras/atests/atests_page.dart';
-import 'package:oxy_guard/extras/personnel/shift_squad_choice.dart';
-import 'package:oxy_guard/services/database_service.dart';
-import 'package:oxy_guard/services/internet_serivce.dart';
 import 'package:watch_it/watch_it.dart';
 
 class ExtrasPage extends WatchingStatefulWidget {

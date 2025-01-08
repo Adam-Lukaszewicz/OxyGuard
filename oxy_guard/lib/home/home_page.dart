@@ -1,13 +1,13 @@
+import 'package:OxyGuard/action/squad_choice.dart';
+import 'package:OxyGuard/context_windows.dart';
+import 'package:OxyGuard/extras/extras_page.dart';
+import 'package:OxyGuard/home/sub/action_list.dart';
+import 'package:OxyGuard/models/action_model.dart';
+import 'package:OxyGuard/models/squad_model.dart';
+import 'package:OxyGuard/services/database_service.dart';
+import 'package:OxyGuard/services/internet_serivce.dart';
+import 'package:OxyGuard/settings/settings_page.dart';
 import 'package:flutter/material.dart';
-import 'package:oxy_guard/action/squad_choice.dart';
-import 'package:oxy_guard/home/sub/action_list.dart';
-import 'package:oxy_guard/context_windows.dart';
-import 'package:oxy_guard/services/database_service.dart';
-import 'package:oxy_guard/models/action_model.dart';
-import 'package:oxy_guard/models/squad_model.dart';
-import 'package:oxy_guard/extras/extras_page.dart';
-import 'package:oxy_guard/services/internet_serivce.dart';
-import 'package:oxy_guard/settings/settings_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:volume_controller/volume_controller.dart';
@@ -378,14 +378,6 @@ class _HomePageState extends State<HomePage> {
       if (mounted) {
         warningDialog(context,
             "Poziom głośności powiadomień jest poniżej 40%.\nWażne powiadomienia mogą być niesłyszalne!");
-      }
-    }
-    double ringVolume =
-        (await RealVolume.getCurrentVol(StreamType.RING)) ?? 0.0;
-    if (ringVolume < 0.4) {
-      if (mounted) {
-        warningDialog(context,
-            "Poziom głośności dzwonka jest poniżej 40%.\nWażne powiadomienia mogą być niesłyszalne!");
       }
     }
     var status = await Permission.locationWhenInUse.status;

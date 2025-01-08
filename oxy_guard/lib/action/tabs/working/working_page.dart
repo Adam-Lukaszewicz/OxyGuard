@@ -1,6 +1,6 @@
+import 'package:OxyGuard/models/squad_model.dart';
+import 'package:OxyGuard/services/gps_service.dart';
 import 'package:flutter/material.dart';
-import 'package:oxy_guard/services/gps_service.dart';
-import 'package:oxy_guard/models/squad_model.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:watch_it/watch_it.dart';

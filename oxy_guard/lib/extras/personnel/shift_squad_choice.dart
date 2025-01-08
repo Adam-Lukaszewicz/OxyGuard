@@ -1,7 +1,7 @@
+import 'package:OxyGuard/context_windows.dart';
+import 'package:OxyGuard/models/personnel/worker.dart';
+import 'package:OxyGuard/services/database_service.dart';
 import 'package:flutter/material.dart';
-import 'package:oxy_guard/context_windows.dart';
-import 'package:oxy_guard/services/database_service.dart';
-import 'package:oxy_guard/models/personnel/worker.dart';
 import 'package:watch_it/watch_it.dart';
 
 class ShiftSquadChoicePage extends StatefulWidget {

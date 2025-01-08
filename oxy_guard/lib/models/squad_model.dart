@@ -1,13 +1,13 @@
 import 'dart:convert';
 
+import 'package:OxyGuard/action/tabs/finished/finished_squad.dart';
+import 'package:OxyGuard/action/tabs/working/squad_page.dart';
+import 'package:OxyGuard/action/tabs/working/squad_tab.dart';
+import 'package:OxyGuard/models/personnel/worker.dart';
+import 'package:OxyGuard/services/database_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:oxy_guard/action/tabs/finished/finished_squad.dart';
-import 'package:oxy_guard/action/tabs/working/squad_page.dart';
-import 'package:oxy_guard/action/tabs/working/squad_tab.dart';
-import 'package:oxy_guard/models/personnel/worker.dart';
-import 'package:oxy_guard/services/database_service.dart';
 import 'package:watch_it/watch_it.dart';
 
 class SquadModel extends ChangeNotifier {
@@ -60,7 +60,7 @@ class SquadModel extends ChangeNotifier {
 
   int getTimeRemainingInCrisis(int index){
         int remainingTime =
-        (getOxygenRemaining(index)) ~/ (10);
+        (getOxygenRemaining(index)) ~/ (15/60);
     if (remainingTime > 0) {
       return remainingTime;
     } else {

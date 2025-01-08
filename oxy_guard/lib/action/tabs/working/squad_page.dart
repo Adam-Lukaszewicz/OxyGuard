@@ -1,19 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:OxyGuard/context_windows.dart';
+import 'package:OxyGuard/models/personnel/worker.dart';
+import 'package:OxyGuard/notification.dart';
+import 'package:OxyGuard/services/database_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:oxy_guard/models/personnel/worker.dart';
-import 'package:oxy_guard/services/database_service.dart';
 import 'package:provider/provider.dart';
-import 'package:oxy_guard/context_windows.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../../models/squad_model.dart';
 import '../../../services/gps_service.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:oxy_guard/notification.dart';
 
 final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -955,7 +955,7 @@ class _SquadPageState extends State<SquadPage>
                                         listen: false)
                                     .getOxygenRemaining(widget.index);
                                 Provider.of<SquadModel>(context, listen: false)
-                                    .addCheck(currentOxygen, 10, DateTime.now(),
+                                    .addCheck(currentOxygen, 15/60, DateTime.now(),
                                         widget.index);
                               });
                             },

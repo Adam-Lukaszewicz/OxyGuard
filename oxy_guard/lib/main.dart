@@ -1,12 +1,12 @@
+import 'package:OxyGuard/firebase_options.dart';
+import 'package:OxyGuard/home/home_page.dart';
+import 'package:OxyGuard/login/login_page.dart';
+import 'package:OxyGuard/services/database_service.dart';
+import 'package:OxyGuard/services/internet_serivce.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:oxy_guard/firebase_options.dart';
-import 'package:oxy_guard/home/home_page.dart';
-import 'package:oxy_guard/login/login_page.dart';
-import 'package:oxy_guard/services/database_service.dart';
-import 'package:oxy_guard/services/internet_serivce.dart';
 import 'package:watch_it/watch_it.dart';
 
 import 'services/gps_service.dart';

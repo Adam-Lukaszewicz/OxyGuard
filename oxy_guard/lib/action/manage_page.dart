@@ -1,7 +1,7 @@
+import 'package:OxyGuard/action/tabs/finished/finished_page.dart';
+import 'package:OxyGuard/action/tabs/waiting/waiting_page.dart';
+import 'package:OxyGuard/services/database_service.dart';
 import 'package:flutter/material.dart';
-import 'package:oxy_guard/action/tabs/finished/finished_page.dart';
-import 'package:oxy_guard/action/tabs/waiting/waiting_page.dart';
-import 'package:oxy_guard/services/database_service.dart';
 import 'package:provider/provider.dart';
 import 'package:watch_it/watch_it.dart';
 

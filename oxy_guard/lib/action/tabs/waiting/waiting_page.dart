@@ -1,6 +1,6 @@
+import 'package:OxyGuard/action/tabs/waiting/setup_page.dart';
+import 'package:OxyGuard/action/tabs/waiting/waiting_tab.dart';
 import 'package:flutter/material.dart';
-import 'package:oxy_guard/action/tabs/waiting/setup_page.dart';
-import 'package:oxy_guard/action/tabs/waiting/waiting_tab.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../../services/gps_service.dart';

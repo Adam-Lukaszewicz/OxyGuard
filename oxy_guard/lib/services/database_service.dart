@@ -2,14 +2,14 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:OxyGuard/models/action_model.dart';
+import 'package:OxyGuard/models/ended_model.dart';
+import 'package:OxyGuard/models/extinguisher_model.dart';
+import 'package:OxyGuard/models/personnel/personnel_model.dart';
+import 'package:OxyGuard/services/internet_serivce.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:oxy_guard/models/extinguisher_model.dart';
-import 'package:oxy_guard/models/action_model.dart';
-import 'package:oxy_guard/models/ended_model.dart';
-import 'package:oxy_guard/models/personnel/personnel_model.dart';
-import 'package:oxy_guard/services/internet_serivce.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -33,7 +33,6 @@ class DatabaseService extends ChangeNotifier {
 
   DatabaseService();
   void assignUserSpecificData() async {
-    //TODO: Możliwe, że ten arguemtn jest KOMPLETNIE bezuzyteczny
     if (FirebaseAuth.instance.currentUser != null) {
       _actionsRef = _firestore
           .collection("user_data")

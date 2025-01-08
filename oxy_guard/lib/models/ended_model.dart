@@ -1,7 +1,7 @@
 import 'dart:convert';
 
+import 'package:OxyGuard/action/tabs/finished/finished_squad.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:oxy_guard/action/tabs/finished/finished_squad.dart';
 
 class EndedModel {
   Position actionLocation;

@@ -1,10 +1,10 @@
+import 'package:OxyGuard/context_windows.dart';
+import 'package:OxyGuard/login/sub/register_page.dart';
+import 'package:OxyGuard/login/sub/reset_password.dart';
+import 'package:OxyGuard/services/database_service.dart';
+import 'package:OxyGuard/services/internet_serivce.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:oxy_guard/context_windows.dart';
-import 'package:oxy_guard/services/database_service.dart';
-import 'package:oxy_guard/login/sub/register_page.dart';
-import 'package:oxy_guard/login/sub/reset_password.dart';
-import 'package:oxy_guard/services/internet_serivce.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../home/home_page.dart';

@@ -1,20 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:OxyGuard/models/personnel/shift.dart';
+import 'package:OxyGuard/models/personnel/worker.dart';
+import 'package:OxyGuard/services/database_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:oxy_guard/services/database_service.dart';
-import 'package:oxy_guard/models/personnel/shift.dart';
-import 'package:oxy_guard/models/personnel/worker.dart';
 import 'package:watch_it/watch_it.dart';
 
 class PersonnelModel extends ChangeNotifier{
   List<Worker> team;
-  List<Shift> shifts;
-  PersonnelModel({List<Worker>? team, List<Shift>? shifts}): team = team ?? [], shifts = shifts ?? [];
+  PersonnelModel({List<Worker>? team, List<Shift>? shifts}): team = team ?? [];
   PersonnelModel.fromJson(Map<String, dynamic> json):this(
     team: (jsonDecode(json["Team"]) as List).map((worker) => Worker.fromJson(worker)).toList(),
-    shifts: (jsonDecode(json["Shifts"]) as List).map((shift) => Shift.fromJson(shift)).toList()
   );
 
   late StreamSubscription<DocumentSnapshot<Object?>> _listener;
@@ -22,7 +20,6 @@ class PersonnelModel extends ChangeNotifier{
   Map<String, dynamic> toJson(){
     return{
       "Team": jsonEncode(team),
-      "Shifts": jsonEncode(shifts),
     };
   }
 
@@ -30,7 +27,6 @@ class PersonnelModel extends ChangeNotifier{
     _listener = GetIt.I.get<DatabaseService>().getPersonnelRef().listen((event) {
       PersonnelModel newData = event.data() as PersonnelModel;
       team = newData.team;
-      shifts = newData.shifts;
       notifyListeners();
     });
   }
