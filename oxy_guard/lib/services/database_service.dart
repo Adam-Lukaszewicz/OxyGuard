@@ -18,9 +18,9 @@ class DatabaseService extends ChangeNotifier {
   late CollectionReference _actionsRef;
   late CollectionReference _endedRef;
   late CollectionReference
-      _atestsRef; //W przypadku innych atestów niż tych dla gaśnic to będzie kolekcja kolekcji, teraz atests=gaśnice
+      _atestsRef;
   late DocumentReference
-      _personnelRef; //TODO: To prawdopodbnie powinno zostać przerobione na kolekjce pracownikow z polami name surname
+      _personnelRef;
   late String actionId;
   PersonnelModel currentPersonnel = PersonnelModel();
   late ActionModel currentAction;

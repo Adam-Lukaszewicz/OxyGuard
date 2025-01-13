@@ -124,7 +124,6 @@ class _SquadChoiceState extends State<SquadChoice> {
                                       )
                                     ],
                                   );
-                                  //MOŻLIWY BUG: nie wiem czy ta logika pokryje brak lokalizacji w akcji (czy brak actionlocation spowoduje snap.hasError czy cos co nie jest handlowane)
                                 } else if (snap.hasError) {
                                   return const ListTile(
                                     title: Text(

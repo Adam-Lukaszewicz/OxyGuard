@@ -89,7 +89,6 @@ class _LoginPageState extends State<LoginPage> {
               ElevatedButton(
                   onPressed: () async {
                     try {
-                      //await FirebaseAuth.instance.setPersistence( Persistence.LOCAL);
                       final credential = await FirebaseAuth.instance
                           .signInWithEmailAndPassword(
                               email: emailController.text,

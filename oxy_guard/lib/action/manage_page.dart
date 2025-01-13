@@ -59,7 +59,6 @@ class _ManagePageState extends State<ManagePage>
                   child: SafeArea(
                     child: AppBar(
                       backgroundColor: const Color(0xfffcfcfc),
-                      //toolbarHeight: MediaQuery.of(context).size.height * 0.05,
                       leading: IconButton(
                         icon: const Icon(Icons.arrow_back),
                         onPressed: () {
@@ -67,7 +66,7 @@ class _ManagePageState extends State<ManagePage>
                         },
                       ),
                       title: const Text(
-                          "Odcinek bojowy X"), //Zamiast X faktycznie nazwa tego odcinka
+                          "Odcinek bojowy X"),
                       centerTitle: true,
                       bottom: PreferredSize(
                         preferredSize: Size.fromHeight(screenHeight * 0.05),

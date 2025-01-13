@@ -59,7 +59,6 @@ class _ShiftSquadChoicePageState extends State<ShiftSquadChoicePage> {
 
   @override
   Widget build(BuildContext context) {
-    //var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
     var guidesTextStyle =
         TextStyle(fontWeight: FontWeight.bold, fontSize: screenWidth * 0.05);

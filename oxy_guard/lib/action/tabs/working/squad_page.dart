@@ -1686,7 +1686,6 @@ class _SquadPageState extends State<SquadPage>
 
   void _checkPressureAndNotify() async {
     if (lastCheck != null) {
-      //zamiast 10 powinno być widget.interval                        //zamiast 10 powinno być ok 40s
       if ((DateTime.now().difference(lastCheck!).inSeconds > widget.interval) &
           ((lastCheckAllert == null)
               ? true

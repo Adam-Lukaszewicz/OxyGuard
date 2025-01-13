@@ -237,7 +237,6 @@ Future<int?> timeDialog(BuildContext context, String titleText) {
                                                   .width *
                                               .04),
                                       child: Text("${index * 15}",
-                                          //To powoduje, że Card zawierający 0 sekund jest mniejszy niż 15/30/45. Brzydkie, ale nie widzę szybkiej poprawki na to.
                                           style: TextStyle(
                                               color: Theme.of(context)
                                                   .primaryColorDark,
@@ -298,7 +297,7 @@ Future<int?> timeDialog(BuildContext context, String titleText) {
 Future<bool?> warningDialog(BuildContext context, warningText) async {
   return showDialog<bool?>(
     context: context,
-    barrierDismissible: false, // user must tap button!
+    barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
         backgroundColor: Theme.of(context).colorScheme.surface,
@@ -310,7 +309,7 @@ Future<bool?> warningDialog(BuildContext context, warningText) async {
                 child: Text(
                   warningText,
                   style: const TextStyle(
-                      fontSize: 17), // Zmieniony rozmiar czcionki treści
+                      fontSize: 17),
                 ),
               ),
             ],
@@ -332,7 +331,7 @@ Future<bool?> warningDialog(BuildContext context, warningText) async {
 Future<void> succesDialog(BuildContext context, warningText) async {
   return showDialog<void>(
     context: context,
-    barrierDismissible: false, // user must tap button!
+    barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
         backgroundColor: Theme.of(context).colorScheme.surface,
@@ -344,7 +343,7 @@ Future<void> succesDialog(BuildContext context, warningText) async {
                 child: Text(
                   warningText,
                   style: const TextStyle(
-                      fontSize: 17), // Zmieniony rozmiar czcionki treści
+                      fontSize: 17),
                 ),
               ),
             ],

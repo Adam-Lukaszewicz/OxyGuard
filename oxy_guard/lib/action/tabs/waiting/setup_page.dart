@@ -236,7 +236,7 @@ class _SetupPage2State extends State<SetupPage>
                         List<String> workierString = [];
                         for (Worker worker in workerList) {
                           workierString.add(
-                              "${worker.name}+ ${worker.surname}"); // Przykładowo wypisanie imion pracowników
+                              "${worker.name}+ ${worker.surname}");
                         }
                         var selectedItem = await selectWorkerFromList(context);
                         setState(() {
@@ -660,7 +660,6 @@ class _SetupPage2State extends State<SetupPage>
                                                   .width *
                                               .04),
                                       child: Text("${index * 15}",
-                                          //To powoduje, że Card zawierający 0 sekund jest mniejszy niż 15/30/45. Brzydkie, ale nie widzę szybkiej poprawki na to.
                                           style: TextStyle(
                                               color: Theme.of(context)
                                                   .primaryColorDark,
@@ -720,7 +719,7 @@ class _SetupPage2State extends State<SetupPage>
   Future<void> warningDialog(String warningText) async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: false, // user must tap button!
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: const Color(0xfffcfcfc),

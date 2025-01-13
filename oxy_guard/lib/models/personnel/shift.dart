@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:OxyGuard/models/personnel/worker.dart';
 
 class Shift{
-  int startTime; //8:30 is stored as 830, 10:00 as 1000 etc.
+  int startTime;
   int endTime;
   List<Worker> team;
 

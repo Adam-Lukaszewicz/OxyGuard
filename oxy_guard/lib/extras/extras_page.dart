@@ -159,7 +159,6 @@ class _ExtrasPageState extends State<ExtrasPage> {
                     ),
                   ),
                 ),
-                //Kolejne funkcje aplikacji tutaj
               ],
             ),
           ),
