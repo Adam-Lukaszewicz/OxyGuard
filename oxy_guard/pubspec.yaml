@@ -52,6 +52,10 @@ dependencies:
   watch_it: ^1.5.1
   internet_connection_checker_plus: ^2.5.2
   path_provider: ^2.1.5
+  get: ^4.7.1
+  flutter_bloc: ^9.0.0
+  bloc: ^9.0.0
+  equatable: ^2.0.7
 
 dev_dependencies:
   flutter_test:

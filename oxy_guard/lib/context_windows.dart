@@ -1,5 +1,5 @@
-import 'package:OxyGuard/models/personnel/worker.dart';
-import 'package:OxyGuard/services/database_service.dart';
+import 'package:OxyGuard/legacy/models/personnel/worker.dart';
+import 'package:OxyGuard/legacy/services/database_service.dart';
 import 'package:flutter/material.dart';
 import 'package:watch_it/watch_it.dart';
 
