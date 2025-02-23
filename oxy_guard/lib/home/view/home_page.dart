@@ -40,10 +40,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Stack(children: [
       Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.surface,
         appBar: AppBar(
-            centerTitle: true,
-            backgroundColor: Theme.of(context).colorScheme.surface),
+          centerTitle: true,
+        ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -61,223 +60,183 @@ class _HomePageState extends State<HomePage> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ElevatedButton(
-                      onPressed: () async {
-                        /*ActionModel preparedAction = ActionModel();
-                        SquadModel preparedSquad = SquadModel();
-                        preparedAction.addSquad(preparedSquad);
-                        await SharedPreferences.getInstance().then((prefs) {
-                          int entryPressure =
-                              prefs.getInt("startingPressure") ?? 300;
-                          int exitPressure =
-                              prefs.getInt("extremePressure") ?? 60;
-                          int interval = prefs.getInt("timePeriod") ?? 600;
-                          preparedSquad.startSquadWork(
-                              entryPressure,
-                              exitPressure,
-                              interval,
-                              "",
-                              null,
-                              null,
-                              null,
-                              true);
-                          preparedSquad.startSquadWork(
-                              entryPressure,
-                              exitPressure,
-                              interval,
-                              "",
-                              null,
-                              null,
-                              null,
-                              true);
-                          preparedSquad.startSquadWork(
-                              entryPressure,
-                              exitPressure,
-                              interval,
-                              "",
-                              null,
-                              null,
-                              null,
-                              true);
-                          dbService.currentAction = preparedAction;
-                          if (context.mounted) {
-                            dbService.currentAction
-                                .setActionLocation(context)
-                                .then((none) {
-                              setState(() {
-                                _isLoading = false;
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.1,
+                    width: MediaQuery.of(context).size.width * 0.7,
+                    child: ElevatedButton(
+                        onPressed: () async {
+                          /*ActionModel preparedAction = ActionModel();
+                          SquadModel preparedSquad = SquadModel();
+                          preparedAction.addSquad(preparedSquad);
+                          await SharedPreferences.getInstance().then((prefs) {
+                            int entryPressure =
+                                prefs.getInt("startingPressure") ?? 300;
+                            int exitPressure =
+                                prefs.getInt("extremePressure") ?? 60;
+                            int interval = prefs.getInt("timePeriod") ?? 600;
+                            preparedSquad.startSquadWork(
+                                entryPressure,
+                                exitPressure,
+                                interval,
+                                "",
+                                null,
+                                null,
+                                null,
+                                true);
+                            preparedSquad.startSquadWork(
+                                entryPressure,
+                                exitPressure,
+                                interval,
+                                "",
+                                null,
+                                null,
+                                null,
+                                true);
+                            preparedSquad.startSquadWork(
+                                entryPressure,
+                                exitPressure,
+                                interval,
+                                "",
+                                null,
+                                null,
+                                null,
+                                true);
+                            dbService.currentAction = preparedAction;
+                            if (context.mounted) {
+                              dbService.currentAction
+                                  .setActionLocation(context)
+                                  .then((none) {
+                                setState(() {
+                                  _isLoading = false;
+                                });
+                                if (context.mounted) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SquadChoice(
+                                              quickStart: true,
+                                            )),
+                                  );
+                                }
                               });
-                              if (context.mounted) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => SquadChoice(
-                                            quickStart: true,
-                                          )),
-                                );
-                              }
-                            });
-                          }
-                        });
-                        setState(() {
-                          _isLoading = true;
-                        });
-                        */
-                      },
-                      style: ButtonStyle(
-                          fixedSize: WidgetStateProperty.all(Size(
-                              MediaQuery.of(context).size.width * 0.7,
-                              MediaQuery.of(context).size.height * 0.1)),
-                          elevation: WidgetStateProperty.all(5),
-                          shape: WidgetStateProperty.all(
-                              const RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(15)),
-                                  side: BorderSide(width: 0.1))),
-                          backgroundColor: WidgetStateProperty.all(
-                              Theme.of(context).primaryColorDark)),
-                      child: Center(
-                          child: Text(
-                        "Szybki start",
-                        style: TextStyle(
-                            fontSize: 27,
-                            color: Theme.of(context).colorScheme.onPrimary),
-                      ))),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const ActionList()),
-                        );
-                      },
-                      style: ButtonStyle(
-                        fixedSize: WidgetStateProperty.all(Size(
-                            MediaQuery.of(context).size.width * 0.7,
-                            MediaQuery.of(context).size.height * 0.07)),
-                        shape: WidgetStateProperty.all(
-                            const RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(15)),
-                                side: BorderSide(width: 0.1))),
-                        elevation: const WidgetStatePropertyAll(5),
-                        backgroundColor:
-                            const WidgetStatePropertyAll(Colors.white),
-                      ),
-                      child: Center(
-                          child: Text(
-                        "Dołącz do akcji",
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Theme.of(context).primaryColorDark),
-                      ))),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-                  ElevatedButton(
-                      onPressed: () {
-                        /*
-                        dbService.currentAction = ActionModel();
-                        dbService.currentAction
-                            .setActionLocation(context)
-                            .then((none) {
-                          setState(() {
-                            _isLoading = false;
+                            }
                           });
-                          if (context.mounted) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SquadChoice()),
-                            );
-                          }
-                        });
-                        setState(() {
-                          _isLoading = true;
-                        });
-                        */
-                      },
-                      style: ButtonStyle(
-                          fixedSize: WidgetStateProperty.all(Size(
-                              MediaQuery.of(context).size.width * 0.7,
-                              MediaQuery.of(context).size.height * 0.07)),
-                          shape: WidgetStateProperty.all(
-                              const RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(15)),
-                                  side: BorderSide(width: 0.1))),
-                          backgroundColor:
-                              const WidgetStatePropertyAll(Colors.white),
-                          elevation: const WidgetStatePropertyAll(5)),
-                      child: Center(
-                          child: Text(
-                        "Stwórz akcję",
-                        style: TextStyle(
+                          setState(() {
+                            _isLoading = true;
+                          });
+                          */
+                        },
+                        style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: const Color(0xff1874d4)),
+                        child: const Center(
+                            child: Text(
+                          "Szybki start",
+                          style: TextStyle(
+                            fontSize: 27,
+                          ),
+                        ))),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.7,
+                    height: MediaQuery.of(context).size.height * 0.07,
+                    child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const ActionList()),
+                          );
+                        },
+                        child: const Center(
+                            child: Text(
+                          "Dołącz do akcji",
+                          style: TextStyle(
                             fontSize: 20,
-                            color: Theme.of(context).primaryColorDark),
-                      ))),
+                          ),
+                        ))),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.7,
+                    height: MediaQuery.of(context).size.height * 0.07,
+                    child: ElevatedButton(
+                        onPressed: () {
+                          /*
+                          dbService.currentAction = ActionModel();
+                          dbService.currentAction
+                              .setActionLocation(context)
+                              .then((none) {
+                            setState(() {
+                              _isLoading = false;
+                            });
+                            if (context.mounted) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SquadChoice()),
+                              );
+                            }
+                          });
+                          setState(() {
+                            _isLoading = true;
+                          });
+                          */
+                        },
+                        child: const Center(
+                            child: Text(
+                          "Stwórz akcję",
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                        ))),
+                  ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.04),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Stack(children: [
-                        ElevatedButton(
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.325,
+                          height: MediaQuery.of(context).size.height * 0.07,
+                          child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const ExtrasPage()));
+                              },
+                              child: const Center(
+                                  child: Text(
+                                "Dodatkowe",
+                                style: TextStyle(
+                                    fontSize: 15,),
+                              ))),
+                        ),
+                      ]),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.05,
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.325,
+                    height: MediaQuery.of(context).size.height * 0.07,
+                        child: ElevatedButton(
                             onPressed: () {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          const ExtrasPage()));
+                                          const SettingsPage()));
                             },
-                            style: ButtonStyle(
-                                fixedSize: WidgetStateProperty.all(Size(
-                                    MediaQuery.of(context).size.width * 0.325,
-                                    MediaQuery.of(context).size.height * 0.07)),
-                                shape: WidgetStateProperty.all(
-                                    const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(15)),
-                                        side: BorderSide(width: 0.1))),
-                                backgroundColor:
-                                    const WidgetStatePropertyAll(Colors.white),
-                                elevation: const WidgetStatePropertyAll(5)),
-                            child: Center(
+                            child: const Center(
                                 child: Text(
-                              "Dodatkowe",
+                              "Ustawienia",
                               style: TextStyle(
-                                  fontSize: 15,
-                                  color: Theme.of(context).primaryColorDark),
+                                  fontSize: 15,),
                             ))),
-                      ]),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.05,
                       ),
-                      ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const SettingsPage()));
-                          },
-                          style: ButtonStyle(
-                              fixedSize: WidgetStateProperty.all(Size(
-                                  MediaQuery.of(context).size.width * 0.325,
-                                  MediaQuery.of(context).size.height * 0.07)),
-                              shape: WidgetStateProperty.all(
-                                  const RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(15)),
-                                      side: BorderSide(width: 0.1))),
-                              backgroundColor:
-                                  const WidgetStatePropertyAll(Colors.white),
-                              elevation: const WidgetStatePropertyAll(5)),
-                          child: Center(
-                              child: Text(
-                            "Ustawienia",
-                            style: TextStyle(
-                                fontSize: 15,
-                                color: Theme.of(context).primaryColorDark),
-                          ))),
                     ],
                   ),
                 ],

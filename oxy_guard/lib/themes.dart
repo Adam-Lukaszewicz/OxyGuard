@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class Themes {
   static final ThemeData light = ThemeData(
     scaffoldBackgroundColor: const Color(0xfffcfcfc),
+    appBarTheme: const AppBarTheme(color: Color(0xfffcfcfc)),
     useMaterial3: true,
     elevatedButtonTheme: const ElevatedButtonThemeData(
         style: ButtonStyle(
@@ -13,7 +14,7 @@ class Themes {
             backgroundColor: WidgetStatePropertyAll(Colors.white),
             foregroundColor: WidgetStatePropertyAll(Color(0xff1874d4)))),
   );
-    static final ThemeData dark = ThemeData(
+  static final ThemeData dark = ThemeData(
     scaffoldBackgroundColor: const Color(0xff2d2d30),
     useMaterial3: true,
     elevatedButtonTheme: const ElevatedButtonThemeData(
