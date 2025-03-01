@@ -6,4 +6,12 @@ class UserRepository {
   User get user {
     return _user ?? User.empty;
   }
+
+  set user(User value){
+    _user = value;
+  }
+
+  void logOut(){
+    _user = null;
+  }
 }

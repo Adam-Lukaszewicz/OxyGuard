@@ -1,3 +1,5 @@
+import 'package:OxyGuard/actions/actions_repository.dart';
+import 'package:OxyGuard/actions/api/impl/firestore_actions_api.dart';
 import 'package:OxyGuard/app/view/oxy_guard.dart';
 import 'package:OxyGuard/app_bloc_observer.dart';
 import 'package:OxyGuard/firebase_options.dart';
@@ -19,6 +21,9 @@ void main() async {
   final authenticationRepository = AuthenticationRepository();
   final userRepository = UserRepository();
   await authenticationRepository.user.first;
+
+  final firestoreActionsApi = FirestoreActionsApi();
+  final actionsRepository = ActionsRepository(actionsApi: firestoreActionsApi);
   
-  runApp(OxyGuard(authenticationRepository: authenticationRepository, userRepository: userRepository,));
+  runApp(OxyGuard(authenticationRepository: authenticationRepository, userRepository: userRepository, actionsRepository: actionsRepository,));
 }

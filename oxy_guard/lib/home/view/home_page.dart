@@ -212,7 +212,8 @@ class _HomePageState extends State<HomePage> {
                                   child: Text(
                                 "Dodatkowe",
                                 style: TextStyle(
-                                    fontSize: 15,),
+                                  fontSize: 15,
+                                ),
                               ))),
                         ),
                       ]),
@@ -221,7 +222,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       SizedBox(
                         width: MediaQuery.of(context).size.width * 0.325,
-                    height: MediaQuery.of(context).size.height * 0.07,
+                        height: MediaQuery.of(context).size.height * 0.07,
                         child: ElevatedButton(
                             onPressed: () {
                               Navigator.push(
@@ -234,7 +235,8 @@ class _HomePageState extends State<HomePage> {
                                 child: Text(
                               "Ustawienia",
                               style: TextStyle(
-                                  fontSize: 15,),
+                                fontSize: 15,
+                              ),
                             ))),
                       ),
                     ],

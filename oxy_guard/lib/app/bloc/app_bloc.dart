@@ -10,14 +10,18 @@ part 'app_event.dart';
 part 'app_state.dart';
 
 class AppBloc extends Bloc<AppEvent, AppState> {
-  AppBloc({required AuthenticationRepository authenticationRepository, required UserRepository userRepository})
+  AppBloc(
+      {required AuthenticationRepository authenticationRepository,
+      required UserRepository userRepository})
       : _authenticationRepository = authenticationRepository,
+        _userRepository = userRepository,
         super(AppState(user: userRepository.user)) {
     on<AppUserSubscriptionRequested>(_onUserSubscriptionRequested);
     on<AppLogoutPressed>(_onLogoutPressed);
   }
 
   final AuthenticationRepository _authenticationRepository;
+  final UserRepository _userRepository;
 
   Future<void> _onUserSubscriptionRequested(
     AppUserSubscriptionRequested event,
@@ -25,7 +29,10 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   ) {
     return emit.onEach(
       _authenticationRepository.user,
-      onData: (user) => emit(AppState(user: user)),
+      onData: (user) {
+        emit(AppState(user: user));
+        _userRepository.user = user;
+      },
       onError: addError,
     );
   }
@@ -35,5 +42,6 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     Emitter<AppState> emit,
   ) {
     _authenticationRepository.logOut();
+    _userRepository.logOut();
   }
 }

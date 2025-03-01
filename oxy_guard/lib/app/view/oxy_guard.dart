@@ -1,3 +1,4 @@
+import 'package:OxyGuard/actions/actions_repository.dart';
 import 'package:OxyGuard/app/bloc/app_bloc.dart';
 import 'package:OxyGuard/home/view/home_page.dart';
 import 'package:OxyGuard/login/view/login_page.dart';
@@ -12,21 +13,29 @@ class OxyGuard extends StatelessWidget {
   const OxyGuard(
       {required AuthenticationRepository authenticationRepository,
       required UserRepository userRepository,
+      required ActionsRepository actionsRepository,
       super.key})
       : _authenticationRepository = authenticationRepository,
-        _userRepository = userRepository;
+        _userRepository = userRepository,
+        _actionsRepository = actionsRepository;
 
   final AuthenticationRepository _authenticationRepository;
   final UserRepository _userRepository;
+  final ActionsRepository _actionsRepository;
 
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider<AuthenticationRepository>(
-            create: (context) => AuthenticationRepository()),
-        RepositoryProvider<UserRepository>(
-            create: (context) => UserRepository())
+        RepositoryProvider<AuthenticationRepository>.value(
+          value: _authenticationRepository,
+        ),
+        RepositoryProvider<UserRepository>.value(
+          value: _userRepository,
+        ),
+        RepositoryProvider<ActionsRepository>.value(
+          value: _actionsRepository,
+        )
       ],
       child: BlocProvider(
           lazy: false,

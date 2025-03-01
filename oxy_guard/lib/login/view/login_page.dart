@@ -1,7 +1,6 @@
 import 'package:OxyGuard/login/cubit/login_cubit.dart';
 import 'package:OxyGuard/login/view/login_form.dart';
 import 'package:OxyGuard/repositories/authentication_repository.dart';
-import 'package:OxyGuard/repositories/user_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,7 +17,7 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocProvider(
-        create: (_) => LoginCubit(context.read<AuthenticationRepository>(), context.read<UserRepository>()),
+        create: (_) => LoginCubit(context.read<AuthenticationRepository>()),
         child: const LoginForm(),
       ),
     );
