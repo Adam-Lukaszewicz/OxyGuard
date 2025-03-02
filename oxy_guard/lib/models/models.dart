@@ -1,3 +1,3 @@
 export 'user.dart';
-export 'action.dart';
-export 'squad.dart';
+export 'action/action.dart';
+export 'squad/squad.dart';

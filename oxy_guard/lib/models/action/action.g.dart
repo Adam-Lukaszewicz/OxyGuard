@@ -9,10 +9,6 @@ part of 'action.dart';
 Action _$ActionFromJson(Map<String, dynamic> json) => Action(
       uid: json['uid'] as String,
       id: json['id'] as String?,
-      squads: (json['squads'] as Map<String, dynamic>?)?.map(
-            (k, e) => MapEntry(k, Squad.fromJson(e as Map<String, dynamic>)),
-          ) ??
-          const {},
       actionLocation: _$JsonConverterFromJson<Map<String, dynamic>, Position>(
           json['actionLocation'], const PositionConverter().fromJson),
       actionName: json['actionName'] as String?,
@@ -21,7 +17,6 @@ Action _$ActionFromJson(Map<String, dynamic> json) => Action(
 Map<String, dynamic> _$ActionToJson(Action instance) => <String, dynamic>{
       'uid': instance.uid,
       'id': instance.id,
-      'squads': instance.squads,
       'actionLocation': _$JsonConverterToJson<Map<String, dynamic>, Position>(
           instance.actionLocation, const PositionConverter().toJson),
       'actionName': instance.actionName,

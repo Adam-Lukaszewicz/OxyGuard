@@ -5,7 +5,9 @@ part 'squad.g.dart';
 
 @JsonSerializable()
 class Squad {
-  Squad({String? id}) : id = id ?? const Uuid().v4();
+  Squad({required this.actionId, String? id}) : id = id ?? const Uuid().v4();
+
+  String actionId;
 
   String? id;
 

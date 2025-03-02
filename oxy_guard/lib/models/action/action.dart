@@ -1,4 +1,3 @@
-import 'package:OxyGuard/models/models.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
@@ -7,19 +6,12 @@ part 'action.g.dart';
 
 @JsonSerializable()
 class Action {
-  Action(
-      {required this.uid,
-      String? id,
-      this.squads = const {},
-      this.actionLocation,
-      this.actionName})
+  Action({required this.uid, String? id, this.actionLocation, this.actionName})
       : id = id ?? const Uuid().v4();
 
   String uid;
 
   String? id;
-
-  Map<String, Squad> squads;
 
   @PositionConverter()
   Position? actionLocation;
