@@ -87,7 +87,6 @@ class LogInWithEmailAndPasswordFailure implements Exception {
   final String message;
 }
 
-
 /// Thrown during the logout process if a failure occurs.
 class LogOutFailure implements Exception {}
 
@@ -98,8 +97,7 @@ class AuthenticationRepository {
   /// {@macro authentication_repository}
   AuthenticationRepository({
     firebase_auth.FirebaseAuth? firebaseAuth,
-  })  : 
-        _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance;
+  }) : _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance;
 
   final firebase_auth.FirebaseAuth _firebaseAuth;
 

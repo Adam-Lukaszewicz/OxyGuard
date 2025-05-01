@@ -1,50 +1,20 @@
-import 'package:OxyGuard/actions/actions_repository.dart';
 import 'package:OxyGuard/app/bloc/app_bloc.dart';
 import 'package:OxyGuard/home/view/home_page.dart';
 import 'package:OxyGuard/login/view/login_page.dart';
-import 'package:OxyGuard/repositories/authentication_repository.dart';
-import 'package:OxyGuard/repositories/user_repository.dart';
+import 'package:OxyGuard/navigation/router.dart';
+import 'package:OxyGuard/navigation/routes_names.dart';
 import 'package:OxyGuard/splash/view/splash.dart';
 import 'package:OxyGuard/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class OxyGuard extends StatelessWidget {
-  const OxyGuard(
-      {required AuthenticationRepository authenticationRepository,
-      required UserRepository userRepository,
-      required ActionsRepository actionsRepository,
-      super.key})
-      : _authenticationRepository = authenticationRepository,
-        _userRepository = userRepository,
-        _actionsRepository = actionsRepository;
-
-  final AuthenticationRepository _authenticationRepository;
-  final UserRepository _userRepository;
-  final ActionsRepository _actionsRepository;
+  const OxyGuard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider<AuthenticationRepository>.value(
-          value: _authenticationRepository,
-        ),
-        RepositoryProvider<UserRepository>.value(
-          value: _userRepository,
-        ),
-        RepositoryProvider<ActionsRepository>.value(
-          value: _actionsRepository,
-        )
-      ],
-      child: BlocProvider(
-          lazy: false,
-          create: (_) => AppBloc(
-              authenticationRepository: _authenticationRepository,
-              userRepository: _userRepository)
-            ..add(const AppUserSubscriptionRequested()),
-          child: const OxyGuardView()),
-    );
+    return BlocProvider(
+        lazy: false, create: (_) => AppBloc()..add(const AppUserSubscriptionRequested()), child: const OxyGuardView());
   }
 }
 
@@ -56,21 +26,15 @@ class OxyGuardView extends StatelessWidget {
     return MaterialApp(
       title: 'OxyGuard',
       theme: Themes.light,
+      navigatorKey: router.navigatorKey,
+      onGenerateRoute: (settings) => router.generate(settings),
       home: BlocListener<AppBloc, AppState>(
         listener: (context, state) {
           switch (state.status) {
             case AppStatus.authenticated:
-              Navigator.pushAndRemoveUntil(
-                context,
-                HomePage.route(),
-                (route) => route.isFirst,
-              );
+              router.pushAndRemove(RoutesNames.home);
             case AppStatus.unauthenticated:
-              Navigator.pushAndRemoveUntil(
-                context,
-                LoginPage.route(),
-                (route) => route.isFirst,
-              );
+              router.pushAndRemove(RoutesNames.login);
           }
         },
         child: const SplashPage(),

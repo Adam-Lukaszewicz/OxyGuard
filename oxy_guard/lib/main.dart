@@ -1,10 +1,7 @@
-import 'package:OxyGuard/actions/actions_repository.dart';
-import 'package:OxyGuard/actions/api/impl/firestore_actions_api.dart';
 import 'package:OxyGuard/app/view/oxy_guard.dart';
 import 'package:OxyGuard/app_bloc_observer.dart';
 import 'package:OxyGuard/firebase_options.dart';
-import 'package:OxyGuard/repositories/authentication_repository.dart';
-import 'package:OxyGuard/repositories/user_repository.dart';
+import 'package:OxyGuard/service_locator.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -18,12 +15,7 @@ void main() async {
     persistenceEnabled: true,
   );
 
-  final authenticationRepository = AuthenticationRepository();
-  final userRepository = UserRepository();
-  await authenticationRepository.user.first;
+  await setupDI();
 
-  final firestoreActionsApi = FirestoreActionsApi();
-  final actionsRepository = ActionsRepository(actionsApi: firestoreActionsApi);
-  
-  runApp(OxyGuard(authenticationRepository: authenticationRepository, userRepository: userRepository, actionsRepository: actionsRepository,));
+  runApp(const OxyGuard());
 }

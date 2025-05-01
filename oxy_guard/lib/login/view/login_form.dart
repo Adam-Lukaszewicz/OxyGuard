@@ -28,125 +28,123 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        body: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.05,
-              vertical: 5.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.07,
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: Padding(
+        padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.05,
+            vertical: 5.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.07,
+            ),
+            Image.asset(
+              'media_files/logo_no_fire.png',
+              width: MediaQuery.of(context).size.width * 0.8,
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.13,
+            ),
+            TextField(
+              onChanged: (email) =>
+                  context.read<LoginCubit>().emailChanged(email),
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Wprowadź e-mail',
               ),
-              Image.asset(
-                'media_files/logo_no_fire.png',
-                width: MediaQuery.of(context).size.width * 0.8,
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.13,
-              ),
-              TextField(
-                onChanged: (email) =>
-                    context.read<LoginCubit>().emailChanged(email),
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Wprowadź e-mail',
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.05,
+            ),
+            TextField(
+              onChanged: (password) =>
+                  context.read<LoginCubit>().passwordChanged(password),
+              decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  hintText: 'Wprowadź hasło',
+                  suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          passwordShowing = !passwordShowing;
+                        });
+                      },
+                      icon: passwordShowing
+                          ? const Icon(Icons.remove_red_eye_outlined)
+                          : const Icon(Icons.remove_red_eye))),
+              obscureText: !passwordShowing,
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.07,
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.07,
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: ElevatedButton(
+                  onPressed: () async {
+                    context.read<LoginCubit>().loginWithCredentials();
+                  },
+                  style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: const Color(0xff1874d4)),
+                  child: const Center(
+                      child: Text(
+                    "Zaloguj się",
+                    style: TextStyle(
+                      fontSize: 24,
+                    ),
+                  ))),
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.03,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.07,
+                  width: MediaQuery.of(context).size.width * 0.42,
+                  child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const RegisterPage()),
+                        );
+                      },
+                      child: const Center(
+                          child: Text(
+                        "Zarejestruj się",
+                        style: TextStyle(
+                          fontSize: 18,
+                        ),
+                      ))),
                 ),
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.05,
-              ),
-              TextField(
-                onChanged: (password) =>
-                    context.read<LoginCubit>().passwordChanged(password),
-                decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    hintText: 'Wprowadź hasło',
-                    suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            passwordShowing = !passwordShowing;
-                          });
-                        },
-                        icon: passwordShowing
-                            ? const Icon(Icons.remove_red_eye_outlined)
-                            : const Icon(Icons.remove_red_eye))),
-                obscureText: !passwordShowing,
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.07,
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.07,
-                width: MediaQuery.of(context).size.width * 0.9,
-                child: ElevatedButton(
-                    onPressed: () async {
-                      context.read<LoginCubit>().loginWithCredentials();
-                    },
-                    style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: const Color(0xff1874d4)),
-                    child: const Center(
-                        child: Text(
-                      "Zaloguj się",
-                      style: TextStyle(
-                        fontSize: 24,
-                      ),
-                    ))),
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.03,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.07,
-                    width: MediaQuery.of(context).size.width * 0.42,
-                    child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const RegisterPage()),
-                          );
-                        },
-                        child: const Center(
-                            child: Text(
-                          "Zarejestruj się",
-                          style: TextStyle(
-                            fontSize: 18,
-                          ),
-                        ))),
-                  ),
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.06),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.07,
-                    width: MediaQuery.of(context).size.width * 0.42,
-                    child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const ResetPasswordPage()),
-                          );
-                        },
-                        child: const Center(
-                            child: Text(
-                          "Odzyskaj hasło",
-                          style: TextStyle(
-                            fontSize: 16,
-                          ),
-                        ))),
-                  ),
-                ],
-              ),
-            ],
-          ),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.06),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.07,
+                  width: MediaQuery.of(context).size.width * 0.42,
+                  child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const ResetPasswordPage()),
+                        );
+                      },
+                      child: const Center(
+                          child: Text(
+                        "Odzyskaj hasło",
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                      ))),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

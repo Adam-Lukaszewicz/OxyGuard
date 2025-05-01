@@ -41,6 +41,7 @@ class _HomePageState extends State<HomePage> {
     return Stack(children: [
       Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           centerTitle: true,
         ),
         body: Center(

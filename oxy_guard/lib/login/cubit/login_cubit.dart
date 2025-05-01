@@ -1,14 +1,14 @@
 import 'package:OxyGuard/repositories/authentication_repository.dart';
+import 'package:OxyGuard/service_locator.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
-  LoginCubit(this._authenticationRepository)
-      : super(const LoginState());
+  LoginCubit() : super(const LoginState());
 
-  final AuthenticationRepository _authenticationRepository;
+  final AuthenticationRepository _authenticationRepository = sl();
 
   void emailChanged(String value) {
     emit(state.copyWith(email: value));
