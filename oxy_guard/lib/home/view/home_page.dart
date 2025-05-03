@@ -1,18 +1,11 @@
-import 'package:OxyGuard/legacy/action/squad_choice.dart';
 import 'package:OxyGuard/context_windows.dart';
 import 'package:OxyGuard/extra/view/extras_page.dart';
 import 'package:OxyGuard/legacy/home/sub/action_list.dart';
-import 'package:OxyGuard/legacy/models/action_model.dart';
-import 'package:OxyGuard/legacy/models/squad_model.dart';
-import 'package:OxyGuard/legacy/services/database_service.dart';
-import 'package:OxyGuard/legacy/services/internet_serivce.dart';
 import 'package:OxyGuard/legacy/settings/settings_page.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:volume_controller/volume_controller.dart';
 import 'package:real_volume/real_volume.dart';
-import 'package:watch_it/watch_it.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

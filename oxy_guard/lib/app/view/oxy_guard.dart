@@ -1,6 +1,4 @@
 import 'package:OxyGuard/app/bloc/app_bloc.dart';
-import 'package:OxyGuard/home/view/home_page.dart';
-import 'package:OxyGuard/login/view/login_page.dart';
 import 'package:OxyGuard/navigation/router.dart';
 import 'package:OxyGuard/navigation/routes_names.dart';
 import 'package:OxyGuard/splash/view/splash.dart';

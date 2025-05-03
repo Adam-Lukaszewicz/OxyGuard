@@ -1,5 +1,7 @@
 import 'package:OxyGuard/home/view/home_page.dart';
-import 'package:OxyGuard/login/view/login_page.dart';
+import 'package:OxyGuard/reset_password/reset_page.dart';
+import 'package:OxyGuard/signup/singup_page.dart';
+import 'package:OxyGuard/login/login_page.dart';
 import 'package:OxyGuard/navigation/routes_names.dart';
 import 'package:OxyGuard/service_locator.dart';
 import 'package:OxyGuard/splash/view/splash.dart';
@@ -13,13 +15,17 @@ class Router {
   Route<dynamic> generate(RouteSettings settings) {
     switch (settings.name) {
       case RoutesNames.home:
-        return MaterialPageRoute(builder: (_) => HomePage());
+        return MaterialPageRoute(builder: (_) => const HomePage());
       case RoutesNames.login:
-        return MaterialPageRoute(builder: (_) => LoginPage());
+        return MaterialPageRoute(builder: (_) => const LoginPage());
+      case RoutesNames.signup:
+        return MaterialPageRoute(builder: (_) => const SingupPage());
+      case RoutesNames.restorePassword:
+        return MaterialPageRoute(builder: (_) => const ResetPage());
       case RoutesNames.splash:
-        return MaterialPageRoute(builder: (_) => SplashPage());
-      default:
-        return MaterialPageRoute(builder: (_) => SplashPage());
+        return MaterialPageRoute(builder: (_) => const SplashPage());
+      default: 
+        return MaterialPageRoute(builder: (_) => const SplashPage());
     }
   }
 

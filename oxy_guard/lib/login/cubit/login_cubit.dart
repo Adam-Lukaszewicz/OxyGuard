@@ -6,24 +6,28 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
-  LoginCubit() : super(const LoginState());
+  LoginCubit() : super(LoginInitalState());
 
   final AuthenticationRepository _authenticationRepository = sl();
 
+  void init() {
+    emit(LoginLoadedState());
+  }
+
   void emailChanged(String value) {
-    emit(state.copyWith(email: value));
+    emit((state as LoginLoadedState).copyWith(email: value));
   }
 
   void passwordChanged(String value) {
-    emit(state.copyWith(password: value));
+    emit((state as LoginLoadedState).copyWith(password: value));
   }
 
   Future<void> loginWithCredentials() async {
     try {
       _authenticationRepository.logInWithEmailAndPassword(
-          email: state.email, password: state.password);
+          email: (state as LoginLoadedState).email, password: (state as LoginLoadedState).password);
     } on LogInWithEmailAndPasswordFailure catch (e) {
-      emit(state.copyWith(errorMessage: e.message));
+      emit((state as LoginLoadedState).copyWith(errorMessage: e.message));
     }
   }
 }

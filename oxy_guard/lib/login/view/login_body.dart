@@ -1,20 +1,17 @@
-import 'package:OxyGuard/app/view/oxy_guard.dart';
-import 'package:OxyGuard/legacy/login/sub/register_page.dart';
-import 'package:OxyGuard/legacy/login/sub/reset_password.dart';
 import 'package:OxyGuard/login/cubit/login_cubit.dart';
+import 'package:OxyGuard/navigation/router.dart';
+import 'package:OxyGuard/navigation/routes_names.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../home/view/home_page.dart';
-
-class LoginForm extends StatefulWidget {
-  const LoginForm({super.key});
+class LoginBody extends StatefulWidget {
+  const LoginBody({super.key});
 
   @override
-  State<LoginForm> createState() => _LoginFormState();
+  State<LoginBody> createState() => _LoginBodyState();
 }
 
-class _LoginFormState extends State<LoginForm> {
+class _LoginBodyState extends State<LoginBody> {
   bool passwordShowing = false;
   @override
   void initState() {
@@ -31,9 +28,7 @@ class _LoginFormState extends State<LoginForm> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width * 0.05,
-            vertical: 5.0),
+        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05, vertical: 5.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
@@ -48,8 +43,7 @@ class _LoginFormState extends State<LoginForm> {
               height: MediaQuery.of(context).size.height * 0.13,
             ),
             TextField(
-              onChanged: (email) =>
-                  context.read<LoginCubit>().emailChanged(email),
+              onChanged: (email) => context.read<LoginCubit>().emailChanged(email),
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'Wprowadź e-mail',
@@ -59,8 +53,7 @@ class _LoginFormState extends State<LoginForm> {
               height: MediaQuery.of(context).size.height * 0.05,
             ),
             TextField(
-              onChanged: (password) =>
-                  context.read<LoginCubit>().passwordChanged(password),
+              onChanged: (password) => context.read<LoginCubit>().passwordChanged(password),
               decoration: InputDecoration(
                   border: const OutlineInputBorder(),
                   hintText: 'Wprowadź hasło',
@@ -85,9 +78,8 @@ class _LoginFormState extends State<LoginForm> {
                   onPressed: () async {
                     context.read<LoginCubit>().loginWithCredentials();
                   },
-                  style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: const Color(0xff1874d4)),
+                  style:
+                      ElevatedButton.styleFrom(foregroundColor: Colors.white, backgroundColor: const Color(0xff1874d4)),
                   child: const Center(
                       child: Text(
                     "Zaloguj się",
@@ -107,11 +99,7 @@ class _LoginFormState extends State<LoginForm> {
                   width: MediaQuery.of(context).size.width * 0.42,
                   child: ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const RegisterPage()),
-                        );
+                        router.push(RoutesNames.signup);
                       },
                       child: const Center(
                           child: Text(
@@ -127,12 +115,7 @@ class _LoginFormState extends State<LoginForm> {
                   width: MediaQuery.of(context).size.width * 0.42,
                   child: ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  const ResetPasswordPage()),
-                        );
+                        router.push(RoutesNames.restorePassword);
                       },
                       child: const Center(
                           child: Text(

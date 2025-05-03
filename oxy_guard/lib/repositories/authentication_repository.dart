@@ -87,6 +87,35 @@ class LogInWithEmailAndPasswordFailure implements Exception {
   final String message;
 }
 
+class SendResetPasswordEmailFailure implements Exception {
+  const SendResetPasswordEmailFailure([this.message = 'An unknown exception occurred.']);
+
+  factory SendResetPasswordEmailFailure.fromCode(String code) {
+    switch (code) {
+      case 'auth/invalid-email':
+        return const SendResetPasswordEmailFailure('Provided e-mail address was invalid.');
+      case 'auth/missing-android-pkg-name':
+        return const SendResetPasswordEmailFailure(
+            'An Android package name must be provided if the Android app is required to be installed.');
+      case 'auth/missing-continue-uri':
+        return const SendResetPasswordEmailFailure('A continue URL must be provided in the request.');
+      case 'auth/missing-ios-bundle-id':
+        return const SendResetPasswordEmailFailure('An iOS Bundle ID must be provided if an App Store ID is provided.');
+      case 'auth/invalid-continue-uri':
+        return const SendResetPasswordEmailFailure('The continue URL provided in the request is invalid.');
+      case 'auth/unauthorized-continue-uri':
+        return const SendResetPasswordEmailFailure(
+            'The domain of the continue URL is not whitelisted. Whitelist the domain in the Firebase console.');
+      case 'auth/user-not-found':
+        return const SendResetPasswordEmailFailure('There is no user assosciated with the provided e-mail.');
+      default:
+        return const SendResetPasswordEmailFailure();
+    }
+  }
+
+  final String message;
+}
+
 /// Thrown during the logout process if a failure occurs.
 class LogOutFailure implements Exception {}
 
@@ -123,10 +152,11 @@ class AuthenticationRepository {
   /// Throws a [SignUpWithEmailAndPasswordFailure] if an exception occurs.
   Future<void> signUp({required String email, required String password}) async {
     try {
-      await _firebaseAuth.createUserWithEmailAndPassword(
+      final firebase_auth.UserCredential userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
+      userCredential.user!.sendEmailVerification();
     } on firebase_auth.FirebaseAuthException catch (e) {
       throw SignUpWithEmailAndPasswordFailure.fromCode(e.code);
     } catch (_) {
@@ -164,6 +194,16 @@ class AuthenticationRepository {
       ]);
     } catch (_) {
       throw LogOutFailure();
+    }
+  }
+
+  Future<void> resetPassword({required String email}) async {
+    try {
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      throw SendResetPasswordEmailFailure.fromCode(e.code);
+    } catch (_) {
+      throw const SendResetPasswordEmailFailure();
     }
   }
 }
