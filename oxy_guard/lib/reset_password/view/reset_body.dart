@@ -51,19 +51,23 @@ class _ResetBodyState extends State<ResetBody> {
                 ),
               ),
               const SizedBox(height: 50),
-              ElevatedButton(
-                  onPressed: () async {
-                    final ResetCubit cubit = context.read<ResetCubit>();
-                    final bool success = await cubit.sendResetEmail(email: emailController.text);
-                    if (success) {
-                      router.pop();
-                    }
-                  },
-                  child: Center(
-                      child: Text(
-                    "Zresetuj hasło",
-                    style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.onPrimary),
-                  ))),
+              SizedBox(
+                height: 60,
+                child: ElevatedButton(
+                    onPressed: () async {
+                      final ResetCubit cubit = context.read<ResetCubit>();
+                      final bool success = await cubit.sendResetEmail(email: emailController.text);
+                      if (success) {
+                        router.pop();
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(foregroundColor: Colors.white, backgroundColor: const Color(0xff1874d4)),
+                    child: Center(
+                        child: Text(
+                      "Zresetuj hasło",
+                      style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.onPrimary),
+                    ))),
+              ),
             ],
           ),
         ),

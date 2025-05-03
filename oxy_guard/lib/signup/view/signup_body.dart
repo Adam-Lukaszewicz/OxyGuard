@@ -90,19 +90,23 @@ class _SignupBodyState extends State<SignupBody> {
                 obscureText: !verifyShowing,
               ),
               const SizedBox(height: 50),
-              ElevatedButton(
-                  onPressed: () async {
-                    final SignupCubit cubit = context.read<SignupCubit>();
-                    bool success = await cubit.signUp(email: emailController.text, password: passwordController.text);
-                    if (success) {
-                      router.pop();
-                    }
-                  },
-                  child: Center(
-                      child: Text(
-                    "Zarejestruj się",
-                    style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.onPrimary),
-                  ))),
+              SizedBox(
+                height: 60,
+                child: ElevatedButton(
+                    onPressed: () async {
+                      final SignupCubit cubit = context.read<SignupCubit>();
+                      bool success = await cubit.signUp(email: emailController.text, password: passwordController.text);
+                      if (success) {
+                        router.pop();
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(foregroundColor: Colors.white, backgroundColor: const Color(0xff1874d4)),
+                    child: const Center(
+                        child: Text(
+                      "Zarejestruj się",
+                      style: TextStyle(fontSize: 20),
+                    ))),
+              ),
             ],
           ),
         ),
