@@ -4,14 +4,14 @@ import 'package:OxyGuard/legacy/services/database_service.dart';
 import 'package:flutter/material.dart';
 import 'package:watch_it/watch_it.dart';
 
-class ShiftSquadChoicePage extends StatefulWidget {
-  const ShiftSquadChoicePage({super.key});
+class TeamBody extends StatefulWidget {
+  const TeamBody({super.key});
 
   @override
-  State<ShiftSquadChoicePage> createState() => _ShiftSquadChoicePageState();
+  State<TeamBody> createState() => _TeamBodyState();
 }
 
-class _ShiftSquadChoicePageState extends State<ShiftSquadChoicePage> {
+class _TeamBodyState extends State<TeamBody> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final validCharacters = RegExp(r'^[a-zA-Z0-9]+$');
@@ -20,19 +20,14 @@ class _ShiftSquadChoicePageState extends State<ShiftSquadChoicePage> {
     final firstName = _firstNameController.text.trim();
     final lastName = _lastNameController.text.trim();
     if (firstName.isNotEmpty && lastName.isNotEmpty) {
-      if (validCharacters.hasMatch(firstName) &&
-          validCharacters.hasMatch(lastName)) {
+      if (validCharacters.hasMatch(firstName) && validCharacters.hasMatch(lastName)) {
         setState(() {
-          GetIt.I
-              .get<DatabaseService>()
-              .currentPersonnel
-              .addWorker(Worker(name: firstName, surname: lastName));
+          GetIt.I.get<DatabaseService>().currentPersonnel.addWorker(Worker(name: firstName, surname: lastName));
         });
         _firstNameController.clear();
         _lastNameController.clear();
       } else {
-        warningDialog(context,
-            "Tekst nie może zawierać znaków specjalnych (np. %, #, spacja itp.)");
+        warningDialog(context, "Tekst nie może zawierać znaków specjalnych (np. %, #, spacja itp.)");
       }
     } else {
       warningDialog(context, "Wprowadź imię oraz nazwisko");
@@ -41,8 +36,7 @@ class _ShiftSquadChoicePageState extends State<ShiftSquadChoicePage> {
 
   void _sortWorkers() {
     GetIt.I.get<DatabaseService>().currentPersonnel.team.sort((a, b) {
-      int firstNameComparison =
-          a.name.toLowerCase().compareTo(b.name.toLowerCase());
+      int firstNameComparison = a.name.toLowerCase().compareTo(b.name.toLowerCase());
       if (firstNameComparison != 0) {
         return firstNameComparison;
       } else {
@@ -60,8 +54,7 @@ class _ShiftSquadChoicePageState extends State<ShiftSquadChoicePage> {
   @override
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
-    var guidesTextStyle =
-        TextStyle(fontWeight: FontWeight.bold, fontSize: screenWidth * 0.05);
+    var guidesTextStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: screenWidth * 0.05);
     var dbService = GetIt.I.get<DatabaseService>();
     return Scaffold(
       appBar: AppBar(
@@ -104,8 +97,7 @@ class _ShiftSquadChoicePageState extends State<ShiftSquadChoicePage> {
                       Expanded(
                         child: TextField(
                           controller: _lastNameController,
-                          decoration:
-                              const InputDecoration(labelText: 'Nazwisko'),
+                          decoration: const InputDecoration(labelText: 'Nazwisko'),
                         ),
                       ),
                       Container(
@@ -130,14 +122,12 @@ class _ShiftSquadChoicePageState extends State<ShiftSquadChoicePage> {
                         return ListView(
                           children: dbService.currentPersonnel.team
                               .map((worker) => ListTile(
-                                    title: Text(
-                                        '${worker.name} ${worker.surname}'),
+                                    title: Text('${worker.name} ${worker.surname}'),
                                     trailing: IconButton(
                                       icon: const Icon(Icons.delete),
                                       onPressed: () {
                                         setState(() {
-                                          dbService.currentPersonnel
-                                              .subWorker(worker);
+                                          dbService.currentPersonnel.subWorker(worker);
                                         });
                                       },
                                     ),

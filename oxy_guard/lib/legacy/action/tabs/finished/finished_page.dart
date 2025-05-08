@@ -1,4 +1,4 @@
-import 'package:OxyGuard/home/view/home_page.dart';
+import 'package:OxyGuard/home/home_page.dart';
 import 'package:OxyGuard/legacy/models/squad_model.dart';
 import 'package:OxyGuard/legacy/services/database_service.dart';
 import 'package:flutter/material.dart';
@@ -10,11 +10,7 @@ class FinishedPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (Provider.of<SquadModel>(context, listen: false)
-        .finishedSquads
-        .values
-        .toList()
-        .isEmpty) {
+    if (Provider.of<SquadModel>(context, listen: false).finishedSquads.values.toList().isEmpty) {
       return const Center(
         child: Padding(
           padding: EdgeInsets.all(16.0),
@@ -42,8 +38,8 @@ class FinishedPage extends StatelessWidget {
         label: const Center(child: Text("Zakończ akcję")),
         onPressed: () {
           dBService.endAction(dBService.currentAction);
-          Navigator.pushAndRemoveUntil(context,
-              MaterialPageRoute(builder: (context) => const HomePage()), (route) => false);
+          Navigator.pushAndRemoveUntil(
+              context, MaterialPageRoute(builder: (context) => const HomePage()), (route) => false);
         },
         backgroundColor: Colors.red[400],
         foregroundColor: Colors.white,
@@ -63,9 +59,7 @@ class FinishedPage extends StatelessWidget {
                         child: ListTile(
                           leading: Text(
                             fin.name,
-                            style: TextStyle(
-                                fontSize:
-                                    MediaQuery.of(context).size.width * 0.08),
+                            style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.08),
                           ),
                           title: Text(fin.averageUse.toString()),
                         ),

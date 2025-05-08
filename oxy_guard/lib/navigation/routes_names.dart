@@ -4,4 +4,10 @@ class RoutesNames {
   static const String login = 'login_screen';
   static const String signup = 'signup_screen';
   static const String restorePassword = 'restore_screen';
+  static const String extras = 'extras_screen';
+  static const String account = 'account_screen';
+  static const String archive = 'archive_screen';
+  static const String atests = 'atests_screen';
+  static const String team = 'team_screen';
+  static const String settings = 'settings_screen';
 }

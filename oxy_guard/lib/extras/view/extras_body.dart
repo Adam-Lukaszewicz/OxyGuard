@@ -1,24 +1,20 @@
-import 'package:OxyGuard/extra/account/view/account_page.dart';
-import 'package:OxyGuard/legacy/extras/archive/archive_page.dart';
-import 'package:OxyGuard/legacy/extras/atests/atests_page.dart';
-import 'package:OxyGuard/legacy/extras/personnel/shift_squad_choice.dart';
+import 'package:OxyGuard/navigation/router.dart';
+import 'package:OxyGuard/navigation/routes_names.dart';
 import 'package:flutter/material.dart';
 
-
-class ExtrasPage extends StatefulWidget {
-  const ExtrasPage({super.key});
+class ExtrasBody extends StatefulWidget {
+  const ExtrasBody({super.key});
 
   @override
-  State<ExtrasPage> createState() => _ExtrasPageState();
+  State<ExtrasBody> createState() => _ExtrasBodyState();
 }
 
-class _ExtrasPageState extends State<ExtrasPage> {
+class _ExtrasBodyState extends State<ExtrasBody> {
   @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
-    var titleCategoryTextStyle =
-        TextStyle(fontWeight: FontWeight.w500, fontSize: screenWidth * 0.05);
+    var titleCategoryTextStyle = TextStyle(fontWeight: FontWeight.w500, fontSize: screenWidth * 0.05);
     var subtitleCategoryTextStyle = TextStyle(fontSize: screenWidth * 0.04);
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -40,11 +36,7 @@ class _ExtrasPageState extends State<ExtrasPage> {
                   elevation: 5,
                   child: ListTile(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ArchivePage()),
-                      );
+                      router.push(RoutesNames.archive);
                     },
                     leading: Icon(
                       Icons.archive,
@@ -66,13 +58,8 @@ class _ExtrasPageState extends State<ExtrasPage> {
                   child: Stack(children: [
                     ListTile(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const AtestsPage()),
-                        ).then((onValue) {
-                          setState(() {});
-                        });
+                        router.push(RoutesNames.atests);
+                        //TODO: add cubit to handle expiring atest alert
                       },
                       leading: Icon(
                         Icons.fire_extinguisher,
@@ -94,10 +81,7 @@ class _ExtrasPageState extends State<ExtrasPage> {
                   elevation: 5,
                   child: ListTile(
                     onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const AccountPage()));
+                      router.push(RoutesNames.account);
                     },
                     leading: Icon(
                       Icons.fire_extinguisher,
@@ -118,11 +102,7 @@ class _ExtrasPageState extends State<ExtrasPage> {
                   elevation: 5,
                   child: ListTile(
                     onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  const ShiftSquadChoicePage()));
+                      router.push(RoutesNames.team);
                     },
                     leading: Icon(
                       Icons.person,

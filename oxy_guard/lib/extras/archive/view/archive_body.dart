@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:watch_it/watch_it.dart';
 
-class ArchivePage extends StatelessWidget {
-  const ArchivePage({super.key});
+class ArchiveBody extends StatelessWidget {
+  const ArchiveBody({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -54,14 +54,11 @@ class ArchivePage extends StatelessWidget {
                           EndedModel model = entry.data() as EndedModel;
                           return FutureBuilder(
                               future: placemarkFromCoordinates(
-                                  model.actionLocation.latitude,
-                                  model.actionLocation.longitude),
+                                  model.actionLocation.latitude, model.actionLocation.longitude),
                               builder: (context, snap) {
-                                if (snap.connectionState ==
-                                    ConnectionState.done) {
+                                if (snap.connectionState == ConnectionState.done) {
                                   if (snap.hasData) {
-                                    final address =
-                                        "${snap.data!.first.street}, ${snap.data!.first.locality}";
+                                    final address = "${snap.data!.first.street}, ${snap.data!.first.locality}";
                                     return Card(
                                       child: InkWell(
                                         onTap: () {
@@ -83,10 +80,9 @@ class ArchivePage extends StatelessWidget {
                                     return Card(
                                       child: InkWell(
                                         child: ListTile(
-                                          leading: const Text(
-                                              "Brak pasującego adresu"),
-                                          trailing: Text(
-                                              "${model.endTime.day}.${model.endTime.month}.${model.endTime.year}"),
+                                          leading: const Text("Brak pasującego adresu"),
+                                          trailing:
+                                              Text("${model.endTime.day}.${model.endTime.month}.${model.endTime.year}"),
                                         ),
                                       ),
                                     );
@@ -118,10 +114,8 @@ class ArchivePage extends StatelessWidget {
   Future<void> detailsDialog(BuildContext context, EndedModel entry) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
-    var labelTextStyle =
-        TextStyle(fontSize: screenWidth * 0.04, fontWeight: FontWeight.w500);
-    var detailsTextStyle =
-        TextStyle(fontSize: screenWidth * 0.04, fontWeight: FontWeight.w300);
+    var labelTextStyle = TextStyle(fontSize: screenWidth * 0.04, fontWeight: FontWeight.w500);
+    var detailsTextStyle = TextStyle(fontSize: screenWidth * 0.04, fontWeight: FontWeight.w300);
     return showDialog<void>(
         context: context,
         builder: (context) {
@@ -136,9 +130,7 @@ class ArchivePage extends StatelessWidget {
                   children: [
                     Text(
                       "Szczegóły akcji",
-                      style: TextStyle(
-                          fontSize: screenWidth * 0.06,
-                          fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: screenWidth * 0.06, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: screenHeight * 0.05),
                     SizedBox(
@@ -146,26 +138,45 @@ class ArchivePage extends StatelessWidget {
                       child: ListView.builder(
                           itemCount: entry.squads.length,
                           itemBuilder: (context, int index) {
-                            String squadIndex =
-                                entry.squads.entries.toList()[index].key;
-                            List<FinishedSquad> finishedSquads =
-                                entry.squads.entries.toList()[index].value;
+                            String squadIndex = entry.squads.entries.toList()[index].key;
+                            List<FinishedSquad> finishedSquads = entry.squads.entries.toList()[index].value;
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text("Odcinek $squadIndex", style: labelTextStyle,),
+                                Text(
+                                  "Odcinek $squadIndex",
+                                  style: labelTextStyle,
+                                ),
                                 for (var finishedSquad in finishedSquads)
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                    Text("Rota: ${finishedSquad.name}", style: detailsTextStyle,),
-                                    Text("Strażacy:", style: labelTextStyle,),
-                                    for(var worker in finishedSquad.workers)
-                                      if(worker != null) Text("${worker.name} ${worker.surname}", style: detailsTextStyle,),
-                                    Text("Przeciętne zużycie: ${finishedSquad.averageUse.ceil().toString()} bar/min", style: detailsTextStyle,),
-                                    SizedBox(height: screenHeight * 0.01,),
-                                SizedBox(height: screenHeight * 0.015,),
-                                  ],)
+                                      Text(
+                                        "Rota: ${finishedSquad.name}",
+                                        style: detailsTextStyle,
+                                      ),
+                                      Text(
+                                        "Strażacy:",
+                                        style: labelTextStyle,
+                                      ),
+                                      for (var worker in finishedSquad.workers)
+                                        if (worker != null)
+                                          Text(
+                                            "${worker.name} ${worker.surname}",
+                                            style: detailsTextStyle,
+                                          ),
+                                      Text(
+                                        "Przeciętne zużycie: ${finishedSquad.averageUse.ceil().toString()} bar/min",
+                                        style: detailsTextStyle,
+                                      ),
+                                      SizedBox(
+                                        height: screenHeight * 0.01,
+                                      ),
+                                      SizedBox(
+                                        height: screenHeight * 0.015,
+                                      ),
+                                    ],
+                                  )
                               ],
                             );
                           }),
@@ -173,21 +184,15 @@ class ArchivePage extends StatelessWidget {
                     ElevatedButton(
                         style: ButtonStyle(
                             fixedSize: WidgetStatePropertyAll(Size(
-                                MediaQuery.of(context).size.width * 0.5,
-                                MediaQuery.of(context).size.height * 0.07)),
+                                MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.07)),
                             elevation: const WidgetStatePropertyAll(5),
                             shape: const WidgetStatePropertyAll(
-                                RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10)))),
-                            backgroundColor:
-                                const WidgetStatePropertyAll(Colors.white),
-                            foregroundColor: WidgetStatePropertyAll(
-                                Theme.of(context).primaryColorDark),
+                                RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10)))),
+                            backgroundColor: const WidgetStatePropertyAll(Colors.white),
+                            foregroundColor: WidgetStatePropertyAll(Theme.of(context).primaryColorDark),
                             textStyle: WidgetStatePropertyAll(TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize:
-                                  MediaQuery.of(context).size.width * 0.05,
+                              fontSize: MediaQuery.of(context).size.width * 0.05,
                             ))),
                         onPressed: () {
                           Navigator.pop(context);

@@ -4,8 +4,8 @@ import 'package:OxyGuard/legacy/services/database_service.dart';
 import 'package:flutter/material.dart';
 import 'package:watch_it/watch_it.dart';
 
-class AtestsPage extends StatelessWidget {
-  const AtestsPage({super.key});
+class AtestsBody extends StatelessWidget {
+  const AtestsBody({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +25,7 @@ class AtestsPage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           String? serial = await textInputDialog(
-              context,
-              "Wprowadź numer seryjny",
-              "Numer seryjny gaśnicy",
-              "Numer seryjny nie może być pusty");
+              context, "Wprowadź numer seryjny", "Numer seryjny gaśnicy", "Numer seryjny nie może być pusty");
           DateTime? expirationDate;
           if (context.mounted) {
             expirationDate = await showDatePicker(
@@ -38,8 +35,7 @@ class AtestsPage extends StatelessWidget {
           }
 
           if (serial != null && expirationDate != null) {
-            ExtinguisherModel newExtinguisher = ExtinguisherModel(
-                serial: serial, expirationDate: expirationDate);
+            ExtinguisherModel newExtinguisher = ExtinguisherModel(serial: serial, expirationDate: expirationDate);
             dbService.addAtest(newExtinguisher);
           }
         },
@@ -75,14 +71,10 @@ class AtestsPage extends StatelessWidget {
                   var extinguisherList = snapshot.data!.docs;
                   extinguisherList.sort(
                     (a, b) {
-                      if (a.data() is ExtinguisherModel &&
-                          b.data() is ExtinguisherModel) {
-                        ExtinguisherModel aModel =
-                            a.data() as ExtinguisherModel;
-                        ExtinguisherModel bModel =
-                            b.data() as ExtinguisherModel;
-                        return bModel.expirationDate
-                            .compareTo(aModel.expirationDate);
+                      if (a.data() is ExtinguisherModel && b.data() is ExtinguisherModel) {
+                        ExtinguisherModel aModel = a.data() as ExtinguisherModel;
+                        ExtinguisherModel bModel = b.data() as ExtinguisherModel;
+                        return bModel.expirationDate.compareTo(aModel.expirationDate);
                       } else {
                         return 0;
                       }
@@ -91,30 +83,24 @@ class AtestsPage extends StatelessWidget {
                   return ListView(
                     children: extinguisherList.map((extinguisher) {
                       if (extinguisher.data() is ExtinguisherModel) {
-                        ExtinguisherModel model =
-                            extinguisher.data() as ExtinguisherModel;
+                        ExtinguisherModel model = extinguisher.data() as ExtinguisherModel;
                         return Card(
                           color: Colors.white,
                           child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: screenHeight * 0.01),
+                            padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
                             child: InkWell(
                               onTap: () async {
-                                DateTime? newExpirationDate =
-                                    await showDatePicker(
-                                        context: context,
-                                        firstDate: DateTime.now().subtract(
-                                            const Duration(days: 730)),
-                                        lastDate: DateTime.now()
-                                            .add(const Duration(days: 730)));
+                                DateTime? newExpirationDate = await showDatePicker(
+                                    context: context,
+                                    firstDate: DateTime.now().subtract(const Duration(days: 730)),
+                                    lastDate: DateTime.now().add(const Duration(days: 730)));
                                 if (newExpirationDate != null) {
                                   model.updateDate(newExpirationDate);
                                 }
                               },
-                              child: Stack(
-                                children: [Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                              child: Stack(children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     SizedBox(
                                       width: screenWidth * 0.02,
@@ -135,10 +121,8 @@ class AtestsPage extends StatelessWidget {
                                         model.remove();
                                       },
                                       style: const ButtonStyle(
-                                        shape: WidgetStatePropertyAll(
-                                            CircleBorder()),
-                                        backgroundColor:
-                                            WidgetStatePropertyAll(Colors.red),
+                                        shape: WidgetStatePropertyAll(CircleBorder()),
+                                        backgroundColor: WidgetStatePropertyAll(Colors.red),
                                       ),
                                       child: const Icon(
                                         Icons.delete,
@@ -147,15 +131,15 @@ class AtestsPage extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                if(model.expirationDate.difference(DateTime.now()).inDays < 7) const Positioned(
-                                  top: 0,
-                                  right: 0,
-                                  child: Icon(
-                                    Icons.error,
-                                    color: Colors.red,
-                                  ))
-                                ]
-                              ),
+                                if (model.expirationDate.difference(DateTime.now()).inDays < 7)
+                                  const Positioned(
+                                      top: 0,
+                                      right: 0,
+                                      child: Icon(
+                                        Icons.error,
+                                        color: Colors.red,
+                                      ))
+                              ]),
                             ),
                           ),
                         );

@@ -1,5 +1,6 @@
+import 'package:OxyGuard/home/home_page.dart';
 import 'package:OxyGuard/legacy/action/manage_page.dart';
-import 'package:OxyGuard/home/view/home_page.dart';
+import 'package:OxyGuard/home/view/home_body.dart';
 import 'package:OxyGuard/legacy/models/squad_model.dart';
 import 'package:OxyGuard/legacy/services/database_service.dart';
 import 'package:flutter/material.dart';
@@ -25,21 +26,12 @@ class _SquadChoiceState extends State<SquadChoice> {
           context,
           MaterialPageRoute(
               builder: (context) => ManagePage(
-                    chosenAction: GetIt.I
-                        .get<DatabaseService>()
-                        .currentAction
-                        .squads["0"],
+                    chosenAction: GetIt.I.get<DatabaseService>().currentAction.squads["0"],
                     quickStart: true,
                   )),
         );
       });
-    } else if (GetIt.I
-        .get<DatabaseService>()
-        .currentAction
-        .squads
-        .entries
-        .toList()
-        .isEmpty) {
+    } else if (GetIt.I.get<DatabaseService>().currentAction.squads.entries.toList().isEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.push(
           context,
@@ -74,8 +66,7 @@ class _SquadChoiceState extends State<SquadChoice> {
                     elevation: 5,
                     child: Padding(
                       padding: EdgeInsets.symmetric(
-                          vertical: constraints.maxHeight * 0.02,
-                          horizontal: constraints.maxWidth * 0.05),
+                          vertical: constraints.maxHeight * 0.02, horizontal: constraints.maxWidth * 0.05),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,25 +84,19 @@ class _SquadChoiceState extends State<SquadChoice> {
                             height: constraints.maxHeight * 0.1,
                           ),
                           FutureBuilder(
-                            future: placemarkFromCoordinates(
-                                dbService.currentAction.actionLocation.latitude,
-                                dbService
-                                    .currentAction.actionLocation.longitude),
+                            future: placemarkFromCoordinates(dbService.currentAction.actionLocation.latitude,
+                                dbService.currentAction.actionLocation.longitude),
                             builder: (context, snap) {
-                              if (snap.connectionState ==
-                                  ConnectionState.done) {
+                              if (snap.connectionState == ConnectionState.done) {
                                 if (snap.hasData) {
                                   final address = "${snap.data!.first.street}";
                                   final city = "${snap.data!.first.locality}";
                                   return Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         city,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 28),
+                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 28),
                                       ),
                                       SizedBox(
                                         height: constraints.maxHeight * 0.05,
@@ -126,8 +111,7 @@ class _SquadChoiceState extends State<SquadChoice> {
                                   );
                                 } else if (snap.hasError) {
                                   return const ListTile(
-                                    title: Text(
-                                        "Brak pasującego adresu/nazwy akcji"),
+                                    title: Text("Brak pasującego adresu/nazwy akcji"),
                                   );
                                 }
                               }
@@ -149,27 +133,19 @@ class _SquadChoiceState extends State<SquadChoice> {
               children: <Widget>[
                 ElevatedButton(
                     style: ButtonStyle(
-                      fixedSize: WidgetStateProperty.all(Size(
-                          MediaQuery.of(context).size.width * 0.7,
-                          MediaQuery.of(context).size.height * 0.07)),
-                      shape: WidgetStateProperty.all(
-                          const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(15)),
-                              side: BorderSide(width: 0.1))),
+                      fixedSize: WidgetStateProperty.all(
+                          Size(MediaQuery.of(context).size.width * 0.7, MediaQuery.of(context).size.height * 0.07)),
+                      shape: WidgetStateProperty.all(const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(15)), side: BorderSide(width: 0.1))),
                       elevation: const WidgetStatePropertyAll(5),
-                      backgroundColor:
-                          const WidgetStatePropertyAll(Colors.white),
+                      backgroundColor: const WidgetStatePropertyAll(Colors.white),
                     ),
                     onPressed: () async {
-                      String? chosenSquadIndex =
-                          await chooseExistingSquadDialog();
+                      String? chosenSquadIndex = await chooseExistingSquadDialog();
                       if (chosenSquadIndex != null) {
                         SquadModel rebuild = SquadModel();
-                        rebuild.copyFrom(
-                            dbService.currentAction.squads[chosenSquadIndex]!);
-                        dbService.currentAction.squads[chosenSquadIndex] =
-                            rebuild;
+                        rebuild.copyFrom(dbService.currentAction.squads[chosenSquadIndex]!);
+                        dbService.currentAction.squads[chosenSquadIndex] = rebuild;
                         if (context.mounted) {
                           Navigator.push(
                             context,
@@ -183,24 +159,17 @@ class _SquadChoiceState extends State<SquadChoice> {
                     },
                     child: Text(
                       "Wybierz odcinek",
-                      style: TextStyle(
-                          color: Theme.of(context).primaryColorDark,
-                          fontSize: 24),
+                      style: TextStyle(color: Theme.of(context).primaryColorDark, fontSize: 24),
                     )),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.04),
                 ElevatedButton(
                     style: ButtonStyle(
-                      fixedSize: WidgetStateProperty.all(Size(
-                          MediaQuery.of(context).size.width * 0.7,
-                          MediaQuery.of(context).size.height * 0.07)),
-                      shape: WidgetStateProperty.all(
-                          const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(15)),
-                              side: BorderSide(width: 0.1))),
+                      fixedSize: WidgetStateProperty.all(
+                          Size(MediaQuery.of(context).size.width * 0.7, MediaQuery.of(context).size.height * 0.07)),
+                      shape: WidgetStateProperty.all(const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(15)), side: BorderSide(width: 0.1))),
                       elevation: const WidgetStatePropertyAll(5),
-                      backgroundColor:
-                          const WidgetStatePropertyAll(Colors.white),
+                      backgroundColor: const WidgetStatePropertyAll(Colors.white),
                     ),
                     onPressed: () {
                       Navigator.push(
@@ -210,30 +179,21 @@ class _SquadChoiceState extends State<SquadChoice> {
                     },
                     child: Text(
                       "Stwórz odcinek",
-                      style: TextStyle(
-                          color: Theme.of(context).primaryColorDark,
-                          fontSize: 24),
+                      style: TextStyle(color: Theme.of(context).primaryColorDark, fontSize: 24),
                     )),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.04),
                 ElevatedButton(
                     style: ButtonStyle(
-                      fixedSize: WidgetStateProperty.all(Size(
-                          MediaQuery.of(context).size.width * 0.7,
-                          MediaQuery.of(context).size.height * 0.07)),
-                      shape: WidgetStateProperty.all(
-                          const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(15)),
-                              side: BorderSide(width: 0.1))),
+                      fixedSize: WidgetStateProperty.all(
+                          Size(MediaQuery.of(context).size.width * 0.7, MediaQuery.of(context).size.height * 0.07)),
+                      shape: WidgetStateProperty.all(const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(15)), side: BorderSide(width: 0.1))),
                       elevation: const WidgetStatePropertyAll(5),
                       backgroundColor: const WidgetStatePropertyAll(Colors.red),
                     ),
                     onPressed: () {
                       dbService.endAction(dbService.currentAction);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const HomePage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
                     },
                     child: const Text(
                       "Zakończ akcję",
@@ -253,9 +213,8 @@ class _SquadChoiceState extends State<SquadChoice> {
           backgroundColor: const Color(0xfffcfcfc),
           child: LayoutBuilder(builder: (context, constraints) {
             return Padding(
-              padding: EdgeInsets.symmetric(
-                  vertical: constraints.maxHeight * 0.05,
-                  horizontal: constraints.maxWidth * 0.1),
+              padding:
+                  EdgeInsets.symmetric(vertical: constraints.maxHeight * 0.05, horizontal: constraints.maxWidth * 0.1),
               child: Column(
                 children: [
                   const Center(
@@ -273,13 +232,7 @@ class _SquadChoiceState extends State<SquadChoice> {
                   SizedBox(
                     height: constraints.maxHeight * 0.8,
                     child: ListView(
-                      children: GetIt.I
-                          .get<DatabaseService>()
-                          .currentAction
-                          .squads
-                          .entries
-                          .toList()
-                          .map((squad) {
+                      children: GetIt.I.get<DatabaseService>().currentAction.squads.entries.toList().map((squad) {
                         return Card(
                             color: Colors.white,
                             elevation: 5,

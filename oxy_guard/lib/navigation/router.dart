@@ -1,4 +1,9 @@
-import 'package:OxyGuard/home/view/home_page.dart';
+import 'package:OxyGuard/extras/account/account_page.dart';
+import 'package:OxyGuard/extras/extras_page.dart';
+import 'package:OxyGuard/home/home_page.dart';
+import 'package:OxyGuard/legacy/extras/archive/archive_page.dart';
+import 'package:OxyGuard/legacy/extras/atests/atests_page.dart';
+import 'package:OxyGuard/legacy/settings/settings_page.dart';
 import 'package:OxyGuard/reset_password/reset_page.dart';
 import 'package:OxyGuard/signup/singup_page.dart';
 import 'package:OxyGuard/login/login_page.dart';
@@ -22,9 +27,21 @@ class Router {
         return MaterialPageRoute(builder: (_) => const SingupPage());
       case RoutesNames.restorePassword:
         return MaterialPageRoute(builder: (_) => const ResetPage());
+      case RoutesNames.extras:
+        return MaterialPageRoute(builder: (_) => const ExtrasPage());
+      case RoutesNames.account:
+        return MaterialPageRoute(builder: (_) => const AccountPage());
+      case RoutesNames.atests:
+        return MaterialPageRoute(builder: (_) => const AtestsPage());
+      case RoutesNames.archive:
+        return MaterialPageRoute(builder: (_) => const ArchivePage());
+      case RoutesNames.team:
+        return MaterialPageRoute(builder: (_) => const TeamPage());
+      case RoutesNames.settings:
+        return MaterialPageRoute(builder: (_) => const SettingsPage());
       case RoutesNames.splash:
         return MaterialPageRoute(builder: (_) => const SplashPage());
-      default: 
+      default:
         return MaterialPageRoute(builder: (_) => const SplashPage());
     }
   }
@@ -40,15 +57,11 @@ class Router {
   }
 
   Future<T?> push<T extends Object?>(String route) async {
-    return navigatorKey.currentState?.pushNamed(
-      route
-    );
+    return navigatorKey.currentState?.pushNamed(route);
   }
 
   Future<T?> replace<T extends Object?>(String route) async {
-    return navigatorKey.currentState?.pushReplacementNamed(
-      route
-    );
+    return navigatorKey.currentState?.pushReplacementNamed(route);
   }
 
   Future<T?> pushAndRemove<T extends Object?>(String route, {bool Function(Route<dynamic>)? predicate}) async {
