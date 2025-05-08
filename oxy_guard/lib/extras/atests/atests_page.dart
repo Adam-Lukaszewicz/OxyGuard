@@ -1,8 +1,8 @@
 import 'package:OxyGuard/extras/atests/view/atests_body.dart';
 import 'package:flutter/material.dart';
 
-class AtestPage extends StatelessWidget {
-  const AtestPage({super.key});
+class AtestsPage extends StatelessWidget {
+  const AtestsPage({super.key});
 
   @override
   Widget build(BuildContext context) {

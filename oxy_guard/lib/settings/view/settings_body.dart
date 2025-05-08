@@ -2,14 +2,14 @@ import 'package:OxyGuard/context_windows.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SettingsPage extends StatefulWidget {
-  const SettingsPage({super.key});
+class SettingsBody extends StatefulWidget {
+  const SettingsBody({super.key});
 
   @override
-  State<SettingsPage> createState() => _SettingsPageState();
+  State<SettingsBody> createState() => _SettingsBodyState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
+class _SettingsBodyState extends State<SettingsBody> {
   int? entryPressure;
   int? exitPressure;
   int? checkInterval;
@@ -71,8 +71,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
-    var titleCategoryTextStyle =
-        TextStyle(fontWeight: FontWeight.w500, fontSize: screenWidth * 0.045);
+    var titleCategoryTextStyle = TextStyle(fontWeight: FontWeight.w500, fontSize: screenWidth * 0.045);
     var subtitleCategoryTextStyle = TextStyle(fontSize: screenWidth * 0.035);
     var valueTextStyle = TextStyle(fontSize: screenWidth * 0.08);
     return Scaffold(
@@ -95,9 +94,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   elevation: 5,
                   child: InkWell(
                     onTap: () async {
-                      var value = await checkListDialog(
-                          context, 330, 160, "Wprowadź nowy pomiar",
-                          unitText: "bar");
+                      var value = await checkListDialog(context, 330, 160, "Wprowadź nowy pomiar", unitText: "bar");
                       _setStartingPresssure(value ?? entryPressure ?? 300);
                     },
                     child: ListTile(
@@ -126,9 +123,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   elevation: 5,
                   child: InkWell(
                     onTap: () async {
-                      var value = await checkListDialog(
-                          context, 150, 0, "Wprowadź nowy pomiar",
-                          unitText: "bar");
+                      var value = await checkListDialog(context, 150, 0, "Wprowadź nowy pomiar", unitText: "bar");
                       _setExtremePresssure(value ?? exitPressure ?? 60);
                     },
                     child: ListTile(
@@ -157,8 +152,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   elevation: 5,
                   child: InkWell(
                     onTap: () async {
-                      var value =
-                          await timeDialog(context, "Wprowadz nowy okres");
+                      var value = await timeDialog(context, "Wprowadz nowy okres");
                       _setTimePeriod(value ?? checkInterval ?? 600);
                     },
                     child: ListTile(

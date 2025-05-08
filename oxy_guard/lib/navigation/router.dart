@@ -1,10 +1,11 @@
 import 'package:OxyGuard/extras/account/account_page.dart';
+import 'package:OxyGuard/extras/archive/archive_page.dart';
+import 'package:OxyGuard/extras/atests/atests_page.dart';
 import 'package:OxyGuard/extras/extras_page.dart';
+import 'package:OxyGuard/extras/team/team_page.dart';
 import 'package:OxyGuard/home/home_page.dart';
-import 'package:OxyGuard/legacy/extras/archive/archive_page.dart';
-import 'package:OxyGuard/legacy/extras/atests/atests_page.dart';
-import 'package:OxyGuard/legacy/settings/settings_page.dart';
 import 'package:OxyGuard/reset_password/reset_page.dart';
+import 'package:OxyGuard/settings/settings_page.dart';
 import 'package:OxyGuard/signup/singup_page.dart';
 import 'package:OxyGuard/login/login_page.dart';
 import 'package:OxyGuard/navigation/routes_names.dart';
