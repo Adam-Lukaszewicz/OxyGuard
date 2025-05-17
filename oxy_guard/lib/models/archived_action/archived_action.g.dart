@@ -1,28 +1,31 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'action.dart';
+part of 'archived_action.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Action _$ActionFromJson(Map<String, dynamic> json) => Action(
+ArchivedAction _$ArchivedActionFromJson(Map<String, dynamic> json) =>
+    ArchivedAction(
       uid: json['uid'] as String,
       id: json['id'] as String?,
       actionLocation: _$JsonConverterFromJson<Map<String, dynamic>, Position>(
           json['actionLocation'], const PositionConverter().fromJson),
-      actionName: json['actionName'] as String?,
-      squads:
-          (json['squads'] as List<dynamic>).map((e) => e as String).toList(),
+      endTime: DateTime.parse(json['endTime'] as String),
+      finishedTeams: (json['finishedTeams'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
     );
 
-Map<String, dynamic> _$ActionToJson(Action instance) => <String, dynamic>{
+Map<String, dynamic> _$ArchivedActionToJson(ArchivedAction instance) =>
+    <String, dynamic>{
       'uid': instance.uid,
       'id': instance.id,
       'actionLocation': _$JsonConverterToJson<Map<String, dynamic>, Position>(
           instance.actionLocation, const PositionConverter().toJson),
-      'actionName': instance.actionName,
-      'squads': instance.squads,
+      'endTime': instance.endTime.toIso8601String(),
+      'finishedTeams': instance.finishedTeams,
     };
 
 Value? _$JsonConverterFromJson<Json, Value>(

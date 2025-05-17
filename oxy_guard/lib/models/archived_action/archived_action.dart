@@ -2,11 +2,12 @@ import 'package:geolocator/geolocator.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
 
-part 'action.g.dart';
+part 'archived_action.g.dart';
 
 @JsonSerializable()
-class Action {
-  Action({required this.uid, String? id, this.actionLocation, this.actionName, required this.squads}) : id = id ?? const Uuid().v4();
+class ArchivedAction {
+  ArchivedAction({required this.uid, String? id, this.actionLocation, required this.endTime, required this.finishedTeams})
+      : id = id ?? const Uuid().v4();
 
   String uid;
 
@@ -15,13 +16,13 @@ class Action {
   @PositionConverter()
   Position? actionLocation;
 
-  String? actionName;
+  DateTime endTime;
 
-  List<String> squads;
+  List<String> finishedTeams;
 
-  factory Action.fromJson(Map<String, dynamic> json) => _$ActionFromJson(json);
+  factory ArchivedAction.fromJson(Map<String, dynamic> json) => _$ArchivedActionFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ActionToJson(this);
+  Map<String, dynamic> toJson() => _$ArchivedActionToJson(this);
 }
 
 class PositionConverter implements JsonConverter<Position, Map<String, dynamic>> {
