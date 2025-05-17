@@ -1,6 +1,6 @@
-import 'package:OxyGuard/actions/api/actions_api.dart';
+import 'package:OxyGuard/repositories/actions/api/actions_api.dart';
 
-import '../models/models.dart';
+import '../../models/models.dart';
 
 class ActionsRepository {
   const ActionsRepository({required ActionsApi actionsApi})

@@ -1,4 +1,4 @@
-import 'package:OxyGuard/actions/api/actions_api.dart';
+import 'package:OxyGuard/repositories/actions/api/actions_api.dart';
 import 'package:OxyGuard/models/action/action.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 

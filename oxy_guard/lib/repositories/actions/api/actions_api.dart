@@ -1,4 +1,4 @@
-import '../../models/models.dart';
+import '../../../models/models.dart';
 
 abstract class ActionsApi {
   const ActionsApi();
