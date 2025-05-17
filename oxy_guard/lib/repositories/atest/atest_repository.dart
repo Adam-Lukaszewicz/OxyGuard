@@ -2,9 +2,10 @@ import '../../models/models.dart';
 import 'api/atest_api.dart';
 
 class AtestRepository {
-  final AtestApi _atestApi;
+  const AtestRepository({required AtestApi atestApi})
+      : _atestApi = atestApi;
 
-  const AtestRepository(this._atestApi);
+  final AtestApi _atestApi;
 
   Stream<List<Extinguisher>> getAtests() {
     return _atestApi.getAtests();
