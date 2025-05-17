@@ -1,3 +1,10 @@
 export 'user.dart';
 export 'action/action.dart';
+export 'archived_action/archived_action.dart';
+export 'extinguisher/extinguisher.dart';
+export 'finished_team/finished_team.dart';
+export 'finished_squad/finished_squad.dart';
+export 'personnel/personnel.dart';
 export 'squad/squad.dart';
+export 'team/team.dart';
+export 'worker/worker.dart';

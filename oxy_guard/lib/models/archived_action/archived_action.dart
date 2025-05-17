@@ -1,3 +1,4 @@
+import 'package:OxyGuard/models/converters/position_converter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
@@ -23,14 +24,4 @@ class ArchivedAction {
   factory ArchivedAction.fromJson(Map<String, dynamic> json) => _$ArchivedActionFromJson(json);
 
   Map<String, dynamic> toJson() => _$ArchivedActionToJson(this);
-}
-
-class PositionConverter implements JsonConverter<Position, Map<String, dynamic>> {
-  const PositionConverter();
-
-  @override
-  Map<String, dynamic> toJson(Position object) => object.toJson();
-
-  @override
-  Position fromJson(Map<String, dynamic> json) => Position.fromMap(json);
 }
