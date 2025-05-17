@@ -3,11 +3,11 @@ import '../../../models/models.dart';
 abstract class ArchiveApi {
   const ArchiveApi();
 
-  Stream<List<Action>> getArchive();
+  Stream<List<ArchivedAction>> getArchive();
 
-  Stream<List<Action>> getArchiveByUserId(String userId);
+  Stream<List<ArchivedAction>> getArchiveByUserId(String userId);
   
-  Future<void> saveArchive(Action action);
+  Future<void> saveArchive(ArchivedAction archivedAction);
 
   Future<void> deleteArchive(String id);
 }
