@@ -19,12 +19,14 @@ class FirestoreWorkerApi implements WorkerApi {
   }
 
   @override
-  Stream<List<Worker>> getWorkersByUserId(String userId) {
-    return _workersRef.where('uid', isEqualTo: userId).snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) {
-        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+  Stream<Worker> getWorkerById(String id) {
+    return _workersRef.doc(id).snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
         return Worker.fromJson(data);
-      }).toList();
+      } else {
+        throw WorkerNotFoundException();
+      }
     });
   }
 

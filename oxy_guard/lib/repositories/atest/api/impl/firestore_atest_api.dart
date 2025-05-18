@@ -29,6 +29,19 @@ class FirestoreAtestApi implements AtestApi {
   }
 
   @override
+  Stream<Extinguisher> getAtestById(String id) {
+    return _atestsRef.doc(id).snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+        return Extinguisher.fromJson(data);
+      } else {
+        throw AtestNotFoundException();
+      }
+    });
+    
+  }
+
+  @override
   Future<void> saveAtest(Extinguisher atest) {
     return _atestsRef.doc(atest.id).set(atest);
   }

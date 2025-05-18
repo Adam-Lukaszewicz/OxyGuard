@@ -6,6 +6,8 @@ abstract class ActionsApi {
   Stream<List<Action>> getActions();
 
   Stream<List<Action>> getActionsByUserId(String userId);
+
+  Stream<Action> getActionById(String id);
   
   Future<void> saveAction(Action action);
 

@@ -7,6 +7,8 @@ abstract class AtestApi {
 
   Stream<List<Extinguisher>> getAtestsByUserId(String userId);
 
+  Stream<Extinguisher> getAtestById(String id);
+
   Future<void> saveAtest(Extinguisher atest);
 
   Future<void> deleteAtest(String id);

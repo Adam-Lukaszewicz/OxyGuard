@@ -10,7 +10,7 @@ class TeamRepository {
 
   Stream<List<Team>> getTeams() => _teamApi.getTeams();
 
-  Stream<List<Team>> getTeamsByUserId(String userId) => _teamApi.getTeamsByUserId(userId);
+  Stream<List<Team>> getTeamsBySquadId(String squadId) => _teamApi.getTeamsBySquadId(squadId);
 
   Future<void> saveTeam(Team team) => _teamApi.saveTeam(team);
 

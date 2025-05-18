@@ -12,6 +12,8 @@ class ActionsRepository {
 
   Stream<List<Action>> getActionsByUserId(String userId) => _actionsApi.getActionsByUserId(userId);
 
+  Stream<Action> getActionById(String id) => _actionsApi.getActionById(id);
+
   Future<void> saveAction(Action action) => _actionsApi.saveAction(action);
 
   Future<void> deleteAction(String id) => _actionsApi.deleteAction(id);

@@ -5,7 +5,9 @@ abstract class SquadApi {
 
   Stream<List<Squad>> getSquads();
 
-  Stream<List<Squad>> getSquadsByUserId(String userId);
+  Stream<List<Squad>> getSquadsByActionId(String userId);
+
+  Stream<Squad> getSquadById(String id);
 
   Future<void> saveSquad(Squad squad);
 

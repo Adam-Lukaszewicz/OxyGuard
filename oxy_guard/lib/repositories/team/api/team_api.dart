@@ -5,7 +5,9 @@ abstract class TeamApi {
 
   Stream<List<Team>> getTeams();
 
-  Stream<List<Team>> getTeamsByUserId(String userId);
+  Stream<List<Team>> getTeamsBySquadId(String squadId);
+  
+  Stream<Team> getTeamById(String id);
 
   Future<void> saveTeam(Team team);
 

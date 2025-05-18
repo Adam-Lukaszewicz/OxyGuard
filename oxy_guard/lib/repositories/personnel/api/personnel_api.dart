@@ -7,6 +7,8 @@ abstract class PersonnelApi {
 
   Stream<List<Personnel>> getPersonnelByUserId(String userId);
 
+  Stream<Personnel> getPersonnelById(String id);
+
   Future<void> savePersonnel(Personnel personnel);
 
   Future<void> deletePersonnel(String id);

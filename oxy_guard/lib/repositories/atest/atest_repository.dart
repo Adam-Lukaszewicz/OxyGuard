@@ -7,19 +7,13 @@ class AtestRepository {
 
   final AtestApi _atestApi;
 
-  Stream<List<Extinguisher>> getAtests() {
-    return _atestApi.getAtests();
-  }
+  Stream<List<Extinguisher>> getAtests() => _atestApi.getAtests();
 
-  Stream<List<Extinguisher>> getAtestsByUserId(String userId) {
-    return _atestApi.getAtestsByUserId(userId);
-  }
+  Stream<List<Extinguisher>> getAtestsByUserId(String userId) => _atestApi.getAtestsByUserId(userId);
 
-  Future<void> saveAtest(Extinguisher atest) {
-    return _atestApi.saveAtest(atest);
-  }
+  Stream<Extinguisher> getAtestById(String id) => _atestApi.getAtestById(id);
 
-  Future<void> deleteAtest(String id) {
-    return _atestApi.deleteAtest(id);
-  }
+  Future<void> saveAtest(Extinguisher atest) => _atestApi.saveAtest(atest);
+
+  Future<void> deleteAtest(String id) => _atestApi.deleteAtest(id);
 }

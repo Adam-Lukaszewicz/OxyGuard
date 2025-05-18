@@ -19,12 +19,24 @@ class FirestoreSquadApi implements SquadApi {
   }
 
   @override
-  Stream<List<Squad>> getSquadsByUserId(String userId) {
-    return _squadsRef.where('uid', isEqualTo: userId).snapshots().map((snapshot) {
+  Stream<List<Squad>> getSquadsByActionId(String actionId) {
+    return _squadsRef.where('actionId', isEqualTo: actionId).snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         return Squad.fromJson(data);
       }).toList();
+    });
+  }
+
+  @override
+  Stream<Squad> getSquadById(String id) {
+    return _squadsRef.doc(id).snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+        return Squad.fromJson(data);
+      } else {
+        throw SquadNotFoundException();
+      }
     });
   }
 

@@ -29,6 +29,18 @@ class FirestorePersonnelApi implements PersonnelApi {
   }
 
   @override
+  Stream<Personnel> getPersonnelById(String id) {
+    return _personnelRef.doc(id).snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+        return Personnel.fromJson(data);
+      } else {
+        throw PersonnelNotFoundException();
+      }
+    });
+  }
+
+  @override
   Future<void> savePersonnel(Personnel personnel) {
     return _personnelRef.doc(personnel.id).set(personnel);
   }

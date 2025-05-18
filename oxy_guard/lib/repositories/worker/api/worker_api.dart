@@ -5,7 +5,7 @@ abstract class WorkerApi {
 
   Stream<List<Worker>> getWorkers();
 
-  Stream<List<Worker>> getWorkersByUserId(String userId);
+  Stream<Worker> getWorkerById(String id);
 
   Future<void> saveWorker(Worker worker);
 

@@ -19,12 +19,24 @@ class FirestoreTeamApi implements TeamApi {
   }
 
   @override
-  Stream<List<Team>> getTeamsByUserId(String userId) {
-    return _teamsRef.where('uid', isEqualTo: userId).snapshots().map((snapshot) {
+  Stream<List<Team>> getTeamsBySquadId(String squadId) {
+    return _teamsRef.where('squadId', isEqualTo: squadId).snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         return Team.fromJson(data);
       }).toList();
+    });
+  }
+
+  @override
+  Stream<Team> getTeamById(String id) {
+    return _teamsRef.doc(id).snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+        return Team.fromJson(data);
+      } else {
+        throw TeamNotFoundException();
+      }
     });
   }
 

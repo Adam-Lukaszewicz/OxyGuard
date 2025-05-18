@@ -10,7 +10,7 @@ class WorkerRepository {
 
   Stream<List<Worker>> getWorkers() => _workerApi.getWorkers();
 
-  Stream<List<Worker>> getWorkersByUserId(String userId) => _workerApi.getWorkersByUserId(userId);
+  Stream<Worker> getWorkerById(String id) => _workerApi.getWorkerById(id);
 
   Future<void> saveWorker(Worker worker) => _workerApi.saveWorker(worker);
 

@@ -12,7 +12,11 @@ class PersonnelRepository {
 
   Stream<List<Personnel>> getPersonnelByUserId(String userId) => _personnelApi.getPersonnelByUserId(userId);
 
+  Stream<Personnel> getPersonnelById(String id) => _personnelApi.getPersonnelById(id);
+
   Future<void> savePersonnel(Personnel personnel) => _personnelApi.savePersonnel(personnel);
 
   Future<void> deletePersonnel(String id) => _personnelApi.deletePersonnel(id);
 }
+
+class PersonnelNotFoundException implements Exception {}
