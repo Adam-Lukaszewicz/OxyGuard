@@ -10,6 +10,7 @@ FinishedSquad _$FinishedSquadFromJson(Map<String, dynamic> json) =>
     FinishedSquad(
       archivedActionId: json['archivedActionId'] as String,
       id: json['id'] as String?,
+      uid: json['uid'] as String,
       finishedTeams: (json['finishedTeams'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
@@ -19,5 +20,6 @@ Map<String, dynamic> _$FinishedSquadToJson(FinishedSquad instance) =>
     <String, dynamic>{
       'archivedActionId': instance.archivedActionId,
       'id': instance.id,
+      'uid': instance.uid,
       'finishedTeams': instance.finishedTeams,
     };

@@ -9,6 +9,7 @@ part of 'finished_team.dart';
 FinishedTeam _$FinishedTeamFromJson(Map<String, dynamic> json) => FinishedTeam(
       archivedSquadId: json['archivedSquadId'] as String,
       id: json['id'] as String?,
+      uid: json['uid'] as String,
       name: json['name'] as String,
       averageConsumption: (json['averageConsumption'] as num).toDouble(),
       workers:
@@ -19,6 +20,7 @@ Map<String, dynamic> _$FinishedTeamToJson(FinishedTeam instance) =>
     <String, dynamic>{
       'archivedSquadId': instance.archivedSquadId,
       'id': instance.id,
+      'uid': instance.uid,
       'name': instance.name,
       'averageConsumption': instance.averageConsumption,
       'workers': instance.workers,

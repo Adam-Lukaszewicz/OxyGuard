@@ -20,11 +20,13 @@ class ArchiveLoadedState extends ArchiveState {
     required this.archivedActions,
     required this.finishedSquads,
     required this.finishedTeams,
+    required this.workers
   });
 
   final List<ArchivedAction> archivedActions;
   final Map<String, List<FinishedSquad>> finishedSquads;
   final Map<String, List<FinishedTeam>> finishedTeams;
+  final List<Worker> workers;
 
   @override
   List<Object> get props => [
@@ -35,11 +37,15 @@ class ArchiveLoadedState extends ArchiveState {
 
   @override
   ArchiveLoadedState copyWith(
-      {List<ArchivedAction>? archivedActions, Map<String, List<FinishedSquad>>? finishedSquads, Map<String, List<FinishedTeam>>? finishedTeams}) {
+      {List<ArchivedAction>? archivedActions,
+      Map<String, List<FinishedSquad>>? finishedSquads,
+      Map<String, List<FinishedTeam>>? finishedTeams,
+      List<Worker>? workers}) {
     return ArchiveLoadedState(
       archivedActions: archivedActions ?? this.archivedActions,
       finishedSquads: finishedSquads ?? this.finishedSquads,
       finishedTeams: finishedTeams ?? this.finishedTeams,
+      workers: workers ?? this.workers
     );
   }
 }

@@ -6,6 +6,7 @@ import 'package:OxyGuard/repositories/archive/archive_repository.dart';
 import 'package:OxyGuard/repositories/finished_squad/finished_squad_repository.dart';
 import 'package:OxyGuard/repositories/finished_team/finished_team_repository.dart';
 import 'package:OxyGuard/repositories/user_repository.dart';
+import 'package:OxyGuard/repositories/worker/worker_repository.dart';
 import 'package:OxyGuard/service_locator.dart';
 import 'package:bloc/bloc.dart';
 
@@ -15,6 +16,7 @@ class ArchiveCubit extends Cubit<ArchiveState> {
   final ArchiveRepository _archiveRepository = sl();
   final FinishedSquadRepository _finishedSquadRepository = sl();
   final FinishedTeamRepository _finishedTeamRepository = sl();
+  final WorkerRepository _workerRepository = sl();
   final UserRepository _userRepository = sl();
 
   StreamSubscription<dynamic>? _subscription;
@@ -27,6 +29,7 @@ class ArchiveCubit extends Cubit<ArchiveState> {
           await _finishedSquadRepository.getFinishedSquadsByUserId(_userRepository.user.id).first;
       final List<FinishedTeam> unsortedTeams =
           await _finishedTeamRepository.getFinishedTeamsByUserId(_userRepository.user.id).first;
+      final List<Worker> workers = await _workerRepository.getWorkers().first;
       final Map<String, List<FinishedSquad>> finishedSquads = {};
       final Map<String, List<FinishedTeam>> finishedTeams = {};
 
@@ -44,10 +47,13 @@ class ArchiveCubit extends Cubit<ArchiveState> {
         }
       }
 
+      archivedActions.sort((ArchivedAction a, ArchivedAction b) => b.endTime.compareTo(a.endTime));
+
       emit(ArchiveLoadedState(
         archivedActions: archivedActions,
         finishedSquads: finishedSquads,
         finishedTeams: finishedTeams,
+        workers: workers
       ));
     });
   }
