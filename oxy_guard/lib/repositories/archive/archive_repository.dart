@@ -10,8 +10,13 @@ class ArchiveRepository {
 
   Stream<List<ArchivedAction>> getArchiveByUserId(String userId) => _archiveApi.getArchiveByUserId(userId);
 
+  Stream<ArchivedAction> getArchiveById(String id) => _archiveApi.getArchiveById(id);
+
   Future<void> saveArchive(ArchivedAction archivedAction) => _archiveApi.saveArchive(archivedAction);
 
+  Future<void> deleteArchive(String id) => _archiveApi.deleteArchive(id);
+  //Keeping this for when I'll implement an ActionCubit - logic very similiar.
+  /*
   Future<void> moveActionToArchive(Action action, List<Squad> squads, List<Team> teams) async {
     final ArchivedAction newArchiveEntry = ArchivedAction(uid: action.uid, endTime: DateTime.now(), finishedSquads: []);
     final List<FinishedTeam> finishedTeams = [];
@@ -56,28 +61,5 @@ class ArchiveRepository {
     } 
     await _archiveApi.saveArchive(newArchiveEntry);
   }
-
-  Future<void> deleteArchive(String id) => _archiveApi.deleteArchive(id);
-
-  Stream<List<FinishedSquad>> getFinishedSquads() => _archiveApi.getFinishedSquads();
-
-  Stream<FinishedSquad> getFinishedSquadById(String id) => _archiveApi.getFinishedSquadById(id);
-
-  Stream<List<FinishedSquad>> getFinishedSquadsByArchivedActionId(String archivedActionId) =>
-      _archiveApi.getFinishedSquadsByArchivedActionId(archivedActionId);
-
-  Future<void> saveFinishedSquad(FinishedSquad finishedSquad) => _archiveApi.saveFinishedSquad(finishedSquad);
-
-  Future<void> deleteFinishedSquad(String id) => _archiveApi.deleteFinishedSquad(id);
-
-  Stream<List<FinishedTeam>> getFinishedTeams() => _archiveApi.getFinishedTeams();
-
-  Stream<FinishedTeam> getFinishedTeamById(String id) => _archiveApi.getFinishedTeamById(id);
-
-  Stream<List<FinishedTeam>> getFinishedTeamsByArchivedSquadId(String archivedSquadId) =>
-      _archiveApi.getFinishedTeamsByArchivedSquadId(archivedSquadId);
-
-  Future<void> saveFinishedTeam(FinishedTeam finishedTeam) => _archiveApi.saveFinishedTeam(finishedTeam);
-
-  Future<void> deleteFinishedTeam(String id) => _archiveApi.deleteFinishedTeam(id);
+  */
 }

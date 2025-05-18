@@ -5,12 +5,20 @@ part 'finished_team.g.dart';
 
 @JsonSerializable()
 class FinishedTeam {
-  FinishedTeam({required this.archivedSquadId, String? id, required this.name, required this.averageConsumption, required this.workers})
+  FinishedTeam(
+      {required this.archivedSquadId,
+      String? id,
+      required this.uid,
+      required this.name,
+      required this.averageConsumption,
+      required this.workers})
       : id = id ?? const Uuid().v4();
 
   String archivedSquadId;
 
   String? id;
+
+  String uid;
 
   String name;
 

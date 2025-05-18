@@ -5,11 +5,14 @@ part 'finished_squad.g.dart';
 
 @JsonSerializable()
 class FinishedSquad {
-  FinishedSquad({required this.archivedActionId, String? id, required this.finishedTeams}) : id = id ?? const Uuid().v4();
+  FinishedSquad({required this.archivedActionId, String? id, required this.uid, required this.finishedTeams})
+      : id = id ?? const Uuid().v4();
 
   String archivedActionId;
 
   String? id;
+
+  String uid;
 
   List<String> finishedTeams;
 
