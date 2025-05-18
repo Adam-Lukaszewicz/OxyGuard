@@ -13,7 +13,7 @@ ArchivedAction _$ArchivedActionFromJson(Map<String, dynamic> json) =>
       actionLocation: _$JsonConverterFromJson<Map<String, dynamic>, Position>(
           json['actionLocation'], const PositionConverter().fromJson),
       endTime: DateTime.parse(json['endTime'] as String),
-      finishedTeams: (json['finishedTeams'] as List<dynamic>)
+      finishedSquads: (json['finishedSquads'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
     );
@@ -25,7 +25,7 @@ Map<String, dynamic> _$ArchivedActionToJson(ArchivedAction instance) =>
       'actionLocation': _$JsonConverterToJson<Map<String, dynamic>, Position>(
           instance.actionLocation, const PositionConverter().toJson),
       'endTime': instance.endTime.toIso8601String(),
-      'finishedTeams': instance.finishedTeams,
+      'finishedSquads': instance.finishedSquads,
     };
 
 Value? _$JsonConverterFromJson<Json, Value>(

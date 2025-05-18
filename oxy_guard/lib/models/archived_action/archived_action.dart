@@ -7,7 +7,7 @@ part 'archived_action.g.dart';
 
 @JsonSerializable()
 class ArchivedAction {
-  ArchivedAction({required this.uid, String? id, this.actionLocation, required this.endTime, required this.finishedTeams})
+  ArchivedAction({required this.uid, String? id, this.actionLocation, required this.endTime, required this.finishedSquads})
       : id = id ?? const Uuid().v4();
 
   String uid;
@@ -19,7 +19,7 @@ class ArchivedAction {
 
   DateTime endTime;
 
-  List<String> finishedTeams;
+  List<String> finishedSquads;
 
   factory ArchivedAction.fromJson(Map<String, dynamic> json) => _$ArchivedActionFromJson(json);
 

@@ -8,6 +8,7 @@ part of 'team.dart';
 
 Team _$TeamFromJson(Map<String, dynamic> json) => Team(
       id: json['id'] as String?,
+      name: json['name'] as String,
       squadId: json['squadId'] as String,
       isInCrisis: json['isInCrisis'] as bool? ?? false,
       isWorking: json['isWorking'] as bool? ?? false,
@@ -42,6 +43,7 @@ Team _$TeamFromJson(Map<String, dynamic> json) => Team(
 Map<String, dynamic> _$TeamToJson(Team instance) => <String, dynamic>{
       'id': instance.id,
       'squadId': instance.squadId,
+      'name': instance.name,
       'isInCrisis': instance.isInCrisis,
       'isWorking': instance.isWorking,
       'entryPressure': instance.entryPressure,

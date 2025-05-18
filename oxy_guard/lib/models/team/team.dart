@@ -10,6 +10,8 @@ class Team {
 
   String squadId;
 
+  String name;
+
   bool isInCrisis;
 
   bool isWorking;
@@ -38,6 +40,7 @@ class Team {
 
   Team(
       {String? id,
+      required this.name,
       required this.squadId,
       this.isInCrisis = false,
       this.isWorking = false,

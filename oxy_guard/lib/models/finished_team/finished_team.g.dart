@@ -7,16 +7,19 @@ part of 'finished_team.dart';
 // **************************************************************************
 
 FinishedTeam _$FinishedTeamFromJson(Map<String, dynamic> json) => FinishedTeam(
-      archivedActionId: json['archivedActionId'] as String,
+      archivedSquadId: json['archivedSquadId'] as String,
       id: json['id'] as String?,
-      finishedSquads: (json['finishedSquads'] as List<dynamic>)
-          .map((e) => e as String)
-          .toList(),
+      name: json['name'] as String,
+      averageConsumption: (json['averageConsumption'] as num).toDouble(),
+      workers:
+          (json['workers'] as List<dynamic>).map((e) => e as String).toList(),
     );
 
 Map<String, dynamic> _$FinishedTeamToJson(FinishedTeam instance) =>
     <String, dynamic>{
-      'archivedActionId': instance.archivedActionId,
+      'archivedSquadId': instance.archivedSquadId,
       'id': instance.id,
-      'finishedSquads': instance.finishedSquads,
+      'name': instance.name,
+      'averageConsumption': instance.averageConsumption,
+      'workers': instance.workers,
     };

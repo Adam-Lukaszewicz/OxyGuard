@@ -5,17 +5,13 @@ part 'finished_squad.g.dart';
 
 @JsonSerializable()
 class FinishedSquad {
-  FinishedSquad({required this.archivedTeamId, String? id, required this.name, required this.averageConsumption, required this.workers}) : id = id ?? const Uuid().v4();
+  FinishedSquad({required this.archivedActionId, String? id, required this.finishedTeams}) : id = id ?? const Uuid().v4();
 
-  String archivedTeamId;
+  String archivedActionId;
 
   String? id;
 
-  String name;
-
-  double averageConsumption;
-
-  List<String> workers;
+  List<String> finishedTeams;
 
   factory FinishedSquad.fromJson(Map<String, dynamic> json) => _$FinishedSquadFromJson(json);
 

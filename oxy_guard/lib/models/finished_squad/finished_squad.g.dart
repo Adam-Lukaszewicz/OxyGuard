@@ -8,19 +8,16 @@ part of 'finished_squad.dart';
 
 FinishedSquad _$FinishedSquadFromJson(Map<String, dynamic> json) =>
     FinishedSquad(
-      archivedTeamId: json['archivedTeamId'] as String,
+      archivedActionId: json['archivedActionId'] as String,
       id: json['id'] as String?,
-      name: json['name'] as String,
-      averageConsumption: (json['averageConsumption'] as num).toDouble(),
-      workers:
-          (json['workers'] as List<dynamic>).map((e) => e as String).toList(),
+      finishedTeams: (json['finishedTeams'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
     );
 
 Map<String, dynamic> _$FinishedSquadToJson(FinishedSquad instance) =>
     <String, dynamic>{
-      'archivedTeamId': instance.archivedTeamId,
+      'archivedActionId': instance.archivedActionId,
       'id': instance.id,
-      'name': instance.name,
-      'averageConsumption': instance.averageConsumption,
-      'workers': instance.workers,
+      'finishedTeams': instance.finishedTeams,
     };
