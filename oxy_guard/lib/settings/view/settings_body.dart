@@ -14,6 +14,8 @@ class _SettingsBodyState extends State<SettingsBody> {
   int? exitPressure;
   int? checkInterval;
 
+
+  //TODO: move those to the cubit probably
   Future<void> _loadExtremePresssure() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
