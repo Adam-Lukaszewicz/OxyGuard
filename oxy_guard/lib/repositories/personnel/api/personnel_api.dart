@@ -5,7 +5,7 @@ abstract class PersonnelApi {
 
   Stream<List<Personnel>> getPersonnel();
 
-  Stream<List<Personnel>> getPersonnelByUserId(String userId);
+  Stream<Personnel> getPersonnelByUserId(String userId);
 
   Stream<Personnel> getPersonnelById(String id);
 

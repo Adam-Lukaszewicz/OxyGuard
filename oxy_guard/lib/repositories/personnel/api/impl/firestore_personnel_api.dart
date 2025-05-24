@@ -19,12 +19,14 @@ class FirestorePersonnelApi implements PersonnelApi {
   }
 
   @override
-  Stream<List<Personnel>> getPersonnelByUserId(String userId) {
+  Stream<Personnel> getPersonnelByUserId(String userId) {
     return _personnelRef.where('uid', isEqualTo: userId).snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) {
-        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      if (snapshot.size != 0) {
+        Map<String, dynamic> data = snapshot.docs.first as Map<String, dynamic>;
         return Personnel.fromJson(data);
-      }).toList();
+      } else {
+        throw PersonnelNotFoundException();
+      }
     });
   }
 

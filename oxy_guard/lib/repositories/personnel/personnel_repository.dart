@@ -10,7 +10,7 @@ class PersonnelRepository {
 
   Stream<List<Personnel>> getPersonnel() => _personnelApi.getPersonnel();
 
-  Stream<List<Personnel>> getPersonnelByUserId(String userId) => _personnelApi.getPersonnelByUserId(userId);
+  Stream<Personnel> getPersonnelByUserId(String userId) => _personnelApi.getPersonnelByUserId(userId);
 
   Stream<Personnel> getPersonnelById(String id) => _personnelApi.getPersonnelById(id);
 

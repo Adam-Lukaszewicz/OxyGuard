@@ -1,11 +1,13 @@
 import 'package:OxyGuard/context_windows.dart';
-import 'package:OxyGuard/legacy/models/personnel/worker.dart';
-import 'package:OxyGuard/legacy/services/database_service.dart';
+import 'package:OxyGuard/extras/team/cubit/team_cubit.dart';
+import 'package:OxyGuard/extras/team/cubit/team_state.dart';
 import 'package:flutter/material.dart';
-import 'package:watch_it/watch_it.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TeamBody extends StatefulWidget {
-  const TeamBody({super.key});
+  const TeamBody({super.key, required this.state});
+
+  final TeamLoadedState state;
 
   @override
   State<TeamBody> createState() => _TeamBodyState();
@@ -17,12 +19,13 @@ class _TeamBodyState extends State<TeamBody> {
   final validCharacters = RegExp(r'^[a-zA-Z0-9]+$');
 
   void _addToList() {
+    final TeamCubit cubit = context.read<TeamCubit>();
     final firstName = _firstNameController.text.trim();
     final lastName = _lastNameController.text.trim();
     if (firstName.isNotEmpty && lastName.isNotEmpty) {
       if (validCharacters.hasMatch(firstName) && validCharacters.hasMatch(lastName)) {
         setState(() {
-          GetIt.I.get<DatabaseService>().currentPersonnel.addWorker(Worker(name: firstName, surname: lastName));
+          cubit.addWorker(widget.state.personnel, firstName, lastName);
         });
         _firstNameController.clear();
         _lastNameController.clear();
@@ -34,28 +37,11 @@ class _TeamBodyState extends State<TeamBody> {
     }
   }
 
-  void _sortWorkers() {
-    GetIt.I.get<DatabaseService>().currentPersonnel.team.sort((a, b) {
-      int firstNameComparison = a.name.toLowerCase().compareTo(b.name.toLowerCase());
-      if (firstNameComparison != 0) {
-        return firstNameComparison;
-      } else {
-        return a.surname.toLowerCase().compareTo(b.surname.toLowerCase());
-      }
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _sortWorkers();
-  }
-
   @override
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
     var guidesTextStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: screenWidth * 0.05);
-    var dbService = GetIt.I.get<DatabaseService>();
+    final TeamCubit cubit = context.read<TeamCubit>();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColorDark,
@@ -116,25 +102,20 @@ class _TeamBodyState extends State<TeamBody> {
                   Text('Kadra pracownicza:', style: guidesTextStyle),
                   const SizedBox(height: 10),
                   Expanded(
-                    child: ListenableBuilder(
-                      listenable: dbService.currentPersonnel,
-                      builder: (context, child) {
-                        return ListView(
-                          children: dbService.currentPersonnel.team
-                              .map((worker) => ListTile(
-                                    title: Text('${worker.name} ${worker.surname}'),
-                                    trailing: IconButton(
-                                      icon: const Icon(Icons.delete),
-                                      onPressed: () {
-                                        setState(() {
-                                          dbService.currentPersonnel.subWorker(worker);
-                                        });
-                                      },
-                                    ),
-                                  ))
-                              .toList(),
-                        );
-                      },
+                    child: ListView(
+                      children: widget.state.workers
+                          .map((worker) => ListTile(
+                                title: Text('${worker.name} ${worker.surname}'),
+                                trailing: IconButton(
+                                  icon: const Icon(Icons.delete),
+                                  onPressed: () {
+                                    setState(() {
+                                      cubit.deleteWorker(widget.state.personnel, worker);
+                                    });
+                                  },
+                                ),
+                              ))
+                          .toList(),
                     ),
                   ),
                 ],
