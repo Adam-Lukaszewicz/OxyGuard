@@ -50,11 +50,10 @@ class ArchiveCubit extends Cubit<ArchiveState> {
       archivedActions.sort((ArchivedAction a, ArchivedAction b) => b.endTime.compareTo(a.endTime));
 
       emit(ArchiveLoadedState(
-        archivedActions: archivedActions,
-        finishedSquads: finishedSquads,
-        finishedTeams: finishedTeams,
-        workers: workers
-      ));
+          archivedActions: archivedActions,
+          finishedSquads: finishedSquads,
+          finishedTeams: finishedTeams,
+          workers: workers));
     });
   }
 

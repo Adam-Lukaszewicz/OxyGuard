@@ -1,11 +1,14 @@
 import 'package:OxyGuard/context_windows.dart';
-import 'package:OxyGuard/legacy/models/extinguisher_model.dart';
-import 'package:OxyGuard/legacy/services/database_service.dart';
+import 'package:OxyGuard/extras/atests/cubit/atests_cubit.dart';
+import 'package:OxyGuard/extras/atests/cubit/atests_state.dart';
+import 'package:OxyGuard/models/models.dart';
 import 'package:flutter/material.dart';
-import 'package:watch_it/watch_it.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AtestsBody extends StatelessWidget {
-  const AtestsBody({super.key});
+  const AtestsBody({super.key, required this.state});
+
+  final AtestsLoadedState state;
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +16,7 @@ class AtestsBody extends StatelessWidget {
     var screenWidth = MediaQuery.of(context).size.width;
     var serialTextStyle = TextStyle(fontSize: screenWidth * 0.06);
     var dateTextStyle = TextStyle(fontSize: screenWidth * 0.05);
-    var dbService = GetIt.I.get<DatabaseService>();
+    final AtestsCubit cubit = context.read<AtestsCubit>();
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
@@ -35,8 +38,7 @@ class AtestsBody extends StatelessWidget {
           }
 
           if (serial != null && expirationDate != null) {
-            ExtinguisherModel newExtinguisher = ExtinguisherModel(serial: serial, expirationDate: expirationDate);
-            dbService.addAtest(newExtinguisher);
+            cubit.createAtest(serial, expirationDate);
           }
         },
         foregroundColor: Colors.white,
@@ -48,115 +50,69 @@ class AtestsBody extends StatelessWidget {
         child: Center(
           child: SizedBox(
             width: screenWidth * 0.9,
-            child: StreamBuilder(
-                stream: dbService.getAtests(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return const Center(child: Text('Something went wrong'));
-                  }
-
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
+            child: ListView(
+              children: state.atestsList.map((Extinguisher extinguisher) {
+                return Card(
+                  color: Colors.white,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+                    child: InkWell(
+                      onTap: () async {
+                        DateTime? newExpirationDate = await showDatePicker(
+                            context: context,
+                            firstDate: DateTime.now().subtract(const Duration(days: 730)),
+                            lastDate: DateTime.now().add(const Duration(days: 730)));
+                        if (newExpirationDate != null) {
+                          cubit.updateAtestDate(extinguisher, newExpirationDate);
+                        }
+                      },
+                      child: Stack(children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            CircularProgressIndicator(),
-                          ],
-                        ),
-                      ],
-                    );
-                  }
-                  var extinguisherList = snapshot.data!.docs;
-                  extinguisherList.sort(
-                    (a, b) {
-                      if (a.data() is ExtinguisherModel && b.data() is ExtinguisherModel) {
-                        ExtinguisherModel aModel = a.data() as ExtinguisherModel;
-                        ExtinguisherModel bModel = b.data() as ExtinguisherModel;
-                        return bModel.expirationDate.compareTo(aModel.expirationDate);
-                      } else {
-                        return 0;
-                      }
-                    },
-                  );
-                  return ListView(
-                    children: extinguisherList.map((extinguisher) {
-                      if (extinguisher.data() is ExtinguisherModel) {
-                        ExtinguisherModel model = extinguisher.data() as ExtinguisherModel;
-                        return Card(
-                          color: Colors.white,
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
-                            child: InkWell(
-                              onTap: () async {
-                                DateTime? newExpirationDate = await showDatePicker(
-                                    context: context,
-                                    firstDate: DateTime.now().subtract(const Duration(days: 730)),
-                                    lastDate: DateTime.now().add(const Duration(days: 730)));
-                                if (newExpirationDate != null) {
-                                  model.updateDate(newExpirationDate);
-                                }
-                              },
-                              child: Stack(children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    SizedBox(
-                                      width: screenWidth * 0.02,
-                                    ),
-                                    Text(
-                                      model.serial,
-                                      style: serialTextStyle,
-                                    ),
-                                    SizedBox(
-                                      width: screenWidth * 0.05,
-                                    ),
-                                    Text(
-                                      "${model.expirationDate.day}.${model.expirationDate.month}.${model.expirationDate.year}",
-                                      style: dateTextStyle,
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        model.remove();
-                                      },
-                                      style: const ButtonStyle(
-                                        shape: WidgetStatePropertyAll(CircleBorder()),
-                                        backgroundColor: WidgetStatePropertyAll(Colors.red),
-                                      ),
-                                      child: const Icon(
-                                        Icons.delete,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                if (model.expirationDate.difference(DateTime.now()).inDays < 7)
-                                  const Positioned(
-                                      top: 0,
-                                      right: 0,
-                                      child: Icon(
-                                        Icons.error,
-                                        color: Colors.red,
-                                      ))
-                              ]),
+                            SizedBox(
+                              width: screenWidth * 0.02,
                             ),
-                          ),
-                        );
-                      } else {
-                        return Card(
-                          color: Colors.white,
-                          child: ListTile(
-                            title: Text(
-                              "Błąd pobierania danych gaśnicy",
+                            Text(
+                              extinguisher.serialNumber,
                               style: serialTextStyle,
                             ),
-                          ),
-                        );
-                      }
-                    }).toList(),
-                  );
-                }),
+                            SizedBox(
+                              width: screenWidth * 0.05,
+                            ),
+                            Text(
+                              "${extinguisher.expirationDate.day}.${extinguisher.expirationDate.month}.${extinguisher.expirationDate.year}",
+                              style: dateTextStyle,
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                cubit.deleteAtest(extinguisher);
+                              },
+                              style: const ButtonStyle(
+                                shape: WidgetStatePropertyAll(CircleBorder()),
+                                backgroundColor: WidgetStatePropertyAll(Colors.red),
+                              ),
+                              child: const Icon(
+                                Icons.delete,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                        if (extinguisher.expirationDate.difference(DateTime.now()).inDays < 7)
+                          const Positioned(
+                              top: 0,
+                              right: 0,
+                              child: Icon(
+                                Icons.error,
+                                color: Colors.red,
+                              ))
+                      ]),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
           ),
         ),
       ),
