@@ -10,7 +10,7 @@ class SquadRepository {
 
   Stream<List<Squad>> getSquads() => _squadApi.getSquads();
 
-  Stream<List<Squad>> getSquadsByUserId(String actionId) => _squadApi.getSquadsByActionId(actionId);
+  Stream<List<Squad>> getSquadsByActionId(String actionId) => _squadApi.getSquadsByActionId(actionId);
 
   Stream<Squad> getSquadById(String id) => _squadApi.getSquadById(id);
 

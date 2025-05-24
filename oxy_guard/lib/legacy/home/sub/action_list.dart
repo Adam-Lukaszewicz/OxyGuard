@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:OxyGuard/legacy/action/squad_choice.dart';
+import 'package:OxyGuard/screens/action/view/action_body.dart';
 import 'package:OxyGuard/legacy/models/action_model.dart';
 import 'package:OxyGuard/legacy/services/database_service.dart';
 import 'package:OxyGuard/legacy/services/internet_serivce.dart';
@@ -70,7 +70,7 @@ class _ActionListState extends State<ActionList> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    SquadChoice()));
+                                                    ActionBody()));
                                       },
                                       title: const Text(
                                         "Akcja offline",
@@ -215,7 +215,7 @@ class _ActionListState extends State<ActionList> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    SquadChoice()));
+                                                    ActionBody()));
                                       },
                                     ))
                               );
