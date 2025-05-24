@@ -1,3 +1,4 @@
+import 'package:OxyGuard/screens/action/action_page.dart';
 import 'package:OxyGuard/screens/extras/account/account_page.dart';
 import 'package:OxyGuard/screens/extras/archive/archive_page.dart';
 import 'package:OxyGuard/screens/extras/atests/atests_page.dart';
@@ -30,6 +31,11 @@ class Router {
         return MaterialPageRoute(builder: (_) => const ResetPage());
       case RoutesNames.extras:
         return MaterialPageRoute(builder: (_) => const ExtrasPage());
+      case RoutesNames.action:
+        return MaterialPageRoute(
+            builder: (_) => ActionPage(
+                  actionId: settings.arguments as String?,
+                ));
       case RoutesNames.account:
         return MaterialPageRoute(builder: (_) => const AccountPage());
       case RoutesNames.atests:
@@ -57,8 +63,8 @@ class Router {
     navigatorKey.currentState?.popUntil(predicate ?? ModalRoute.withName('/'));
   }
 
-  Future<T?> push<T extends Object?>(String route) async {
-    return navigatorKey.currentState?.pushNamed(route);
+  Future<T?> push<T extends Object?>(String route, {Object? arguments}) async {
+    return navigatorKey.currentState?.pushNamed(route, arguments: arguments);
   }
 
   Future<T?> replace<T extends Object?>(String route) async {
