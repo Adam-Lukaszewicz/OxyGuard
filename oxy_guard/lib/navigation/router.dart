@@ -1,16 +1,16 @@
-import 'package:OxyGuard/extras/account/account_page.dart';
-import 'package:OxyGuard/extras/archive/archive_page.dart';
-import 'package:OxyGuard/extras/atests/atests_page.dart';
-import 'package:OxyGuard/extras/extras_page.dart';
-import 'package:OxyGuard/extras/team/team_page.dart';
-import 'package:OxyGuard/home/home_page.dart';
-import 'package:OxyGuard/reset_password/reset_page.dart';
-import 'package:OxyGuard/settings/settings_page.dart';
-import 'package:OxyGuard/signup/singup_page.dart';
-import 'package:OxyGuard/login/login_page.dart';
+import 'package:OxyGuard/screens/extras/account/account_page.dart';
+import 'package:OxyGuard/screens/extras/archive/archive_page.dart';
+import 'package:OxyGuard/screens/extras/atests/atests_page.dart';
+import 'package:OxyGuard/screens/extras/extras_page.dart';
+import 'package:OxyGuard/screens/extras/team/team_page.dart';
+import 'package:OxyGuard/screens/home/home_page.dart';
+import 'package:OxyGuard/screens/reset_password/reset_page.dart';
+import 'package:OxyGuard/screens/settings/settings_page.dart';
+import 'package:OxyGuard/screens/signup/singup_page.dart';
+import 'package:OxyGuard/screens/login/login_page.dart';
 import 'package:OxyGuard/navigation/routes_names.dart';
 import 'package:OxyGuard/service_locator.dart';
-import 'package:OxyGuard/splash/view/splash.dart';
+import 'package:OxyGuard/screens/splash/view/splash.dart';
 import 'package:flutter/material.dart';
 
 final Router router = Router.instance;

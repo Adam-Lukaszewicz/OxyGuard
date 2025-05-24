@@ -1,6 +1,6 @@
-import 'package:OxyGuard/home/home_page.dart';
+import 'package:OxyGuard/screens/home/home_page.dart';
 import 'package:OxyGuard/legacy/action/manage_page.dart';
-import 'package:OxyGuard/home/view/home_body.dart';
+import 'package:OxyGuard/screens/home/view/home_body.dart';
 import 'package:OxyGuard/legacy/models/squad_model.dart';
 import 'package:OxyGuard/legacy/services/database_service.dart';
 import 'package:flutter/material.dart';
