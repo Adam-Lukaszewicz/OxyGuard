@@ -1,19 +1,22 @@
-import 'package:OxyGuard/legacy/models/squad_model.dart';
 import 'package:OxyGuard/legacy/services/gps_service.dart';
+import 'package:OxyGuard/models/models.dart';
+import 'package:OxyGuard/screens/squad/cubit/squad_cubit.dart';
+import 'package:OxyGuard/screens/team/view/team_body.dart';
+import 'package:OxyGuard/screens/team/widgets/team_tab.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watch_it/watch_it.dart';
 
-class WorkingPage extends StatefulWidget {
-  WorkingPage({required Key key}) : super(key: key);
-  var size = 0;
+class TeamsPage extends StatefulWidget {
+  const TeamsPage({super.key, required this.teams});
+
+  final List<Team> teams;
+
   @override
-  State<WorkingPage> createState() => _WorkingPageState();
+  State<TeamsPage> createState() => _TeamsPageState();
 }
 
-class _WorkingPageState extends State<WorkingPage>
-    with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
+class _TeamsPageState extends State<TeamsPage> with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   late TabController _tabController;
   @override
   bool get wantKeepAlive => true;
@@ -21,9 +24,7 @@ class _WorkingPageState extends State<WorkingPage>
   @override
   void initState() {
     super.initState();
-    widget.size =
-        Provider.of<SquadModel>(context, listen: false).workingSquads.length;
-    _tabController = TabController(vsync: this, length: widget.size);
+    _tabController = TabController(vsync: this, length: widget.teams.length);
   }
 
   @override
@@ -36,17 +37,12 @@ class _WorkingPageState extends State<WorkingPage>
   Widget build(BuildContext context) {
     super.build(context);
     //TODO: get rid of this nonsense
-    var screenHeight =
-        MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).size.height -
-            MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!)
-                .viewPadding
-                .vertical;
+    var screenHeight = MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).size.height -
+        MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).viewPadding.vertical;
 
-    if (Provider.of<SquadModel>(context, listen: false)
-        .workingSquads
-        .values
-        .toList()
-        .isEmpty) {
+    final SquadCubit cubit = context.read<SquadCubit>();
+
+    if (widget.teams.isEmpty) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -79,10 +75,7 @@ class _WorkingPageState extends State<WorkingPage>
         SizedBox(
           height: screenHeight * 0.1,
           child: TabBar(
-            tabs: Provider.of<SquadModel>(context, listen: false)
-                .tabs
-                .values
-                .toList(),
+            tabs: <Widget>[for(final Team team in widget.teams) TeamTab(team: team,)],
             controller: _tabController,
             indicatorColor: Colors.black,
             unselectedLabelColor: Theme.of(context).primaryColorDark,
@@ -97,11 +90,9 @@ class _WorkingPageState extends State<WorkingPage>
           height: screenHeight * 0.75,
           child: TabBarView(
               controller: _tabController,
-              children: Provider.of<SquadModel>(context, listen: false)
-                  .workingSquads
-                  .values
-                  .toList()),
+              children: <Widget>[for(final Team team in widget.teams) TeamBody(team: team,)],
         ),
+        )
       ],
     );
   }

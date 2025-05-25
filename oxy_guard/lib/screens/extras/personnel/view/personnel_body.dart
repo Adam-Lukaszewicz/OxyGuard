@@ -1,25 +1,25 @@
 import 'package:OxyGuard/context_windows.dart';
-import 'package:OxyGuard/screens/extras/team/cubit/team_cubit.dart';
-import 'package:OxyGuard/screens/extras/team/cubit/team_state.dart';
+import 'package:OxyGuard/screens/extras/personnel/cubit/personnel_cubit.dart';
+import 'package:OxyGuard/screens/extras/personnel/cubit/personnal_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class TeamBody extends StatefulWidget {
-  const TeamBody({super.key, required this.state});
+class PersonnelBody extends StatefulWidget {
+  const PersonnelBody({super.key, required this.state});
 
-  final TeamLoadedState state;
+  final PersonnelLoadedState state;
 
   @override
-  State<TeamBody> createState() => _TeamBodyState();
+  State<PersonnelBody> createState() => _PersonnelBodyState();
 }
 
-class _TeamBodyState extends State<TeamBody> {
+class _PersonnelBodyState extends State<PersonnelBody> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final validCharacters = RegExp(r'^[a-zA-Z0-9]+$');
 
   void _addToList() {
-    final TeamCubit cubit = context.read<TeamCubit>();
+    final PersonnelCubit cubit = context.read<PersonnelCubit>();
     final firstName = _firstNameController.text.trim();
     final lastName = _lastNameController.text.trim();
     if (firstName.isNotEmpty && lastName.isNotEmpty) {
@@ -41,7 +41,7 @@ class _TeamBodyState extends State<TeamBody> {
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
     var guidesTextStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: screenWidth * 0.05);
-    final TeamCubit cubit = context.read<TeamCubit>();
+    final PersonnelCubit cubit = context.read<PersonnelCubit>();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColorDark,

@@ -2,9 +2,8 @@ import 'package:OxyGuard/legacy/action/tabs/finished/finished_page.dart';
 import 'package:OxyGuard/legacy/action/tabs/waiting/waiting_page.dart';
 import 'package:OxyGuard/navigation/router.dart';
 import 'package:OxyGuard/screens/squad/cubit/squad_state.dart';
+import 'package:OxyGuard/screens/team/teams_page.dart';
 import 'package:flutter/material.dart';
-
-import '../../../legacy/action/tabs/working/working_page.dart';
 
 class SquadBody extends StatefulWidget {
   const SquadBody({super.key, required this.state});
@@ -41,6 +40,7 @@ class _SquadBodyState extends State<SquadBody> with SingleTickerProviderStateMix
                       router.pop();
                     },
                   ),
+                  //TODO: squad naming
                   title: const Text("Odcinek bojowy X"),
                   centerTitle: true,
                   bottom: PreferredSize(
@@ -57,9 +57,7 @@ class _SquadBodyState extends State<SquadBody> with SingleTickerProviderStateMix
             body: TabBarView(
               children: [
                 const WaitingPage(),
-                WorkingPage(
-                  key: ValueKey(widget.state.teams.length),
-                ),
+                TeamsPage(teams: widget.state.teams,),
                 const FinishedPage(),
               ],
             )),

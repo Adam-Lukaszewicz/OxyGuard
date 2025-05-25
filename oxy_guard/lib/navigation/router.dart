@@ -3,7 +3,7 @@ import 'package:OxyGuard/screens/extras/account/account_page.dart';
 import 'package:OxyGuard/screens/extras/archive/archive_page.dart';
 import 'package:OxyGuard/screens/extras/atests/atests_page.dart';
 import 'package:OxyGuard/screens/extras/extras_page.dart';
-import 'package:OxyGuard/screens/extras/team/team_page.dart';
+import 'package:OxyGuard/screens/extras/personnel/personnel_page.dart';
 import 'package:OxyGuard/screens/home/home_page.dart';
 import 'package:OxyGuard/screens/reset_password/reset_page.dart';
 import 'package:OxyGuard/screens/settings/settings_page.dart';
@@ -49,7 +49,7 @@ class Router {
       case RoutesNames.archive:
         return MaterialPageRoute(builder: (_) => const ArchivePage());
       case RoutesNames.team:
-        return MaterialPageRoute(builder: (_) => const TeamPage());
+        return MaterialPageRoute(builder: (_) => const PersonnelPage());
       case RoutesNames.settings:
         return MaterialPageRoute(builder: (_) => const SettingsPage());
       case RoutesNames.splash:

@@ -60,6 +60,35 @@ class Team {
         returnPressure = returnPressure ?? criticalPressure,
         checks = checks ?? <(DateTime, double)>[];
 
+  double getOxygenRemaining() {
+    if (isWorking) {
+      return checks.last.$2 - (oxygenUsageRate * DateTime.now().difference(checks.last.$1).inSeconds);
+    } else {
+      return checks.last.$2;
+    }
+  }
+
+  int getTimeRemaining() {
+    //TODO: figure out naming conventions for entry / exit pressures and also return and safe return to standardize,
+    // then replace the -60 with the according pressure
+    // Also, maybe merge the two functions and parametrize to avoid duplicate code
+    final int remainingTime = (getOxygenRemaining() - 60.0) ~/ oxygenUsageRate;
+    if (remainingTime > 0) {
+      return remainingTime;
+    } else {
+      return 0;
+    }
+  }
+
+  int getTimeRemainingInCrisis() {
+    final int remainingTime = getOxygenRemaining() ~/ (15 / 60);
+    if (remainingTime > 0) {
+      return remainingTime;
+    } else {
+      return 0;
+    }
+  }
+
   factory Team.fromJson(Map<String, dynamic> json) => _$TeamFromJson(json);
 
   Map<String, dynamic> toJson() => _$TeamToJson(this);

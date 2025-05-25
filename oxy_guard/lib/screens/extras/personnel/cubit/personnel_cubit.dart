@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:OxyGuard/screens/extras/team/cubit/team_state.dart';
+import 'package:OxyGuard/screens/extras/personnel/cubit/personnal_state.dart';
 import 'package:OxyGuard/models/models.dart';
 import 'package:OxyGuard/repositories/personnel/personnel_repository.dart';
 import 'package:OxyGuard/repositories/user_repository.dart';
@@ -9,8 +9,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../service_locator.dart';
 
-class TeamCubit extends Cubit<TeamState> {
-  TeamCubit() : super(TeamInitial());
+class PersonnelCubit extends Cubit<PersonnelState> {
+  PersonnelCubit() : super(PersonnelInitial());
 
   final PersonnelRepository _personnelRepository = sl();
   final WorkerRepository _workerRepository = sl();
@@ -31,7 +31,7 @@ class TeamCubit extends Cubit<TeamState> {
         return firstNameComparison;
       });
 
-      emit(TeamLoadedState(personnel: personnel, workers: workers));
+      emit(PersonnelLoadedState(personnel: personnel, workers: workers));
     });
   }
 
