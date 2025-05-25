@@ -10,6 +10,7 @@ import 'package:OxyGuard/screens/settings/settings_page.dart';
 import 'package:OxyGuard/screens/signup/singup_page.dart';
 import 'package:OxyGuard/screens/login/login_page.dart';
 import 'package:OxyGuard/navigation/routes_names.dart';
+import 'package:OxyGuard/screens/squad/squad_page.dart';
 import 'package:OxyGuard/service_locator.dart';
 import 'package:OxyGuard/screens/splash/view/splash.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,11 @@ class Router {
         return MaterialPageRoute(
             builder: (_) => ActionPage(
                   actionId: settings.arguments as String?,
+                ));
+      case RoutesNames.squad:
+        return MaterialPageRoute(
+            builder: (_) => SquadPage(
+                  squadId: settings.arguments as String?,
                 ));
       case RoutesNames.account:
         return MaterialPageRoute(builder: (_) => const AccountPage());

@@ -35,6 +35,7 @@ class _WorkingPageState extends State<WorkingPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    //TODO: get rid of this nonsense
     var screenHeight =
         MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).size.height -
             MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!)
@@ -64,20 +65,7 @@ class _WorkingPageState extends State<WorkingPage>
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
-                  final prefs = await SharedPreferences.getInstance();
-                  if (context.mounted) {
-                    Provider.of<SquadModel>(context, listen: false)
-                        .startSquadWork(
-                      (prefs.getInt('startingPressure')) ?? 330,
-                      (prefs.getInt('extremePressure')) ?? 60,
-                      (prefs.getInt('timePeriod')) ?? 300,
-                      "",
-                      null,
-                      null,
-                      null,
-                      false,
-                    );
-                  }
+                  //TODO: start default team when no teams are working
                 },
                 child: const Text("Rozpocznij pracę roty"),
               ),
