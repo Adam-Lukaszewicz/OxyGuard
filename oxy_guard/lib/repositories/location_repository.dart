@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
-class GpsService {
-  GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+class LocationRepository {
+  GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>(); //TODO: remove this mess
   bool serviceEnabled = false;
   LocationPermission permission = LocationPermission.denied;
 
@@ -21,8 +21,11 @@ class GpsService {
     }
 
     if (permission == LocationPermission.deniedForever) {
-      throw Exception(
-          'Location permissions are permanently denied, we cannot request permissions.');
+      throw Exception('Location permissions are permanently denied, we cannot request permissions.');
     }
+  }
+
+  bool hasPermission() {
+    return serviceEnabled && (permission == LocationPermission.always || permission == LocationPermission.whileInUse);
   }
 }

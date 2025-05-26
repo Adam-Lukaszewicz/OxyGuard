@@ -1,4 +1,5 @@
 import 'package:OxyGuard/screens/action/action_page.dart';
+import 'package:OxyGuard/screens/action_list/action_list_page.dart';
 import 'package:OxyGuard/screens/extras/account/account_page.dart';
 import 'package:OxyGuard/screens/extras/archive/archive_page.dart';
 import 'package:OxyGuard/screens/extras/atests/atests_page.dart';
@@ -32,6 +33,8 @@ class Router {
         return MaterialPageRoute(builder: (_) => const ResetPage());
       case RoutesNames.extras:
         return MaterialPageRoute(builder: (_) => const ExtrasPage());
+      case RoutesNames.actionList:
+        return MaterialPageRoute(builder: (_) => const ActionListPage());
       case RoutesNames.action:
         return MaterialPageRoute(
             builder: (_) => ActionPage(

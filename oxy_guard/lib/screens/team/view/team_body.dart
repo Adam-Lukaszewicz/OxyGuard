@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:watch_it/watch_it.dart';
 
-import '../../../legacy/services/gps_service.dart';
+import '../../../repositories/location_repository.dart';
 
 final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
@@ -127,8 +127,8 @@ class _TeamBodyState extends State<TeamBody> with AutomaticKeepAliveClientMixin,
 
   Widget _buildLocationPicker() {
     var screenWidth = MediaQuery.of(context).size.width;
-    var screenHeight = MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).size.height -
-        MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).viewPadding.vertical;
+    var screenHeight = MediaQuery.of(GetIt.I.get<LocationRepository>().navigatorKey.currentContext!).size.height -
+        MediaQuery.of(GetIt.I.get<LocationRepository>().navigatorKey.currentContext!).viewPadding.vertical;
     var squadTextStyle = TextStyle(
       fontSize: screenWidth * 0.06,
     );
@@ -196,8 +196,8 @@ class _TeamBodyState extends State<TeamBody> with AutomaticKeepAliveClientMixin,
 
   Widget _buildWorkerPicker(Worker? worker, int index) {
     var screenWidth = MediaQuery.of(context).size.width;
-    var screenHeight = MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).size.height -
-        MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).viewPadding.vertical;
+    var screenHeight = MediaQuery.of(GetIt.I.get<LocationRepository>().navigatorKey.currentContext!).size.height -
+        MediaQuery.of(GetIt.I.get<LocationRepository>().navigatorKey.currentContext!).viewPadding.vertical;
 
     var squadTextStyle = TextStyle(
       fontSize: screenWidth * 0.06,
@@ -287,8 +287,8 @@ class _TeamBodyState extends State<TeamBody> with AutomaticKeepAliveClientMixin,
 
   Widget _buildOxygenMeter() {
     var screenWidth = MediaQuery.of(context).size.width;
-    var screenHeight = MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).size.height -
-        MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).viewPadding.vertical;
+    var screenHeight = MediaQuery.of(GetIt.I.get<LocationRepository>().navigatorKey.currentContext!).size.height -
+        MediaQuery.of(GetIt.I.get<LocationRepository>().navigatorKey.currentContext!).viewPadding.vertical;
     var varTextStyle = TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: screenWidth * 0.05,

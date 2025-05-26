@@ -1,4 +1,4 @@
-import 'package:OxyGuard/legacy/services/gps_service.dart';
+import 'package:OxyGuard/repositories/location_repository.dart';
 import 'package:OxyGuard/models/models.dart';
 import 'package:OxyGuard/screens/squad/cubit/squad_cubit.dart';
 import 'package:OxyGuard/screens/team/view/team_body.dart';
@@ -37,8 +37,8 @@ class _TeamsPageState extends State<TeamsPage> with AutomaticKeepAliveClientMixi
   Widget build(BuildContext context) {
     super.build(context);
     //TODO: get rid of this nonsense
-    var screenHeight = MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).size.height -
-        MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).viewPadding.vertical;
+    var screenHeight = MediaQuery.of(GetIt.I.get<LocationRepository>().navigatorKey.currentContext!).size.height -
+        MediaQuery.of(GetIt.I.get<LocationRepository>().navigatorKey.currentContext!).viewPadding.vertical;
 
     final SquadCubit cubit = context.read<SquadCubit>();
 

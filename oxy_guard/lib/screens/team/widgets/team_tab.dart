@@ -4,7 +4,7 @@ import 'package:OxyGuard/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:watch_it/watch_it.dart';
 
-import '../../../legacy/services/gps_service.dart';
+import '../../../repositories/location_repository.dart';
 
 class TeamTab extends StatefulWidget {
   const TeamTab({super.key, required this.team});
@@ -29,8 +29,8 @@ class _TeamTabState extends State<TeamTab> {
 
   @override
   Widget build(BuildContext context) {
-    var screenHeight = MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).size.height -
-        MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).viewPadding.vertical;
+    var screenHeight = MediaQuery.of(GetIt.I.get<LocationRepository>().navigatorKey.currentContext!).size.height -
+        MediaQuery.of(GetIt.I.get<LocationRepository>().navigatorKey.currentContext!).viewPadding.vertical;
     var screenWidth = MediaQuery.of(context).size.width;
 
     final int timeRemaining =

@@ -12,4 +12,5 @@ class RoutesNames {
   static const String settings = 'settings_screen';
   static const String action = 'action_screen';
   static const String squad = 'squad_screen';
+  static const String actionList = 'action_list_screen';
 }

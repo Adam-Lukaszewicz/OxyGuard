@@ -3,10 +3,12 @@ import 'package:OxyGuard/repositories/archive/api/impl/firestore_archive_api.dar
 import 'package:OxyGuard/repositories/archive/archive_repository.dart';
 import 'package:OxyGuard/repositories/atest/api/impl/firestore_atest_api.dart';
 import 'package:OxyGuard/repositories/atest/atest_repository.dart';
+import 'package:OxyGuard/repositories/connection_repository.dart';
 import 'package:OxyGuard/repositories/finished_squad/api/impl/firestore_finished_squad_api.dart';
 import 'package:OxyGuard/repositories/finished_squad/finished_squad_repository.dart';
 import 'package:OxyGuard/repositories/finished_team/api/impl/firestore_finished_team_api.dart';
 import 'package:OxyGuard/repositories/finished_team/finished_team_repository.dart';
+import 'package:OxyGuard/repositories/location_repository.dart';
 import 'package:OxyGuard/repositories/personnel/api/impl/firestore_personnel_api.dart';
 import 'package:OxyGuard/repositories/personnel/personnel_repository.dart';
 import 'package:OxyGuard/repositories/squad/api/impl/firestore_squad_api.dart';
@@ -38,4 +40,6 @@ Future<void> setupDI() async {
   sl.registerLazySingleton(() => SquadRepository(squadApi: FirestoreSquadApi()));
   sl.registerLazySingleton(() => TeamRepository(teamApi: FirestoreTeamApi()));
   sl.registerLazySingleton(() => WorkerRepository(workerApi: FirestoreWorkerApi()));
+  sl.registerLazySingleton(() => LocationRepository());
+  sl.registerLazySingleton(() => ConnectionRepository());
 }

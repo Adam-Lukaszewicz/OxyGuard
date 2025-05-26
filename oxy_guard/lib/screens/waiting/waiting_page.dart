@@ -3,7 +3,7 @@ import 'package:OxyGuard/screens/waiting/widgets/waiting_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:watch_it/watch_it.dart';
 
-import '../../legacy/services/gps_service.dart';
+import '../../repositories/location_repository.dart';
 
 class WaitingPage extends StatefulWidget {
   const WaitingPage({super.key});
@@ -43,7 +43,7 @@ class _WaitingPageState extends State<WaitingPage> with AutomaticKeepAliveClient
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    var screenHeight = MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).size.height - MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).viewPadding.vertical;
+    var screenHeight = MediaQuery.of(GetIt.I.get<LocationRepository>().navigatorKey.currentContext!).size.height - MediaQuery.of(GetIt.I.get<LocationRepository>().navigatorKey.currentContext!).viewPadding.vertical;
     return Column(
       children: [
         SizedBox(

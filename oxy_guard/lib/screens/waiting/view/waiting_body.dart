@@ -1,5 +1,5 @@
 import 'package:OxyGuard/context_windows.dart';
-import 'package:OxyGuard/legacy/services/gps_service.dart';
+import 'package:OxyGuard/repositories/location_repository.dart';
 import 'package:OxyGuard/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -72,8 +72,8 @@ class _WaitingBodyState extends State<WaitingBody> with AutomaticKeepAliveClient
   Widget build(BuildContext context) {
     super.build(context);
     var screenWidth = MediaQuery.of(context).size.width;
-    var screenHeight = MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).size.height -
-        MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).viewPadding.vertical;
+    var screenHeight = MediaQuery.of(GetIt.I.get<LocationRepository>().navigatorKey.currentContext!).size.height -
+        MediaQuery.of(GetIt.I.get<LocationRepository>().navigatorKey.currentContext!).viewPadding.vertical;
     var baseTextStyle = TextStyle(
       fontSize: screenWidth * 0.065,
     );
@@ -344,8 +344,8 @@ class _WaitingBodyState extends State<WaitingBody> with AutomaticKeepAliveClient
 
   Widget _buildWorkerPicker(Worker? worker, Function(Worker?) direction) {
     var screenWidth = MediaQuery.of(context).size.width;
-    var screenHeight = MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).size.height -
-        MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).viewPadding.vertical;
+    var screenHeight = MediaQuery.of(GetIt.I.get<LocationRepository>().navigatorKey.currentContext!).size.height -
+        MediaQuery.of(GetIt.I.get<LocationRepository>().navigatorKey.currentContext!).viewPadding.vertical;
     return Container(
       padding: const EdgeInsets.all(8.0),
       child: Row(
