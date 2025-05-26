@@ -1,9 +1,9 @@
-import 'package:OxyGuard/legacy/action/tabs/waiting/setup_page.dart';
-import 'package:OxyGuard/legacy/action/tabs/waiting/waiting_tab.dart';
+import 'package:OxyGuard/screens/waiting/view/waiting_body.dart';
+import 'package:OxyGuard/screens/waiting/widgets/waiting_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:watch_it/watch_it.dart';
 
-import '../../../services/gps_service.dart';
+import '../../legacy/services/gps_service.dart';
 
 class WaitingPage extends StatefulWidget {
   const WaitingPage({super.key});
@@ -49,7 +49,7 @@ class _WaitingPageState extends State<WaitingPage> with AutomaticKeepAliveClient
         SizedBox(
           height: screenHeight * 0.1,
           child: TabBar(
-            tabs: [WaitingTab(text: "R1", index: 0), WaitingTab(text: "R2", index: 0),WaitingTab(text: "R3", index: 0),],
+            tabs: const [WaitingTab(index: 1), WaitingTab(index: 2),WaitingTab(index: 3),],
             controller: _tabController,
             indicatorColor: Colors.black,
             indicatorSize: TabBarIndicatorSize.label,
@@ -67,7 +67,7 @@ class _WaitingPageState extends State<WaitingPage> with AutomaticKeepAliveClient
           height: screenHeight * 0.75,
           child: TabBarView(
               controller: _tabController,
-              children: const [SetupPage(), SetupPage(), SetupPage(),]),
+              children: const [WaitingBody(), WaitingBody(), WaitingBody(),]),
         ),
       ],
     );

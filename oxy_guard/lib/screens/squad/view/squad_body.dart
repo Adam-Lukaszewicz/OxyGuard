@@ -1,5 +1,5 @@
 import 'package:OxyGuard/screens/finished_team/finished_team_body.dart';
-import 'package:OxyGuard/legacy/action/tabs/waiting/waiting_page.dart';
+import 'package:OxyGuard/screens/waiting/waiting_page.dart';
 import 'package:OxyGuard/navigation/router.dart';
 import 'package:OxyGuard/screens/squad/cubit/squad_state.dart';
 import 'package:OxyGuard/screens/team/teams_page.dart';

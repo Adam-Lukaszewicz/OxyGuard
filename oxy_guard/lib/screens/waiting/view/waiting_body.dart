@@ -1,25 +1,21 @@
 import 'package:OxyGuard/context_windows.dart';
-import 'package:OxyGuard/legacy/models/personnel/worker.dart';
-import 'package:OxyGuard/legacy/services/database_service.dart';
 import 'package:OxyGuard/legacy/services/gps_service.dart';
+import 'package:OxyGuard/models/models.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:watch_it/watch_it.dart';
 
-import '../../../models/squad_model.dart';
-
-class SetupPage extends StatefulWidget {
-  const SetupPage({super.key});
+class WaitingBody extends StatefulWidget {
+  const WaitingBody({super.key});
 
   @override
-  State<SetupPage> createState() => _SetupPage2State();
+  State<WaitingBody> createState() => _WaitingBodyState();
 }
 
-class _SetupPage2State extends State<SetupPage>
-    with AutomaticKeepAliveClientMixin {
+class _WaitingBodyState extends State<WaitingBody> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
+
   var checkInterval = 600;
   var entryPressure = 300;
   var exitPressure = 60;
@@ -27,12 +23,12 @@ class _SetupPage2State extends State<SetupPage>
   Worker? firstPerson;
   Worker? secondPerson;
   Worker? thirdPerson;
-  List<Worker> workerList = [];
+
   bool _tripleSqaud = false;
 
-  late FixedExtentScrollController pressureController;
-  late FixedExtentScrollController secondsController;
-  late FixedExtentScrollController minuteController;
+  late FixedExtentScrollController pressureController = FixedExtentScrollController();
+  late FixedExtentScrollController secondsController = FixedExtentScrollController();
+  late FixedExtentScrollController minuteController = FixedExtentScrollController();
 
   Future<void> _loadExtremePresssure() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -59,14 +55,9 @@ class _SetupPage2State extends State<SetupPage>
   void initState() {
     super.initState();
 
-    workerList.addAll(GetIt.I.get<DatabaseService>().currentPersonnel.team);
-
     _loadStartingPresssure();
     _loadTimePeriod();
     _loadExtremePresssure();
-    pressureController = FixedExtentScrollController();
-    secondsController = FixedExtentScrollController();
-    minuteController = FixedExtentScrollController();
   }
 
   @override
@@ -81,11 +72,8 @@ class _SetupPage2State extends State<SetupPage>
   Widget build(BuildContext context) {
     super.build(context);
     var screenWidth = MediaQuery.of(context).size.width;
-    var screenHeight =
-        MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).size.height -
-            MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!)
-                .viewPadding
-                .vertical;
+    var screenHeight = MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).size.height -
+        MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).viewPadding.vertical;
     var baseTextStyle = TextStyle(
       fontSize: screenWidth * 0.065,
     );
@@ -96,10 +84,8 @@ class _SetupPage2State extends State<SetupPage>
     var genericButtonStyle = ButtonStyle(
         elevation: const WidgetStatePropertyAll(5),
         backgroundColor: const WidgetStatePropertyAll(Colors.white),
-        foregroundColor:
-            WidgetStatePropertyAll(Theme.of(context).primaryColorDark),
-        padding: const WidgetStatePropertyAll(
-            EdgeInsets.symmetric(vertical: 6.0, horizontal: 6.0)),
+        foregroundColor: WidgetStatePropertyAll(Theme.of(context).primaryColorDark),
+        padding: const WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 6.0, horizontal: 6.0)),
         textStyle: WidgetStatePropertyAll(TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: screenWidth * 0.05,
@@ -120,22 +106,14 @@ class _SetupPage2State extends State<SetupPage>
                     SizedBox(width: screenWidth * 0.1),
                     ElevatedButton(
                       onPressed: () async {
-                        var selectedItem = await selectFromList(context, [
-                          'Piwnica',
-                          'Parter',
-                          'Pierwsze piętro',
-                          'Drugie piętro',
-                          'Poddasze',
-                          'Garaż',
-                          'Inne'
-                        ]);
+                        var selectedItem = await selectFromList(context,
+                            ['Piwnica', 'Parter', 'Pierwsze piętro', 'Drugie piętro', 'Poddasze', 'Garaż', 'Inne']);
                         setState(() {
                           localization = selectedItem ?? localization;
                         });
                       },
                       style: ButtonStyle(
-                        backgroundColor:
-                            const WidgetStatePropertyAll(Colors.white),
+                        backgroundColor: const WidgetStatePropertyAll(Colors.white),
                         elevation: const WidgetStatePropertyAll(5),
                         minimumSize: WidgetStatePropertyAll(
                           Size(
@@ -157,16 +135,12 @@ class _SetupPage2State extends State<SetupPage>
                                 ? Text(
                                     "Wprowadź lokalizację",
                                     style: TextStyle(
-                                        fontSize: screenWidth * 0.05,
-                                        color:
-                                            Theme.of(context).primaryColorDark),
+                                        fontSize: screenWidth * 0.05, color: Theme.of(context).primaryColorDark),
                                   )
                                 : Text(
                                     localization,
                                     style: TextStyle(
-                                        fontSize: screenWidth * 0.05,
-                                        color:
-                                            Theme.of(context).primaryColorDark),
+                                        fontSize: screenWidth * 0.05, color: Theme.of(context).primaryColorDark),
                                   ),
                             const Icon(Icons.keyboard_arrow_down),
                           ],
@@ -176,168 +150,15 @@ class _SetupPage2State extends State<SetupPage>
                   ],
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Icon(Icons.fire_extinguisher, size: screenWidth * 0.1),
-                    SizedBox(width: screenWidth * 0.1),
-                    ElevatedButton(
-                      onPressed: () async {
-                        var selectedItem = await selectWorkerFromList(context);
-                        setState(() {
-                          firstPerson = selectedItem ?? firstPerson;
-                        });
-                      },
-                      style: ButtonStyle(
-                        backgroundColor:
-                            const WidgetStatePropertyAll(Colors.white),
-                        elevation: const WidgetStatePropertyAll(5),
-                        minimumSize: WidgetStatePropertyAll(
-                          Size(
-                            screenWidth * 0.58,
-                            screenHeight * 0.06,
-                          ),
-                        ),
-                        shape: WidgetStatePropertyAll(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                        ),
-                      ),
-                      child: Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              firstPerson != null
-                                  ? '${firstPerson!.name} ${firstPerson!.surname}'
-                                  : 'Wprowadź imię',
-                              style: TextStyle(
-                                  fontSize: screenWidth * 0.05,
-                                  color: Theme.of(context).primaryColorDark),
-                            ),
-                            const Icon(Icons.keyboard_arrow_down),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Icon(Icons.fire_extinguisher, size: screenWidth * 0.1),
-                    SizedBox(width: screenWidth * 0.1),
-                    ElevatedButton(
-                      onPressed: () async {
-                        List<String> workierString = [];
-                        for (Worker worker in workerList) {
-                          workierString.add(
-                              "${worker.name}+ ${worker.surname}");
-                        }
-                        var selectedItem = await selectWorkerFromList(context);
-                        setState(() {
-                          secondPerson = selectedItem ?? secondPerson;
-                        });
-                      },
-                      style: ButtonStyle(
-                        backgroundColor:
-                            const WidgetStatePropertyAll(Colors.white),
-                        elevation: const WidgetStatePropertyAll(5),
-                        minimumSize: WidgetStatePropertyAll(
-                          Size(
-                            screenWidth * 0.58,
-                            screenHeight * 0.06,
-                          ),
-                        ),
-                        shape: WidgetStatePropertyAll(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                        ),
-                      ),
-                      child: Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              secondPerson != null
-                                  ? '${secondPerson!.name} ${secondPerson!.surname}'
-                                  : 'Wprowadź imię',
-                              style: TextStyle(
-                                  fontSize: screenWidth * 0.05,
-                                  color: Theme.of(context).primaryColorDark),
-                            ),
-                            const Icon(Icons.keyboard_arrow_down),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              _buildWorkerPicker(firstPerson, (Worker? worker) => firstPerson = worker),
+              _buildWorkerPicker(secondPerson, (Worker? worker) => secondPerson = worker),
               _tripleSqaud
-                  ? Container(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Icon(Icons.fire_extinguisher,
-                              size: screenWidth * 0.1),
-                          SizedBox(width: screenWidth * 0.1),
-                          ElevatedButton(
-                            onPressed: () async {
-                              var selectedItem =
-                                  await selectWorkerFromList(context);
-                              setState(() {
-                                thirdPerson = selectedItem ?? thirdPerson;
-                              });
-                            },
-                            style: ButtonStyle(
-                              backgroundColor:
-                                  const WidgetStatePropertyAll(Colors.white),
-                              elevation: const WidgetStatePropertyAll(5),
-                              minimumSize: WidgetStatePropertyAll(
-                                Size(
-                                  screenWidth * 0.58,
-                                  screenHeight * 0.06,
-                                ),
-                              ),
-                              shape: WidgetStatePropertyAll(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                              ),
-                            ),
-                            child: Center(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    thirdPerson != null
-                                        ? '${thirdPerson!.name} ${thirdPerson!.surname}'
-                                        : 'Wprowadź imię',
-                                    style: TextStyle(
-                                        fontSize: screenWidth * 0.05,
-                                        color:
-                                            Theme.of(context).primaryColorDark),
-                                  ),
-                                  const Icon(Icons.keyboard_arrow_down),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
+                  ? _buildWorkerPicker(thirdPerson, (Worker? worker) => thirdPerson = worker)
                   : Container(
                       padding: const EdgeInsets.all(8.0),
                       child: Row(
                         children: [
-                          Icon(Icons.fire_extinguisher,
-                              size: screenWidth * 0.1),
+                          Icon(Icons.fire_extinguisher, size: screenWidth * 0.1),
                           SizedBox(width: screenWidth * 0.1),
                           ElevatedButton(
                             onPressed: () {
@@ -390,9 +211,8 @@ class _SetupPage2State extends State<SetupPage>
                             });
                           }
                         },
-                        style: genericButtonStyle.copyWith(
-                            fixedSize: WidgetStatePropertyAll(
-                                Size(screenWidth * 0.22, 0))),
+                        style:
+                            genericButtonStyle.copyWith(fixedSize: WidgetStatePropertyAll(Size(screenWidth * 0.22, 0))),
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.end,
@@ -420,18 +240,16 @@ class _SetupPage2State extends State<SetupPage>
                     ),
                     ElevatedButton(
                         onPressed: () async {
-                          var newEntryPressure = await checkListDialog(
-                              context, 330, 160, "Wprowadź nowy pomiar",
-                              unitText: "bar");
+                          var newEntryPressure =
+                              await checkListDialog(context, 330, 160, "Wprowadź nowy pomiar", unitText: "bar");
                           if (newEntryPressure != null) {
                             setState(() {
                               entryPressure = newEntryPressure;
                             });
                           }
                         },
-                        style: genericButtonStyle.copyWith(
-                            fixedSize: WidgetStatePropertyAll(
-                                Size(screenWidth * 0.22, 0))),
+                        style:
+                            genericButtonStyle.copyWith(fixedSize: WidgetStatePropertyAll(Size(screenWidth * 0.22, 0))),
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.end,
@@ -459,24 +277,21 @@ class _SetupPage2State extends State<SetupPage>
                     ),
                     ElevatedButton(
                         onPressed: () async {
-                          var newExitPressure = await checkListDialog(
-                              context, 150, 0, "Wprowadź nowy pomiar",
-                              unitText: "bar");
+                          var newExitPressure =
+                              await checkListDialog(context, 150, 0, "Wprowadź nowy pomiar", unitText: "bar");
                           if (newExitPressure == null) {
                             return;
                           }
                           if (newExitPressure >= entryPressure) {
-                            await warningDialog(
-                                "Ciśnienie wyjściowe nie może być większe nić wejściowe");
+                            await warningDialog("Ciśnienie wyjściowe nie może być większe nić wejściowe");
                             return;
                           }
                           setState(() {
                             exitPressure = newExitPressure;
                           });
                         },
-                        style: genericButtonStyle.copyWith(
-                            fixedSize: WidgetStatePropertyAll(
-                                Size(screenWidth * 0.22, 0))),
+                        style:
+                            genericButtonStyle.copyWith(fixedSize: WidgetStatePropertyAll(Size(screenWidth * 0.22, 0))),
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.end,
@@ -501,29 +316,10 @@ class _SetupPage2State extends State<SetupPage>
           children: [
             ElevatedButton(
                 onPressed: () async {
-                  if (Provider.of<SquadModel>(context, listen: false)
-                          .workingSquads
-                          .length <
-                      3) {
-                    Provider.of<SquadModel>(context, listen: false)
-                        .startSquadWork(
-                            entryPressure,
-                            exitPressure,
-                            checkInterval,
-                            localization,
-                            firstPerson,
-                            secondPerson,
-                            thirdPerson,
-                            false);
-                    await succesDialog(
-                        context, 'Pomyślnie dodano rotę do pracujących');
-                  } else {
-                    await warningDialog('Maksymalnie 3 pracujace roty na raz');
-                  }
+                  //TODO: Start this teams work
                 },
                 style: genericButtonStyle.copyWith(
-                    fixedSize: WidgetStatePropertyAll(
-                        Size(screenWidth * 0.6, screenHeight * 0.1))),
+                    fixedSize: WidgetStatePropertyAll(Size(screenWidth * 0.6, screenHeight * 0.1))),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -546,6 +342,56 @@ class _SetupPage2State extends State<SetupPage>
     );
   }
 
+  Widget _buildWorkerPicker(Worker? worker, Function(Worker?) direction) {
+    var screenWidth = MediaQuery.of(context).size.width;
+    var screenHeight = MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).size.height -
+        MediaQuery.of(GetIt.I.get<GpsService>().navigatorKey.currentContext!).viewPadding.vertical;
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Icon(Icons.fire_extinguisher, size: screenWidth * 0.1),
+          SizedBox(width: screenWidth * 0.1),
+          ElevatedButton(
+            onPressed: () async {
+              var selectedWorker = await selectWorkerFromList(context);
+              setState(() {
+                direction(selectedWorker);
+              });
+            },
+            style: ButtonStyle(
+              backgroundColor: const WidgetStatePropertyAll(Colors.white),
+              elevation: const WidgetStatePropertyAll(5),
+              minimumSize: WidgetStatePropertyAll(
+                Size(
+                  screenWidth * 0.58,
+                  screenHeight * 0.06,
+                ),
+              ),
+              shape: WidgetStatePropertyAll(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+              ),
+            ),
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    secondPerson != null ? '${secondPerson!.name} ${secondPerson!.surname}' : 'Wprowadź imię',
+                    style: TextStyle(fontSize: screenWidth * 0.05, color: Theme.of(context).primaryColorDark),
+                  ),
+                  const Icon(Icons.keyboard_arrow_down),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<int?> timeDialog() => showDialog<int>(
       context: context,
       builder: (context) => Dialog(
@@ -565,16 +411,12 @@ class _SetupPage2State extends State<SetupPage>
                             Text(
                               "Wprowadź czas wyjścia",
                               style: TextStyle(
-                                  fontSize:
-                                      MediaQuery.of(context).size.width * 0.06,
-                                  fontWeight: FontWeight.bold),
+                                  fontSize: MediaQuery.of(context).size.width * 0.06, fontWeight: FontWeight.bold),
                             ),
                             Text(
                               "(min:sek)",
                               style: TextStyle(
-                                  fontSize:
-                                      MediaQuery.of(context).size.width * 0.04,
-                                  fontWeight: FontWeight.normal),
+                                  fontSize: MediaQuery.of(context).size.width * 0.04, fontWeight: FontWeight.normal),
                             ),
                           ],
                         )),
@@ -588,8 +430,7 @@ class _SetupPage2State extends State<SetupPage>
                             width: MediaQuery.of(context).size.width * 0.2,
                             child: ListWheelScrollView.useDelegate(
                                 controller: minuteController,
-                                itemExtent:
-                                    MediaQuery.of(context).size.width * 0.14,
+                                itemExtent: MediaQuery.of(context).size.width * 0.14,
                                 perspective: 0.005,
                                 overAndUnderCenterOpacity: 0.6,
                                 squeeze: 1,
@@ -602,22 +443,12 @@ class _SetupPage2State extends State<SetupPage>
                                     color: Colors.white,
                                     child: Padding(
                                       padding: EdgeInsets.symmetric(
-                                          vertical: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              .01,
-                                          horizontal: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              .04),
+                                          vertical: MediaQuery.of(context).size.height * .01,
+                                          horizontal: MediaQuery.of(context).size.width * .04),
                                       child: Text("$index",
                                           style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .primaryColorDark,
-                                              fontSize: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.06,
+                                              color: Theme.of(context).primaryColorDark,
+                                              fontSize: MediaQuery.of(context).size.width * 0.06,
                                               fontWeight: FontWeight.bold)),
                                     ),
                                   ),
@@ -628,17 +459,14 @@ class _SetupPage2State extends State<SetupPage>
                             child: Text(":",
                                 style: TextStyle(
                                     color: Theme.of(context).primaryColorDark,
-                                    fontSize:
-                                        MediaQuery.of(context).size.width *
-                                            0.06,
+                                    fontSize: MediaQuery.of(context).size.width * 0.06,
                                     fontWeight: FontWeight.bold)),
                           ),
                           SizedBox(
                             width: MediaQuery.of(context).size.width * 0.25,
                             child: ListWheelScrollView.useDelegate(
                                 controller: secondsController,
-                                itemExtent:
-                                    MediaQuery.of(context).size.width * 0.14,
+                                itemExtent: MediaQuery.of(context).size.width * 0.14,
                                 perspective: 0.005,
                                 overAndUnderCenterOpacity: 0.6,
                                 squeeze: 1,
@@ -651,22 +479,12 @@ class _SetupPage2State extends State<SetupPage>
                                     color: Colors.white,
                                     child: Padding(
                                       padding: EdgeInsets.symmetric(
-                                          vertical: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              .01,
-                                          horizontal: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              .04),
+                                          vertical: MediaQuery.of(context).size.height * .01,
+                                          horizontal: MediaQuery.of(context).size.width * .04),
                                       child: Text("${index * 15}",
                                           style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .primaryColorDark,
-                                              fontSize: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.06,
+                                              color: Theme.of(context).primaryColorDark,
+                                              fontSize: MediaQuery.of(context).size.width * 0.06,
                                               fontWeight: FontWeight.bold)),
                                     ),
                                   ),
@@ -682,30 +500,20 @@ class _SetupPage2State extends State<SetupPage>
                           children: [
                             ElevatedButton(
                                 style: ButtonStyle(
-                                    fixedSize: WidgetStatePropertyAll(Size(
-                                        MediaQuery.of(context).size.width * 0.5,
-                                        MediaQuery.of(context).size.height *
-                                            0.07)),
+                                    fixedSize: WidgetStatePropertyAll(Size(MediaQuery.of(context).size.width * 0.5,
+                                        MediaQuery.of(context).size.height * 0.07)),
                                     elevation: const WidgetStatePropertyAll(5),
                                     shape: const WidgetStatePropertyAll(
-                                        RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(10)))),
-                                    backgroundColor:
-                                        const WidgetStatePropertyAll(
-                                            Colors.white),
-                                    foregroundColor: WidgetStatePropertyAll(
-                                        Theme.of(context).primaryColorDark),
+                                        RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10)))),
+                                    backgroundColor: const WidgetStatePropertyAll(Colors.white),
+                                    foregroundColor: WidgetStatePropertyAll(Theme.of(context).primaryColorDark),
                                     textStyle: WidgetStatePropertyAll(TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize:
-                                          MediaQuery.of(context).size.width *
-                                              0.05,
+                                      fontSize: MediaQuery.of(context).size.width * 0.05,
                                     ))),
                                 onPressed: () {
-                                  Navigator.of(context).pop(
-                                      15 * secondsController.selectedItem +
-                                          60 * minuteController.selectedItem);
+                                  Navigator.of(context)
+                                      .pop(15 * secondsController.selectedItem + 60 * minuteController.selectedItem);
                                 },
                                 child: const Text("Wprowadź")),
                           ],
