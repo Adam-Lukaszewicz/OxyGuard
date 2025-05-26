@@ -1,4 +1,4 @@
-import 'package:OxyGuard/legacy/action/tabs/finished/finished_page.dart';
+import 'package:OxyGuard/screens/finished_team/finished_team_body.dart';
 import 'package:OxyGuard/legacy/action/tabs/waiting/waiting_page.dart';
 import 'package:OxyGuard/navigation/router.dart';
 import 'package:OxyGuard/screens/squad/cubit/squad_state.dart';
@@ -58,7 +58,7 @@ class _SquadBodyState extends State<SquadBody> with SingleTickerProviderStateMix
               children: [
                 const WaitingPage(),
                 TeamsPage(teams: widget.state.teams,),
-                const FinishedPage(),
+                FinishedBody(finishedTeams: widget.state.finishedTeams,),
               ],
             )),
       ),

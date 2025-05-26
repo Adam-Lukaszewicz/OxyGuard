@@ -1,16 +1,14 @@
-import 'package:OxyGuard/screens/home/home_page.dart';
-import 'package:OxyGuard/legacy/models/squad_model.dart';
-import 'package:OxyGuard/legacy/services/database_service.dart';
+import 'package:OxyGuard/models/models.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:watch_it/watch_it.dart';
 
-class FinishedPage extends StatelessWidget {
-  const FinishedPage({super.key});
+class FinishedBody extends StatelessWidget {
+  const FinishedBody({super.key, required this.finishedTeams});
+
+  final List<FinishedTeam> finishedTeams;
 
   @override
   Widget build(BuildContext context) {
-    if (Provider.of<SquadModel>(context, listen: false).finishedSquads.values.toList().isEmpty) {
+    if (finishedTeams.isEmpty) {
       return const Center(
         child: Padding(
           padding: EdgeInsets.all(16.0),
@@ -31,15 +29,12 @@ class FinishedPage extends StatelessWidget {
         ),
       );
     }
-    var dBService = GetIt.I.get<DatabaseService>();
     return Scaffold(
       backgroundColor: const Color(0xfffcfcfc),
       floatingActionButton: FloatingActionButton.extended(
         label: const Center(child: Text("Zakończ akcję")),
         onPressed: () {
-          dBService.endAction(dBService.currentAction);
-          Navigator.pushAndRemoveUntil(
-              context, MaterialPageRoute(builder: (context) => const HomePage()), (route) => false);
+          //TODO: End this squads work, route to action page
         },
         backgroundColor: Colors.red[400],
         foregroundColor: Colors.white,
@@ -50,10 +45,7 @@ class FinishedPage extends StatelessWidget {
           child: SizedBox(
             width: MediaQuery.of(context).size.width * 0.9,
             child: ListView(
-              children: Provider.of<SquadModel>(context, listen: false)
-                  .finishedSquads
-                  .values
-                  .toList()
+              children: finishedTeams
                   .map((fin) => Card(
                         color: Colors.white,
                         child: ListTile(
@@ -61,7 +53,7 @@ class FinishedPage extends StatelessWidget {
                             fin.name,
                             style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.08),
                           ),
-                          title: Text(fin.averageUse.toString()),
+                          title: Text(fin.averageConsumption.toString()),
                         ),
                       ))
                   .toList(),
