@@ -1,3 +1,5 @@
+import 'package:OxyGuard/navigation/router.dart';
+import 'package:OxyGuard/navigation/routes_names.dart';
 import 'package:OxyGuard/screens/action_list/cubit/action_list_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -84,7 +86,7 @@ class _ActionListBodyState extends State<ActionListBody> {
                                 },
                               ),
                               onTap: () {
-                                //TODO: route to action page with the chosen id
+                                router.push(RoutesNames.action, arguments: action.id);
                               },
                             ));
                       }).toList(),

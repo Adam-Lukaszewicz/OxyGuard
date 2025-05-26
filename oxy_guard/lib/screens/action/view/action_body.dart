@@ -1,3 +1,4 @@
+import 'package:OxyGuard/models/models.dart';
 import 'package:OxyGuard/navigation/router.dart';
 import 'package:OxyGuard/navigation/routes_names.dart';
 import 'package:OxyGuard/screens/action/cubit/action_cubit.dart';
@@ -119,18 +120,17 @@ class _ActionBodyState extends State<ActionBody> {
               children: <Widget>[
                 Container(
                   decoration: BoxDecoration(border: Border.all()),
-                  child: ListView.builder(
-                      itemCount: widget.state.squads.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return GestureDetector(
-                            onTap: () {
-                              //TODO: route to SquadPage with a preexisting squad
-                            },
-                            child: ListTile(
-                              //TODO: Squad naming
-                              title: Text(widget.state.squads[index].id!),
-                            ));
-                      }),
+                  child: ListView(
+                      children: widget.state.squads.map((Squad squad) {
+                    return GestureDetector(
+                        onTap: () {
+                          router.push(RoutesNames.squad, arguments: squad.id);
+                        },
+                        child: ListTile(
+                          //TODO: Squad naming
+                          title: Text(squad.id!),
+                        ));
+                  }).toList()),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.04),
                 ElevatedButton(

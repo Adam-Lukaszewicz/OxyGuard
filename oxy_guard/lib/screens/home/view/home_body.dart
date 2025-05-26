@@ -65,7 +65,7 @@ class _HomeBodyState extends State<HomeBody> {
                     height: MediaQuery.of(context).size.height * 0.07,
                     child: ElevatedButton(
                         onPressed: () {
-                          //TODO: Action list route
+                          router.push(RoutesNames.actionList);
                         },
                         child: const Center(
                             child: Text(

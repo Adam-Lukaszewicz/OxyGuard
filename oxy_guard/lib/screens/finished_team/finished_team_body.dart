@@ -34,7 +34,7 @@ class FinishedBody extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         label: const Center(child: Text("Zakończ akcję")),
         onPressed: () {
-          //TODO: End this squads work, route to action page
+          //TODO: End this squads work, route to action page while disabling return to here
         },
         backgroundColor: Colors.red[400],
         foregroundColor: Colors.white,
