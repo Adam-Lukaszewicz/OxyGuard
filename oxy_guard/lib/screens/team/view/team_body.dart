@@ -2,12 +2,15 @@ import 'dart:async';
 
 import 'package:OxyGuard/context_windows.dart';
 import 'package:OxyGuard/models/models.dart';
+import 'package:OxyGuard/screens/action/cubit/action_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:watch_it/watch_it.dart';
 
 import '../../../repositories/location_repository.dart';
+import '../../action/cubit/action_cubit.dart';
 
 final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
@@ -214,7 +217,8 @@ class _TeamBodyState extends State<TeamBody> with AutomaticKeepAliveClientMixin,
               ? Expanded(
                   child: ElevatedButton(
                     onPressed: () async {
-                      Worker? selectedWorker = await selectWorkerFromList(context);
+                      final ActionLoadedState actionState = context.read<ActionCubit>().state as ActionLoadedState;
+                      Worker? selectedWorker = await selectWorkerFromList(context, actionState.workers);
                       if (worker == null) return;
                       switch (index) {
                         case 1:

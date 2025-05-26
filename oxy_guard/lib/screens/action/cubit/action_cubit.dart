@@ -4,6 +4,7 @@ import 'package:OxyGuard/models/models.dart';
 import 'package:OxyGuard/repositories/actions/actions_repository.dart';
 import 'package:OxyGuard/repositories/squad/squad_repository.dart';
 import 'package:OxyGuard/repositories/user_repository.dart';
+import 'package:OxyGuard/repositories/worker/worker_repository.dart';
 import 'package:OxyGuard/screens/action/cubit/action_state.dart';
 import 'package:OxyGuard/service_locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,6 +15,7 @@ class ActionCubit extends Cubit<ActionState> {
   final ActionsRepository _actionsRepository = sl();
   final SquadRepository _squadRepository = sl();
   final UserRepository _userRepository = sl();
+  final WorkerRepository _workerRepository = sl();
 
   StreamSubscription<dynamic>? _subscription;
 
@@ -26,8 +28,9 @@ class ActionCubit extends Cubit<ActionState> {
 
     _subscription = _actionsRepository.getActionById(actionId).listen((Action action) async {
       final List<Squad> squads = await _squadRepository.getSquadsByActionId(action.id!).first;
+      final List<Worker> workers = await _workerRepository.getWorkers().first;
 
-      emit(ActionLoadedState(action: action, squads: squads));
+      emit(ActionLoadedState(action: action, squads: squads, workers: workers));
     });
   }
 

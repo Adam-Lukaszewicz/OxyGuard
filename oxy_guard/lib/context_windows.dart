@@ -1,17 +1,12 @@
-import 'package:OxyGuard/legacy/models/personnel/worker.dart';
-import 'package:OxyGuard/legacy/services/database_service.dart';
 import 'package:OxyGuard/models/models.dart';
 import 'package:flutter/material.dart';
-import 'package:watch_it/watch_it.dart';
 
-Future<int?> checkListDialog(BuildContext context, int oxygenMaximum,
-        int oxygenMinimum, String tileText,
+Future<int?> checkListDialog(BuildContext context, int oxygenMaximum, int oxygenMinimum, String tileText,
         {String? unitText}) =>
     showDialog<int>(
       context: context,
       builder: (context) {
-        FixedExtentScrollController checkController =
-            FixedExtentScrollController();
+        FixedExtentScrollController checkController = FixedExtentScrollController();
         return Dialog(
           backgroundColor: const Color(0xfffcfcfc),
           child: SizedBox(
@@ -37,9 +32,7 @@ Future<int?> checkListDialog(BuildContext context, int oxygenMaximum,
                           Text(
                             "($unitText)",
                             style: TextStyle(
-                                fontSize:
-                                    MediaQuery.of(context).size.width * 0.04,
-                                fontWeight: FontWeight.normal),
+                                fontSize: MediaQuery.of(context).size.width * 0.04, fontWeight: FontWeight.normal),
                           ),
                       ],
                     ),
@@ -61,16 +54,13 @@ Future<int?> checkListDialog(BuildContext context, int oxygenMaximum,
                           color: Colors.white,
                           child: Padding(
                             padding: EdgeInsets.symmetric(
-                                vertical:
-                                    MediaQuery.of(context).size.height * .01,
-                                horizontal:
-                                    MediaQuery.of(context).size.width * .04),
+                                vertical: MediaQuery.of(context).size.height * .01,
+                                horizontal: MediaQuery.of(context).size.width * .04),
                             child: Text(
                               "${oxygenMaximum - 10 * index}",
                               style: TextStyle(
                                 color: Theme.of(context).primaryColorDark,
-                                fontSize:
-                                    MediaQuery.of(context).size.width * 0.06,
+                                fontSize: MediaQuery.of(context).size.width * 0.06,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -87,25 +77,18 @@ Future<int?> checkListDialog(BuildContext context, int oxygenMaximum,
                         ElevatedButton(
                           style: ButtonStyle(
                               fixedSize: WidgetStatePropertyAll(Size(
-                                  MediaQuery.of(context).size.width * 0.5,
-                                  MediaQuery.of(context).size.height * 0.07)),
+                                  MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.07)),
                               elevation: const WidgetStatePropertyAll(5),
                               shape: const WidgetStatePropertyAll(
-                                  RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10)))),
-                              backgroundColor:
-                                  const WidgetStatePropertyAll(Colors.white),
-                              foregroundColor: WidgetStatePropertyAll(
-                                  Theme.of(context).primaryColorDark),
+                                  RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10)))),
+                              backgroundColor: const WidgetStatePropertyAll(Colors.white),
+                              foregroundColor: WidgetStatePropertyAll(Theme.of(context).primaryColorDark),
                               textStyle: WidgetStatePropertyAll(TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize:
-                                    MediaQuery.of(context).size.width * 0.05,
+                                fontSize: MediaQuery.of(context).size.width * 0.05,
                               ))),
                           onPressed: () {
-                            Navigator.of(context).pop(oxygenMaximum -
-                                10 * checkController.selectedItem);
+                            Navigator.of(context).pop(oxygenMaximum - 10 * checkController.selectedItem);
                           },
                           child: const Text("Wprowadź"),
                         ),
@@ -143,16 +126,12 @@ Future<int?> timeDialog(BuildContext context, String titleText) {
                             Text(
                               titleText,
                               style: TextStyle(
-                                  fontSize:
-                                      MediaQuery.of(context).size.width * 0.06,
-                                  fontWeight: FontWeight.bold),
+                                  fontSize: MediaQuery.of(context).size.width * 0.06, fontWeight: FontWeight.bold),
                             ),
                             Text(
                               "(min:sek)",
                               style: TextStyle(
-                                  fontSize:
-                                      MediaQuery.of(context).size.width * 0.04,
-                                  fontWeight: FontWeight.normal),
+                                  fontSize: MediaQuery.of(context).size.width * 0.04, fontWeight: FontWeight.normal),
                             ),
                           ],
                         )),
@@ -166,8 +145,7 @@ Future<int?> timeDialog(BuildContext context, String titleText) {
                             width: MediaQuery.of(context).size.width * 0.2,
                             child: ListWheelScrollView.useDelegate(
                                 controller: minuteController,
-                                itemExtent:
-                                    MediaQuery.of(context).size.width * 0.14,
+                                itemExtent: MediaQuery.of(context).size.width * 0.14,
                                 perspective: 0.005,
                                 overAndUnderCenterOpacity: 0.6,
                                 squeeze: 1,
@@ -180,22 +158,12 @@ Future<int?> timeDialog(BuildContext context, String titleText) {
                                     color: Colors.white,
                                     child: Padding(
                                       padding: EdgeInsets.symmetric(
-                                          vertical: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              .01,
-                                          horizontal: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              .04),
+                                          vertical: MediaQuery.of(context).size.height * .01,
+                                          horizontal: MediaQuery.of(context).size.width * .04),
                                       child: Text("$index",
                                           style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .primaryColorDark,
-                                              fontSize: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.06,
+                                              color: Theme.of(context).primaryColorDark,
+                                              fontSize: MediaQuery.of(context).size.width * 0.06,
                                               fontWeight: FontWeight.bold)),
                                     ),
                                   ),
@@ -206,17 +174,14 @@ Future<int?> timeDialog(BuildContext context, String titleText) {
                             child: Text(":",
                                 style: TextStyle(
                                     color: Theme.of(context).primaryColorDark,
-                                    fontSize:
-                                        MediaQuery.of(context).size.width *
-                                            0.06,
+                                    fontSize: MediaQuery.of(context).size.width * 0.06,
                                     fontWeight: FontWeight.bold)),
                           ),
                           SizedBox(
                             width: MediaQuery.of(context).size.width * 0.25,
                             child: ListWheelScrollView.useDelegate(
                                 controller: secondsController,
-                                itemExtent:
-                                    MediaQuery.of(context).size.width * 0.14,
+                                itemExtent: MediaQuery.of(context).size.width * 0.14,
                                 perspective: 0.005,
                                 overAndUnderCenterOpacity: 0.6,
                                 squeeze: 1,
@@ -229,22 +194,12 @@ Future<int?> timeDialog(BuildContext context, String titleText) {
                                     color: Colors.white,
                                     child: Padding(
                                       padding: EdgeInsets.symmetric(
-                                          vertical: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              .01,
-                                          horizontal: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              .04),
+                                          vertical: MediaQuery.of(context).size.height * .01,
+                                          horizontal: MediaQuery.of(context).size.width * .04),
                                       child: Text("${index * 15}",
                                           style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .primaryColorDark,
-                                              fontSize: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.06,
+                                              color: Theme.of(context).primaryColorDark,
+                                              fontSize: MediaQuery.of(context).size.width * 0.06,
                                               fontWeight: FontWeight.bold)),
                                     ),
                                   ),
@@ -260,30 +215,20 @@ Future<int?> timeDialog(BuildContext context, String titleText) {
                           children: [
                             ElevatedButton(
                                 style: ButtonStyle(
-                                    fixedSize: WidgetStatePropertyAll(Size(
-                                        MediaQuery.of(context).size.width * 0.5,
-                                        MediaQuery.of(context).size.height *
-                                            0.07)),
+                                    fixedSize: WidgetStatePropertyAll(Size(MediaQuery.of(context).size.width * 0.5,
+                                        MediaQuery.of(context).size.height * 0.07)),
                                     elevation: const WidgetStatePropertyAll(5),
                                     shape: const WidgetStatePropertyAll(
-                                        RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(10)))),
-                                    backgroundColor:
-                                        const WidgetStatePropertyAll(
-                                            Colors.white),
-                                    foregroundColor: WidgetStatePropertyAll(
-                                        Theme.of(context).primaryColorDark),
+                                        RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10)))),
+                                    backgroundColor: const WidgetStatePropertyAll(Colors.white),
+                                    foregroundColor: WidgetStatePropertyAll(Theme.of(context).primaryColorDark),
                                     textStyle: WidgetStatePropertyAll(TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize:
-                                          MediaQuery.of(context).size.width *
-                                              0.05,
+                                      fontSize: MediaQuery.of(context).size.width * 0.05,
                                     ))),
                                 onPressed: () {
-                                  Navigator.of(context).pop(
-                                      15 * secondsController.selectedItem +
-                                          60 * minuteController.selectedItem);
+                                  Navigator.of(context)
+                                      .pop(15 * secondsController.selectedItem + 60 * minuteController.selectedItem);
                                 },
                                 child: const Text("Wprowadź")),
                           ],
@@ -309,8 +254,7 @@ Future<bool?> warningDialog(BuildContext context, warningText) async {
               Center(
                 child: Text(
                   warningText,
-                  style: const TextStyle(
-                      fontSize: 17),
+                  style: const TextStyle(fontSize: 17),
                 ),
               ),
             ],
@@ -343,8 +287,7 @@ Future<void> succesDialog(BuildContext context, warningText) async {
               Center(
                 child: Text(
                   warningText,
-                  style: const TextStyle(
-                      fontSize: 17),
+                  style: const TextStyle(fontSize: 17),
                 ),
               ),
             ],
@@ -384,11 +327,9 @@ Future<String?> selectFromList(BuildContext context, List<String> items) async {
                       controller: locationController,
                       decoration: InputDecoration(
                           labelText: 'Wprowadź',
-                          labelStyle: TextStyle(
-                              color: Theme.of(context).primaryColorDark),
-                          focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).primaryColorDark))),
+                          labelStyle: TextStyle(color: Theme.of(context).primaryColorDark),
+                          focusedBorder:
+                              UnderlineInputBorder(borderSide: BorderSide(color: Theme.of(context).primaryColorDark))),
                     ),
                   ),
                   Container(
@@ -396,8 +337,7 @@ Future<String?> selectFromList(BuildContext context, List<String> items) async {
                     child: ElevatedButton(
                       onPressed: () {
                         if (locationController.text.trim().isNotEmpty) {
-                          Navigator.of(context)
-                              .pop(locationController.text.trim());
+                          Navigator.of(context).pop(locationController.text.trim());
                         } else {
                           warningDialog(context, "Wprowadź dane");
                         }
@@ -437,8 +377,8 @@ Future<String?> selectFromList(BuildContext context, List<String> items) async {
             style: const ButtonStyle(
               backgroundColor: WidgetStatePropertyAll(Colors.red),
               foregroundColor: WidgetStatePropertyAll(Colors.white),
-              shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10)))),
+              shape:
+                  WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10)))),
               elevation: WidgetStatePropertyAll(5),
             ),
             child: const Text('Anuluj'),
@@ -452,7 +392,7 @@ Future<String?> selectFromList(BuildContext context, List<String> items) async {
   );
 }
 
-Future<Worker?> selectWorkerFromList(BuildContext context) async {
+Future<Worker?> selectWorkerFromList(BuildContext context, List<Worker> workers) async {
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
 
@@ -476,11 +416,9 @@ Future<Worker?> selectWorkerFromList(BuildContext context) async {
                       controller: firstNameController,
                       decoration: InputDecoration(
                           labelText: 'Imię',
-                          labelStyle: TextStyle(
-                              color: Theme.of(context).primaryColorDark),
-                          focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).primaryColorDark))),
+                          labelStyle: TextStyle(color: Theme.of(context).primaryColorDark),
+                          focusedBorder:
+                              UnderlineInputBorder(borderSide: BorderSide(color: Theme.of(context).primaryColorDark))),
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -490,22 +428,17 @@ Future<Worker?> selectWorkerFromList(BuildContext context) async {
                       controller: lastNameController,
                       decoration: InputDecoration(
                           labelText: 'Nazwisko',
-                          labelStyle: TextStyle(
-                              color: Theme.of(context).primaryColorDark),
-                          focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).primaryColorDark))),
+                          labelStyle: TextStyle(color: Theme.of(context).primaryColorDark),
+                          focusedBorder:
+                              UnderlineInputBorder(borderSide: BorderSide(color: Theme.of(context).primaryColorDark))),
                     ),
                   ),
                   Container(
                     alignment: Alignment.center,
                     child: ElevatedButton(
                       onPressed: () {
-                        if (firstNameController.text.trim().isNotEmpty &&
-                            lastNameController.text.trim().isNotEmpty) {
-                          Navigator.of(context).pop(Worker(
-                              name: firstNameController.text.trim(),
-                              surname: lastNameController.text.trim()));
+                        if (firstNameController.text.trim().isNotEmpty && lastNameController.text.trim().isNotEmpty) {
+                          //TODO: Add a new worker to personnel and return it here
                         } else {
                           warningDialog(context, "Wprowadź imię oraz nazwisko");
                         }
@@ -527,7 +460,7 @@ Future<Worker?> selectWorkerFromList(BuildContext context) async {
               Expanded(
                 child: ListView(
                   shrinkWrap: true,
-                  children: GetIt.I.get<DatabaseService>().currentPersonnel.team
+                  children: workers
                       .map((worker) => ListTile(
                             leading: const Icon(Icons.person),
                             title: Text('${worker.name} ${worker.surname}'),
@@ -546,8 +479,8 @@ Future<Worker?> selectWorkerFromList(BuildContext context) async {
             style: const ButtonStyle(
               backgroundColor: WidgetStatePropertyAll(Colors.red),
               foregroundColor: WidgetStatePropertyAll(Colors.white),
-              shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10)))),
+              shape:
+                  WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10)))),
               elevation: WidgetStatePropertyAll(5),
             ),
             child: const Text('Anuluj'),
@@ -561,8 +494,7 @@ Future<Worker?> selectWorkerFromList(BuildContext context) async {
   );
 }
 
-Future<String?> textInputDialog(BuildContext context, String title,
-    String label, String warningText) async {
+Future<String?> textInputDialog(BuildContext context, String title, String label, String warningText) async {
   final TextEditingController textController = TextEditingController();
 
   return showDialog<String?>(

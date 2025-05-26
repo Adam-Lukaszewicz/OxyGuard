@@ -1,7 +1,10 @@
 import 'package:OxyGuard/context_windows.dart';
 import 'package:OxyGuard/repositories/location_repository.dart';
 import 'package:OxyGuard/models/models.dart';
+import 'package:OxyGuard/screens/action/cubit/action_cubit.dart';
+import 'package:OxyGuard/screens/action/cubit/action_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -354,7 +357,8 @@ class _WaitingBodyState extends State<WaitingBody> with AutomaticKeepAliveClient
           SizedBox(width: screenWidth * 0.1),
           ElevatedButton(
             onPressed: () async {
-              var selectedWorker = await selectWorkerFromList(context);
+              final ActionLoadedState actionState = context.read<ActionCubit>().state as ActionLoadedState;
+              var selectedWorker = await selectWorkerFromList(context, actionState.workers);
               setState(() {
                 direction(selectedWorker);
               });
